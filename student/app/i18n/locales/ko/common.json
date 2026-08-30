@@ -21,48 +21,27 @@
     "createAccount": "회원가입",
     "browseCourses": "강좌 둘러보기",
     "welcomeBack": "Welcome back",
-    "email": "email",
     "emailPlaceholder": "you@example.com",
-    "password": "password",
     "passwordPlaceholder": "••••••••",
     "noAccount": "Don't have an account?",
     "createOne": "Create one",
-    "notSignedIn": "notSignedIn",
     "signup": {
-      "success": "success",
-      "failure": "failure",
-      "backToHome": "backToHome",
       "title": "Sign in",
-      "fullName": "fullName",
-      "fullNamePlaceholder": "fullNamePlaceholder",
-      "email": "email",
       "emailPlaceholder": "you@example.com",
-      "password": "password",
       "passwordPlaceholder": "••••••••",
-      "intent": "intent",
-      "intentLearn": "intentLearn",
-      "intentTeach": "intentTeach",
-      "submitting": "submitting",
-      "submit": "submit",
       "haveAccount": "Already have an account?",
       "signIn": "Sign in",
-      "password_label": "Password",
-      "login_cta": "login_cta"
+      "password_label": "Password"
     },
     "forgot_password": {
       "title": "Sign in",
-      "success": "success",
       "email_label": "Email",
-      "submit": "submit",
       "back_to_login": "Back to sign in"
     },
     "login": {
       "title": "Sign in",
       "email_label": "Email",
-      "password_label": "Password",
-      "submit": "submit",
-      "signup_cta": "signup_cta",
-      "forgot_cta": "forgot_cta"
+      "password_label": "Password"
     }
   },
   "actions": {
@@ -77,15 +56,7 @@
     "close": "닫기",
     "search": "검색",
     "filter": "필터",
-    "loading": "로딩 중...",
-    "actions": "actions",
-    "selectedCount": "selectedCount",
-    "clear": "clear",
-    "editEntity": "editEntity",
-    "createEntity": "createEntity",
-    "create": "create",
-    "view": "view",
-    "rowMenu": "rowMenu"
+    "loading": "로딩 중..."
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",
@@ -101,26 +72,16 @@
     "ko": "한국어"
   },
   "pagination": {
-    "page": "page",
-    "prev": "prev",
     "next": "Next"
   },
   "errors": {
     "unexpected": "Unexpected"
   },
-  "workflow": {
-    "current_state": "current_state",
-    "actions": "actions",
-    "no_actions": "no_actions",
-    "by_state": "by_state"
-  },
   "home": {
-    "students": "students",
     "heroSubtitle": "Browse expert-led courses, enrol in one click and pick up exactly where you left off.",
     "categoriesTitle": "Browse top categories",
     "categoriesSubtitle": "Pick a subject and start today",
     "loadError": "We could not load your cart. Please try again.",
-    "course": "course",
     "courses": "Courses",
     "bestSellingTitle": "Best selling courses",
     "bestSellingSubtitle": "What learners are buying this month",
@@ -152,7 +113,6 @@
     "loadError": "We could not load your cart. Please try again.",
     "retry": "Try again",
     "empty": "Your cart is empty.",
-    "students": "students",
     "pagination": "Pagination",
     "home": "Home"
   },
@@ -165,8 +125,6 @@
     "loadError": "We could not load your cart. Please try again.",
     "retry": "Try again",
     "empty": "Your cart is empty.",
-    "students": "students",
-    "hours": "hours",
     "instructor": "Your instructor",
     "syllabus": "Course syllabus",
     "syllabusEmpty": "The syllabus for this course is coming soon.",
@@ -187,7 +145,6 @@
     "retry": "Try again",
     "empty": "Your cart is empty.",
     "courses": "Courses",
-    "students": "students",
     "home": "Home"
   },
   "instructorDetail": {
@@ -200,7 +157,6 @@
     "coursesError": "We could not load these courses. Please try again.",
     "retry": "Try again",
     "coursesEmpty": "This instructor has not published any courses yet.",
-    "students": "students",
     "navHint": "Selecting a course opens its detail page."
   },
   "cart": {
@@ -238,8 +194,6 @@
     "cart": "Cart",
     "title": "Sign in",
     "billingDetails": "Billing details",
-    "fullName": "fullName",
-    "email": "email",
     "country": "Country",
     "paymentMethod": "Payment method",
     "placing": "Placing order…",
@@ -266,7 +220,6 @@
     "retry": "Try again",
     "empty": "Your cart is empty.",
     "emptyGuest": "Sign in to view your orders.",
-    "view": "view",
     "home": "Home",
     "viewDetail": "View order"
   },
@@ -298,7 +251,6 @@
     "retry": "Try again",
     "empty": "Your cart is empty.",
     "browse": "Browse courses",
-    "complete": "complete",
     "review": "Review",
     "continue": "Continue",
     "home": "Home"
@@ -314,8 +266,6 @@
     "markComplete": "Mark as complete",
     "nextLesson": "Next lesson",
     "courseContent": "Course content",
-    "complete": "complete",
-    "min": "min",
     "pickLessonHint": "Pick a lesson to switch the stage and title."
   },
   "profile": {
@@ -324,13 +274,10 @@
     "title": "Sign in",
     "photoSoon": "Photo upload is not available yet",
     "changePhoto": "Change photo",
-    "fullName": "fullName",
-    "email": "email",
     "headline": "Headline",
     "country": "Country",
     "bio": "Bio",
     "saving": "Saving…",
-    "save": "save",
     "account": "Account",
     "loadError": "We could not load your cart. Please try again.",
     "retry": "Try again",

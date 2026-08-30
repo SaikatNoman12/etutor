@@ -10,11 +10,20 @@ import { Outlet, Link, NavLink } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '~/hooks/useAppSelector';
 import { LanguageToggle } from '~/components/shared/LanguageToggle';
+import { user_role } from '~/enums/user-role.enum';
 // __NAV_ITEMS_IMPORT__
 
 export default function AdminLayout() {
   const { t } = useTranslation('common');
   const user = useAppSelector((s) => s.auth?.user);
+  const roleLabel =
+    user?.role === user_role.ADMIN
+      ? t('roles.admin', { defaultValue: 'Admin' })
+      : user?.role === user_role.INSTRUCTOR
+        ? t('roles.instructor', { defaultValue: 'Instructor' })
+        : user?.role === user_role.STUDENT
+          ? t('roles.student', { defaultValue: 'Student' })
+          : '';
 
   return (
     <div className="flex min-h-screen" data-testid="admin-layout">
@@ -46,7 +55,9 @@ export default function AdminLayout() {
           <div className="flex items-center gap-3">
             <LanguageToggle />
             <span className="text-sm text-muted-foreground" data-testid="admin-topbar-role">
-              {user?.role ?? ''}
+              {/* The role travels as its numeric JWT claim, so rendering it directly put a
+                  bare "99" in the console's top bar. Name it. */}
+              {roleLabel}
             </span>
           </div>
         </header>

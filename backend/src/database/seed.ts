@@ -1710,12 +1710,64 @@ async function seedOrderItems(ds: DataSource, fixtures: RawFixtures): Promise<vo
   console.log('seed: order items — ' + lines + ' line(s) across ' + priced + ' order(s)');
 }
 
+/**
+ * Clear the syllabus of every course the fixture describes, so re-seeding rebuilds it
+ * instead of appending a second copy.
+ *
+ * A course section has no natural unique key — its title repeats across courses by
+ * design — so the "does this row already exist" check can never match one, and every
+ * seed run inserted the whole syllabus again. Four runs left one course showing twelve
+ * sections named "Getting started", three of them duplicates, which is what a client
+ * would see on the course page. The fixture is the source of truth for demo content:
+ * make the database match it rather than accumulate against it.
+ */
+async function resetCourseSyllabus(ds: DataSource, fixtures: RawFixtures): Promise<void> {
+  const courses = ((fixtures as Record<string, any>)['seed_data'] || {})['courses'];
+  if (!Array.isArray(courses) || !courses.length) return;
+  const slugs = courses.map((c: Record<string, unknown>) => String(c.slug)).filter(Boolean);
+  if (!slugs.length) return;
+
+  const find = (t: string) => ds.entityMetadatas.find((m) => m.tableName === t);
+  const courseMeta = find('courses');
+  const sectionMeta = find('course_sections');
+  const lessonMeta = find('lessons');
+  if (!courseMeta || !sectionMeta) return;
+
+  const rows = (await ds
+    .getRepository(courseMeta.target)
+    .createQueryBuilder('c')
+    .select('c.id', 'id')
+    .where('c.slug IN (:...slugs)', { slugs })
+    .getRawMany()) as Array<{ id: string }>;
+  if (!rows.length) return;
+  const ids = rows.map((r) => r.id);
+
+  // Lessons first: they point at the sections.
+  if (lessonMeta) {
+    await ds
+      .getRepository(lessonMeta.target)
+      .createQueryBuilder()
+      .delete()
+      .where('course_id IN (:...ids)', { ids })
+      .execute()
+      .catch(() => undefined);
+  }
+  await ds
+    .getRepository(sectionMeta.target)
+    .createQueryBuilder()
+    .delete()
+    .where('course_id IN (:...ids)', { ids })
+    .execute()
+    .catch(() => undefined);
+}
+
 // Multi-entity seed orchestrator. Replaces the original seedUsers call.
 async function seedAllWithUuidMap(ds: DataSource, fixtures: RawFixtures): Promise<void> {
   const uuidMap: Record<string, string> = {};
   await seedUsersWithUuidMap(ds, fixtures, uuidMap);
   await seedCategories(ds, fixtures, uuidMap);
   await seedCourses(ds, fixtures, uuidMap);
+  await resetCourseSyllabus(ds, fixtures);
   await seedCourseSections(ds, fixtures, uuidMap);
   await seedLessons(ds, fixtures, uuidMap);
   await seedCoupons(ds, fixtures, uuidMap);

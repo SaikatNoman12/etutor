@@ -59,7 +59,11 @@ export class EnrollmentController {
   async findOne(
     @CurrentUser('id') userId: string,
     @CurrentUser('role') role: string,
-    @Param('id', ParseUUIDPipe) id: string,
+    // An enrollment id OR the slug of the course it grants access to. The player's URL
+    // is /learn/<course-slug> -- that is what a learner clicks from My Learning, and the
+    // route the design declares -- so a UUID pipe here rejected the only link the app
+    // actually produces, with a 400 that read as "the player is broken".
+    @Param('id') id: string,
   ): Promise<PlayerView> {
     return this.service.getPlayerForUser(id, userId, role);
   }

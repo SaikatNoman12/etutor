@@ -14,7 +14,6 @@
   "loadError": "We could not load the courses. Please try again.",
   "retry": "Try again",
   "empty": "No courses match your filters yet.",
-  "students": "students",
   "pagination": "Pagination",
   "home": "Home"
 }

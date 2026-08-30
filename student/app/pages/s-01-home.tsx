@@ -162,7 +162,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-wrap items-center gap-[12px]">
                 <Link
-                  to="/register"
+                  to="/signup"
                   data-testid="s-01-home-hero-signup"
                   className="inline-flex min-h-[48px] items-center justify-center rounded-[6px] bg-[var(--c-primary)] px-[32px] text-[18px] font-semibold text-[var(--c-on-primary)] transition hover:bg-[var(--c-primary-active)]"
                 >
@@ -307,7 +307,7 @@ export default function HomePage() {
                 </div>
               ))}
               <Link
-                to="/register"
+                to="/signup"
                 data-testid="s-01-home-become-instructor"
                 className="mt-[8px] inline-flex min-h-[44px] w-fit items-center justify-center rounded-[6px] bg-[var(--c-primary)] px-[24px] text-[15px] font-semibold text-[var(--c-on-primary)] transition hover:bg-[var(--c-primary-active)]"
               >

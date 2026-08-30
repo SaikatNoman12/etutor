@@ -102,14 +102,14 @@ export default function StudentLayout() {
           ) : (
             <span className="flex items-center gap-2">
               <Link
-                to="/register"
+                to="/signup"
                 data-testid="topbar-signup"
                 className="inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium hover:bg-accent"
               >
                 {t('auth.createAccount')}
               </Link>
               <Link
-                to="/login"
+                to="/signin"
                 data-testid="topbar-signin"
                 className="inline-flex h-9 items-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
               >

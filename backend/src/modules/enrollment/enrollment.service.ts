@@ -19,6 +19,9 @@ import { LessonProgressRepository } from '../lesson-progress/lesson-progress.rep
 import { enrollment_status } from '../../common/enums/enrollment-status.enum';
 import { RoleEnum, ROLE_VALUES } from '../../common/enums/role.enum';
 
+/** A v4-shaped uuid; anything else on the player route is a course slug. */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 /** One row of GET /api/enrollments — the "My learning" list. */
 export interface EnrollmentListItem {
   id: string;
@@ -155,14 +158,34 @@ export class EnrollmentService extends BaseService<Enrollment> {
   }
 
   /** The course player payload; 404 unknown, 403 for another user's or a cancelled enrollment. */
+  /** The caller's enrollment in the course with this slug. */
+  private async findByCourseSlugOrFail(slug: string, userId: string) {
+    const course = await this.courses.findOne({ where: { slug } });
+    if (!course) throw new NotFoundException(`No course with slug ${slug}`);
+    const enrollment = await this.repository.findOne({
+      where: { courseId: course.id, userId },
+      relations: { course: true },
+    });
+    if (!enrollment) {
+      throw new NotFoundException(`You are not enrolled in ${slug}`);
+    }
+    return enrollment;
+  }
+
   async getPlayerForUser(
     id: string,
     userId: string,
     role: unknown,
   ): Promise<PlayerView> {
-    const enrollment = await this.findByIdOrFail(id, { course: true });
+    // `id` is either this enrollment's uuid or the slug of the course it covers.
+    // Resolving both here keeps the course-centric URL the design declares working
+    // without asking the player page to look an id up first.
+    const enrollment = UUID_RE.test(id)
+      ? await this.findByIdOrFail(id, { course: true })
+      : await this.findByCourseSlugOrFail(id, userId);
     this.assertOwner(enrollment, userId, role);
     this.assertActive(enrollment);
+    id = enrollment.id;
 
     const { sections, lessons } = await this.sectionsAndPublishedLessons(
       enrollment.courseId,

@@ -91,6 +91,12 @@ export default function MyLearningPage() {
   }, [dispatch]);
 
   const allEnrollments = useMemo<EnrollmentRow[]>(() => extractEnrollments(data1), [data1]);
+  // The course the "Continue" call to action should open: the first unfinished one,
+  // falling back to the first enrolment, and to nothing when there are none.
+  const continueSlug = useMemo<string>(() => {
+    const unfinished = allEnrollments.find((e) => Number(e.progressPercent ?? 0) < 100);
+    return (unfinished ?? allEnrollments[0])?.course?.slug ?? '';
+  }, [allEnrollments]);
 
   const filtered = useMemo<EnrollmentRow[]>(() => {
     const term = search.trim().toLowerCase();
@@ -237,7 +243,19 @@ export default function MyLearningPage() {
           )}
         </section>
         <section data-testid="s-10-my-learning-ac-3">
-          <Link to="/learn/" data-testid="s-10-my-learning-ac-3-link">{t('learning.continue', 'Continue')}</Link>
+          {/* Continue where the learner left off: the first course they have not
+              finished, or the first they are enrolled in. This link was hardcoded to
+              "/learn/" — a player URL with no course in it, which is the not-found
+              page every time it was clicked. */}
+          {continueSlug ? (
+            <Link to={`/learn/${continueSlug}`} data-testid="s-10-my-learning-ac-3-link">
+              {t('learning.continue', 'Continue')}
+            </Link>
+          ) : (
+            <Link to="/courses" data-testid="s-10-my-learning-ac-3-link">
+              {t('learning.browse', 'Browse courses')}
+            </Link>
+          )}
         </section>
       </div>
     </div>

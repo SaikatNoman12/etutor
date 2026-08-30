@@ -1,6 +1,6 @@
 {
-  "current_state": "current_state",
-  "actions": "actions",
-  "no_actions": "no_actions",
-  "by_state": "by_state"
+  "current_state": "Current state",
+  "actions": "Actions",
+  "no_actions": "No actions",
+  "by_state": "By state"
 }

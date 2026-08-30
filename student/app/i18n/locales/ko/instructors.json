@@ -5,7 +5,5 @@
   "loadError": "We could not load the instructors. Please try again.",
   "retry": "Try again",
   "empty": "No instructors found.",
-  "courses": "courses",
-  "students": "students",
   "home": "Home"
 }

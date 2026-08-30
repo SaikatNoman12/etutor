@@ -167,6 +167,7 @@ export class CatalogueService {
             id: course.instructor.id,
             name: course.instructor.fullName,
             headline: course.instructor.headline ?? null,
+            avatarUrl: course.instructor.avatarUrl ?? null,
           }
         : null,
       sections: sections.map((s) => ({
@@ -210,6 +211,9 @@ export class CatalogueService {
       id: string;
       name: string;
       headline: string | null;
+      // The directory shows a photo for each instructor; without this the card can only
+      // ever draw a placeholder, however complete the data behind it is.
+      avatarUrl: string | null;
       courseCount: number;
       studentCount: number;
     }> = [];
@@ -224,6 +228,7 @@ export class CatalogueService {
         id: u.id,
         name: u.fullName,
         headline: u.headline ?? null,
+        avatarUrl: u.avatarUrl ?? null,
         courseCount: published.length,
         studentCount: published.reduce((sum, c) => sum + (c.studentCount ?? 0), 0),
       });

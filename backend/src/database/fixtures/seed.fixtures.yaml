@@ -51,6 +51,7 @@ users:
     email_verified: true
     headline: Senior Software Engineer
     bio: Fifteen years building web platforms; teaching the parts that took me longest to learn.
+    avatar_url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=256&h=256&q=80&auto=format&fit=crop&crop=faces'
     storage_state: storageState-instructor.json
     fullName: "Instructor"  # [scaffold-fixture-completeness] added
 
@@ -66,6 +67,7 @@ users:
     email_verified: true
     headline: Product Designer
     bio: Designer turned educator, focused on interface craft.
+    avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=256&h=256&q=80&auto=format&fit=crop&crop=faces'
     storage_state: storageState-instructor-alt.json
     fullName: "Instructor Alt"  # [scaffold-fixture-completeness] added
 
@@ -82,21 +84,81 @@ users:
     storage_state: storageState-admin.json
     fullName: "Admin"  # [scaffold-fixture-completeness] added
 
+  instructor_third:
+    key: instructor_third
+    email: instructor3@etutor.test
+    password: Instructor123!
+    role: 2
+    role_name: INSTRUCTOR
+    display_name: Rafael Souza
+    full_name: Rafael Souza
+    fullName: "Rafael Souza"
+    status: 1
+    email_verified: true
+    headline: Staff Engineer
+    bio: Fifteen years shipping web applications; teaches what survives production.
+    avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=256&h=256&q=80&auto=format&fit=crop&crop=faces'
+  instructor_fourth:
+    key: instructor_fourth
+    email: instructor4@etutor.test
+    password: Instructor123!
+    role: 2
+    role_name: INSTRUCTOR
+    display_name: Priya Nair
+    full_name: Priya Nair
+    fullName: "Priya Nair"
+    status: 1
+    email_verified: true
+    headline: Data Engineer
+    bio: Builds the pipelines behind analytics teams and explains them plainly.
+    avatar_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=256&h=256&q=80&auto=format&fit=crop&crop=faces'
+  instructor_fifth:
+    key: instructor_fifth
+    email: instructor5@etutor.test
+    password: Instructor123!
+    role: 2
+    role_name: INSTRUCTOR
+    display_name: Daniel Okafor
+    full_name: Daniel Okafor
+    fullName: "Daniel Okafor"
+    status: 1
+    email_verified: true
+    headline: Product Lead
+    bio: Took three products from zero to revenue; teaches the decisions, not the theory.
+    avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=256&h=256&q=80&auto=format&fit=crop&crop=faces'
+  instructor_sixth:
+    key: instructor_sixth
+    email: instructor_sixth@etutor.test
+    password: Instructor123!
+    role: 2
+    role_name: INSTRUCTOR
+    display_name: Mira Lindqvist
+    full_name: Mira Lindqvist
+    fullName: "Mira Lindqvist"
+    status: 1
+    email_verified: true
+    headline: Creative Director
+    bio: Motion, brand and photography — twelve years in studios across Europe.
+    avatar_url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=256&h=256&q=80&auto=format&fit=crop&crop=faces'
+
 seed_data:
+  # Demo content for a client walkthrough. Images are Unsplash URLs, each one
+  # verified to respond 200 before it was written here — a broken thumbnail is the
+  # first thing anyone notices in a demo.
   categories:
-    - { slug: development, name: Development, display_order: 1, is_active: true }
-    - { slug: business, name: Business, display_order: 2, is_active: true }
-    - { slug: finance-accounting, name: Finance & Accounting, display_order: 3, is_active: true }
-    - { slug: it-software, name: IT & Software, display_order: 4, is_active: true }
-    - { slug: design, name: Design, display_order: 5, is_active: true }
-    - { slug: marketing, name: Marketing, display_order: 6, is_active: true }
-    - { slug: photography, name: Photography, display_order: 7, is_active: true }
-    - { slug: music, name: Music, display_order: 8, is_active: true }
+    - { slug: development, name: Development, display_order: 1, is_active: true, icon_url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=200&h=200&q=80&auto=format&fit=crop' }
+    - { slug: business, name: Business, display_order: 2, is_active: true, icon_url: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=200&h=200&q=80&auto=format&fit=crop' }
+    - { slug: finance-accounting, name: "Finance & Accounting", display_order: 3, is_active: true, icon_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=200&h=200&q=80&auto=format&fit=crop' }
+    - { slug: it-software, name: "IT & Software", display_order: 4, is_active: true, icon_url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=200&h=200&q=80&auto=format&fit=crop' }
+    - { slug: design, name: Design, display_order: 5, is_active: true, icon_url: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=200&h=200&q=80&auto=format&fit=crop' }
+    - { slug: marketing, name: Marketing, display_order: 6, is_active: true, icon_url: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=200&h=200&q=80&auto=format&fit=crop' }
+    - { slug: photography, name: Photography, display_order: 7, is_active: true, icon_url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=200&h=200&q=80&auto=format&fit=crop' }
+    - { slug: music, name: Music, display_order: 8, is_active: true, icon_url: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=200&h=200&q=80&auto=format&fit=crop' }
 
   courses:
     # status 1 = PUBLISHED, 0 = DRAFT. level 1 = BEGINNER, 2 = INTERMEDIATE, 3 = ADVANCED.
     - slug: complete-web-development-bootcamp
-      title: The Complete Web Development Bootcamp
+      title: "The Complete Web Development Bootcamp"
       category: development
       instructor: instructor
       price: 89.00
@@ -107,9 +169,11 @@ seed_data:
       rating_avg: 4.8
       rating_count: 1204
       student_count: 12480
-      summary: Build and deploy real applications from the first week.
+      summary: "Build and deploy real applications from the first week."
+      description: "Build and deploy real applications from the first week. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80&auto=format&fit=crop'
     - slug: machine-learning-a-z
-      title: Machine Learning A-Z with Python and R
+      title: "Machine Learning A-Z with Python and R"
       category: it-software
       instructor: instructor
       price: 94.00
@@ -120,9 +184,11 @@ seed_data:
       rating_avg: 4.7
       rating_count: 931
       student_count: 9315
-      summary: Regression to deep learning, one worked dataset at a time.
+      summary: "Regression to deep learning, one worked dataset at a time."
+      description: "Regression to deep learning, one worked dataset at a time. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&q=80&auto=format&fit=crop'
     - slug: python-programming-masterclass
-      title: Python Programming Masterclass
+      title: "Python Programming Masterclass"
       category: development
       instructor: instructor
       price: 74.00
@@ -131,81 +197,471 @@ seed_data:
       status: 1
       duration_minutes: 1980
       rating_avg: 4.6
-      rating_count: 890
-      student_count: 8902
-      summary: The language from first principles, ending in three shipped tools.
+      rating_count: 842
+      student_count: 7640
+      summary: "From first script to packaging your own library."
+      description: "From first script to packaging your own library. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1526379879527-8559ecfcaec0?w=800&q=80&auto=format&fit=crop'
     - slug: ui-ux-design-fundamentals
-      title: UI/UX Design Fundamentals with Figma
+      title: "UI/UX Design Fundamentals"
       category: design
       instructor: instructor_alt
-      price: 79.00
-      compare_at_price: 120.00
+      price: 69.00
+      compare_at_price: 99.00
       level: 1
       status: 1
-      duration_minutes: 1560
+      duration_minutes: 1440
       rating_avg: 4.9
-      rating_count: 621
-      student_count: 6218
-      summary: Interface craft, from grid to prototype.
+      rating_count: 655
+      student_count: 5210
+      summary: "Interface craft: grids, type, colour and the handoff."
+      description: "Interface craft: grids, type, colour and the handoff. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80&auto=format&fit=crop'
     - slug: digital-marketing-12-in-1
       title: "Digital Marketing: 12 Courses in 1"
       category: marketing
       instructor: instructor_alt
-      price: 68.00
-      compare_at_price: 99.00
-      level: 2
+      price: 79.00
+      compare_at_price: 119.00
+      level: 1
       status: 1
-      duration_minutes: 2100
+      duration_minutes: 3120
       rating_avg: 4.5
-      rating_count: 764
-      student_count: 7640
-      summary: Every channel, with the measurement that makes each one honest.
+      rating_count: 1478
+      student_count: 15890
+      summary: "SEO, ads, email and analytics as one working funnel."
+      description: "SEO, ads, email and analytics as one working funnel. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=80&auto=format&fit=crop'
     - slug: foundations-of-stock-trading
-      title: Foundations of Stock Trading
+      title: "Foundations of Stock Trading"
       category: finance-accounting
       instructor: instructor
+      price: 64.00
+      compare_at_price: 95.00
+      level: 1
+      status: 1
+      duration_minutes: 1260
+      rating_avg: 4.4
+      rating_count: 398
+      student_count: 3120
+      summary: "Read a chart, size a position, keep a trading journal."
+      description: "Read a chart, size a position, keep a trading journal. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80&auto=format&fit=crop'
+    - slug: react-router-in-practice
+      title: "React Router in Practice"
+      category: development
+      instructor: instructor_third
+      price: 82.00
+      compare_at_price: 120.00
+      level: 2
+      status: 1
+      duration_minutes: 1680
+      rating_avg: 4.7
+      rating_count: 512
+      student_count: 4380
+      summary: "Routing, data loading and forms in a real application."
+      description: "Routing, data loading and forms in a real application. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80&auto=format&fit=crop'
+    - slug: typescript-for-teams
+      title: "TypeScript for Teams"
+      category: development
+      instructor: instructor_third
+      price: 76.00
+      compare_at_price: 109.00
+      level: 2
+      status: 1
+      duration_minutes: 1500
+      rating_avg: 4.6
+      rating_count: 433
+      student_count: 3910
+      summary: "Types that describe your domain instead of fighting it."
+      description: "Types that describe your domain instead of fighting it. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80&auto=format&fit=crop'
+    - slug: data-analysis-with-sql
+      title: "Data Analysis with SQL"
+      category: it-software
+      instructor: instructor_fourth
+      price: 68.00
+      compare_at_price: 99.00
+      level: 1
+      status: 1
+      duration_minutes: 1320
+      rating_avg: 4.5
+      rating_count: 376
+      student_count: 3480
+      summary: "Answer real questions with joins, windows and CTEs."
+      description: "Answer real questions with joins, windows and CTEs. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=800&q=80&auto=format&fit=crop'
+    - slug: cloud-fundamentals-aws
+      title: "Cloud Fundamentals on AWS"
+      category: it-software
+      instructor: instructor_fourth
+      price: 88.00
+      compare_at_price: 130.00
+      level: 2
+      status: 1
+      duration_minutes: 1860
+      rating_avg: 4.6
+      rating_count: 529
+      student_count: 4720
+      summary: "Compute, storage, networking and what they cost."
+      description: "Compute, storage, networking and what they cost. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800&q=80&auto=format&fit=crop'
+    - slug: product-management-essentials
+      title: "Product Management Essentials"
+      category: business
+      instructor: instructor_fifth
+      price: 72.00
+      compare_at_price: 105.00
+      level: 1
+      status: 1
+      duration_minutes: 1380
+      rating_avg: 4.5
+      rating_count: 414
+      student_count: 3650
+      summary: "Discovery, prioritisation and shipping something people use."
+      description: "Discovery, prioritisation and shipping something people use. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80&auto=format&fit=crop'
+    - slug: startup-finance-for-founders
+      title: "Startup Finance for Founders"
+      category: finance-accounting
+      instructor: instructor_fifth
+      price: 84.00
+      compare_at_price: 125.00
+      level: 2
+      status: 1
+      duration_minutes: 1200
+      rating_avg: 4.4
+      rating_count: 287
+      student_count: 2410
+      summary: "Runway, unit economics and a model you can defend."
+      description: "Runway, unit economics and a model you can defend. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=800&q=80&auto=format&fit=crop'
+    - slug: brand-identity-design
+      title: "Brand Identity Design"
+      category: design
+      instructor: instructor_alt
+      price: 71.00
+      compare_at_price: 105.00
+      level: 2
+      status: 1
+      duration_minutes: 1560
+      rating_avg: 4.8
+      rating_count: 468
+      student_count: 4120
+      summary: "Marks, systems and the rationale you present to a client."
+      description: "Marks, systems and the rationale you present to a client. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&q=80&auto=format&fit=crop'
+    - slug: motion-design-with-after-effects
+      title: "Motion Design with After Effects"
+      category: design
+      instructor: instructor_sixth
+      price: 78.00
+      compare_at_price: 115.00
+      level: 2
+      status: 1
+      duration_minutes: 1740
+      rating_avg: 4.6
+      rating_count: 352
+      student_count: 2980
+      summary: "Keyframes, easing and animation that carries meaning."
+      description: "Keyframes, easing and animation that carries meaning. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80&auto=format&fit=crop'
+    - slug: seo-that-actually-ranks
+      title: "SEO That Actually Ranks"
+      category: marketing
+      instructor: instructor_alt
+      price: 66.00
+      compare_at_price: 95.00
+      level: 1
+      status: 1
+      duration_minutes: 1140
+      rating_avg: 4.3
+      rating_count: 502
+      student_count: 5640
+      summary: "Technical health, intent and content that earns links."
+      description: "Technical health, intent and content that earns links. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80&auto=format&fit=crop'
+    - slug: portrait-photography-masterclass
+      title: "Portrait Photography Masterclass"
+      category: photography
+      instructor: instructor_sixth
+      price: 73.00
+      compare_at_price: 108.00
+      level: 2
+      status: 1
+      duration_minutes: 1620
+      rating_avg: 4.7
+      rating_count: 391
+      student_count: 3270
+      summary: "Light, lens and direction — from window light to studio."
+      description: "Light, lens and direction — from window light to studio. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80&auto=format&fit=crop'
+    - slug: music-production-in-ableton
+      title: "Music Production in Ableton Live"
+      category: music
+      instructor: instructor_sixth
+      price: 81.00
+      compare_at_price: 120.00
+      level: 1
+      status: 1
+      duration_minutes: 1920
+      rating_avg: 4.6
+      rating_count: 344
+      student_count: 2860
+      summary: "Arrange, mix and finish a track you would release."
+      description: "Arrange, mix and finish a track you would release. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80&auto=format&fit=crop'
+    - slug: advanced-excel-for-analysts
+      title: "Advanced Excel for Analysts"
+      category: business
+      instructor: instructor_fifth
       price: 59.00
-      compare_at_price: 85.00
+      compare_at_price: 89.00
       level: 1
       status: 0
-      duration_minutes: 1320
-      rating_avg: 0
-      rating_count: 0
-      student_count: 0
-      summary: A draft course, used to prove that unpublished rows stay out of the catalogue.
+      duration_minutes: 960
+      rating_avg: 4.2
+      rating_count: 163
+      student_count: 1290
+      summary: "Power Query, pivots and models that do not break."
+      description: "Power Query, pivots and models that do not break. Every section ends with a practical exercise, and the project files are yours to keep."
+      thumbnail_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format&fit=crop'
 
   course_sections:
-    - { course: complete-web-development-bootcamp, title: Getting started, display_order: 1 }
-    - { course: complete-web-development-bootcamp, title: HTML and semantic markup, display_order: 2 }
-    - { course: complete-web-development-bootcamp, title: CSS and layout, display_order: 3 }
-    - { course: machine-learning-a-z, title: Foundations, display_order: 1 }
-    - { course: ui-ux-design-fundamentals, title: Interface basics, display_order: 1 }
+    # `id:` is a fixture-local alias, not a database id — the seeder maps it to the
+    # row's uuid so lessons can point at THIS section. Section titles repeat across
+    # courses by design, so a title alone cannot identify one.
+    - { id: sec-complete-web-development-bootcamp-1, course: complete-web-development-bootcamp, title: "Getting started", display_order: 1 }
+    - { id: sec-complete-web-development-bootcamp-2, course: complete-web-development-bootcamp, title: "Core concepts", display_order: 2 }
+    - { id: sec-complete-web-development-bootcamp-3, course: complete-web-development-bootcamp, title: "Building something real", display_order: 3 }
+    - { id: sec-machine-learning-a-z-1, course: machine-learning-a-z, title: "Getting started", display_order: 1 }
+    - { id: sec-machine-learning-a-z-2, course: machine-learning-a-z, title: "Core concepts", display_order: 2 }
+    - { id: sec-machine-learning-a-z-3, course: machine-learning-a-z, title: "Building something real", display_order: 3 }
+    - { id: sec-python-programming-masterclass-1, course: python-programming-masterclass, title: "Getting started", display_order: 1 }
+    - { id: sec-python-programming-masterclass-2, course: python-programming-masterclass, title: "Core concepts", display_order: 2 }
+    - { id: sec-python-programming-masterclass-3, course: python-programming-masterclass, title: "Building something real", display_order: 3 }
+    - { id: sec-ui-ux-design-fundamentals-1, course: ui-ux-design-fundamentals, title: "Getting started", display_order: 1 }
+    - { id: sec-ui-ux-design-fundamentals-2, course: ui-ux-design-fundamentals, title: "Core concepts", display_order: 2 }
+    - { id: sec-ui-ux-design-fundamentals-3, course: ui-ux-design-fundamentals, title: "Building something real", display_order: 3 }
+    - { id: sec-digital-marketing-12-in-1-1, course: digital-marketing-12-in-1, title: "Getting started", display_order: 1 }
+    - { id: sec-digital-marketing-12-in-1-2, course: digital-marketing-12-in-1, title: "Core concepts", display_order: 2 }
+    - { id: sec-digital-marketing-12-in-1-3, course: digital-marketing-12-in-1, title: "Building something real", display_order: 3 }
+    - { id: sec-foundations-of-stock-trading-1, course: foundations-of-stock-trading, title: "Getting started", display_order: 1 }
+    - { id: sec-foundations-of-stock-trading-2, course: foundations-of-stock-trading, title: "Core concepts", display_order: 2 }
+    - { id: sec-foundations-of-stock-trading-3, course: foundations-of-stock-trading, title: "Building something real", display_order: 3 }
+    - { id: sec-react-router-in-practice-1, course: react-router-in-practice, title: "Getting started", display_order: 1 }
+    - { id: sec-react-router-in-practice-2, course: react-router-in-practice, title: "Core concepts", display_order: 2 }
+    - { id: sec-react-router-in-practice-3, course: react-router-in-practice, title: "Building something real", display_order: 3 }
+    - { id: sec-typescript-for-teams-1, course: typescript-for-teams, title: "Getting started", display_order: 1 }
+    - { id: sec-typescript-for-teams-2, course: typescript-for-teams, title: "Core concepts", display_order: 2 }
+    - { id: sec-typescript-for-teams-3, course: typescript-for-teams, title: "Building something real", display_order: 3 }
+    - { id: sec-data-analysis-with-sql-1, course: data-analysis-with-sql, title: "Getting started", display_order: 1 }
+    - { id: sec-data-analysis-with-sql-2, course: data-analysis-with-sql, title: "Core concepts", display_order: 2 }
+    - { id: sec-data-analysis-with-sql-3, course: data-analysis-with-sql, title: "Building something real", display_order: 3 }
+    - { id: sec-cloud-fundamentals-aws-1, course: cloud-fundamentals-aws, title: "Getting started", display_order: 1 }
+    - { id: sec-cloud-fundamentals-aws-2, course: cloud-fundamentals-aws, title: "Core concepts", display_order: 2 }
+    - { id: sec-cloud-fundamentals-aws-3, course: cloud-fundamentals-aws, title: "Building something real", display_order: 3 }
+    - { id: sec-product-management-essentials-1, course: product-management-essentials, title: "Getting started", display_order: 1 }
+    - { id: sec-product-management-essentials-2, course: product-management-essentials, title: "Core concepts", display_order: 2 }
+    - { id: sec-product-management-essentials-3, course: product-management-essentials, title: "Building something real", display_order: 3 }
+    - { id: sec-startup-finance-for-founders-1, course: startup-finance-for-founders, title: "Getting started", display_order: 1 }
+    - { id: sec-startup-finance-for-founders-2, course: startup-finance-for-founders, title: "Core concepts", display_order: 2 }
+    - { id: sec-startup-finance-for-founders-3, course: startup-finance-for-founders, title: "Building something real", display_order: 3 }
+    - { id: sec-brand-identity-design-1, course: brand-identity-design, title: "Getting started", display_order: 1 }
+    - { id: sec-brand-identity-design-2, course: brand-identity-design, title: "Core concepts", display_order: 2 }
+    - { id: sec-brand-identity-design-3, course: brand-identity-design, title: "Building something real", display_order: 3 }
+    - { id: sec-motion-design-with-after-effects-1, course: motion-design-with-after-effects, title: "Getting started", display_order: 1 }
+    - { id: sec-motion-design-with-after-effects-2, course: motion-design-with-after-effects, title: "Core concepts", display_order: 2 }
+    - { id: sec-motion-design-with-after-effects-3, course: motion-design-with-after-effects, title: "Building something real", display_order: 3 }
+    - { id: sec-seo-that-actually-ranks-1, course: seo-that-actually-ranks, title: "Getting started", display_order: 1 }
+    - { id: sec-seo-that-actually-ranks-2, course: seo-that-actually-ranks, title: "Core concepts", display_order: 2 }
+    - { id: sec-seo-that-actually-ranks-3, course: seo-that-actually-ranks, title: "Building something real", display_order: 3 }
+    - { id: sec-portrait-photography-masterclass-1, course: portrait-photography-masterclass, title: "Getting started", display_order: 1 }
+    - { id: sec-portrait-photography-masterclass-2, course: portrait-photography-masterclass, title: "Core concepts", display_order: 2 }
+    - { id: sec-portrait-photography-masterclass-3, course: portrait-photography-masterclass, title: "Building something real", display_order: 3 }
+    - { id: sec-music-production-in-ableton-1, course: music-production-in-ableton, title: "Getting started", display_order: 1 }
+    - { id: sec-music-production-in-ableton-2, course: music-production-in-ableton, title: "Core concepts", display_order: 2 }
+    - { id: sec-music-production-in-ableton-3, course: music-production-in-ableton, title: "Building something real", display_order: 3 }
+    - { id: sec-advanced-excel-for-analysts-1, course: advanced-excel-for-analysts, title: "Getting started", display_order: 1 }
+    - { id: sec-advanced-excel-for-analysts-2, course: advanced-excel-for-analysts, title: "Core concepts", display_order: 2 }
+    - { id: sec-advanced-excel-for-analysts-3, course: advanced-excel-for-analysts, title: "Building something real", display_order: 3 }
 
   lessons:
     # content_type 1 = VIDEO, 2 = ARTICLE
-    - { course: complete-web-development-bootcamp, section: Getting started, title: Welcome and course map, content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
-    - { course: complete-web-development-bootcamp, section: Getting started, title: How the web works, content_type: 1, duration_minutes: 12, display_order: 2, is_preview: false, is_published: true }
-    - { course: complete-web-development-bootcamp, section: HTML and semantic markup, title: Semantic HTML, content_type: 1, duration_minutes: 15, display_order: 1, is_preview: false, is_published: true }
-    - { course: complete-web-development-bootcamp, section: HTML and semantic markup, title: Lecture notes, content_type: 2, duration_minutes: 5, display_order: 2, is_preview: false, is_published: true }
-    - { course: complete-web-development-bootcamp, section: CSS and layout, title: CSS box model, content_type: 1, duration_minutes: 14, display_order: 1, is_preview: false, is_published: true }
-    - { course: machine-learning-a-z, section: Foundations, title: What a model is, content_type: 1, duration_minutes: 11, display_order: 1, is_preview: true, is_published: true }
-    - { course: machine-learning-a-z, section: Foundations, title: Loading a dataset, content_type: 1, duration_minutes: 17, display_order: 2, is_preview: false, is_published: true }
-    - { course: ui-ux-design-fundamentals, section: Interface basics, title: Grids and spacing, content_type: 1, duration_minutes: 13, display_order: 1, is_preview: true, is_published: true }
+    - { course: complete-web-development-bootcamp, section: sec-complete-web-development-bootcamp-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: complete-web-development-bootcamp, section: sec-complete-web-development-bootcamp-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: sec-complete-web-development-bootcamp-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: sec-complete-web-development-bootcamp-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: sec-complete-web-development-bootcamp-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: sec-complete-web-development-bootcamp-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: sec-complete-web-development-bootcamp-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: sec-complete-web-development-bootcamp-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: machine-learning-a-z, section: sec-machine-learning-a-z-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: machine-learning-a-z, section: sec-machine-learning-a-z-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: machine-learning-a-z, section: sec-machine-learning-a-z-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: machine-learning-a-z, section: sec-machine-learning-a-z-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: machine-learning-a-z, section: sec-machine-learning-a-z-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: machine-learning-a-z, section: sec-machine-learning-a-z-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: machine-learning-a-z, section: sec-machine-learning-a-z-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: machine-learning-a-z, section: sec-machine-learning-a-z-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: python-programming-masterclass, section: sec-python-programming-masterclass-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: python-programming-masterclass, section: sec-python-programming-masterclass-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: python-programming-masterclass, section: sec-python-programming-masterclass-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: python-programming-masterclass, section: sec-python-programming-masterclass-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: python-programming-masterclass, section: sec-python-programming-masterclass-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: python-programming-masterclass, section: sec-python-programming-masterclass-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: python-programming-masterclass, section: sec-python-programming-masterclass-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: python-programming-masterclass, section: sec-python-programming-masterclass-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: sec-ui-ux-design-fundamentals-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: sec-ui-ux-design-fundamentals-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: sec-ui-ux-design-fundamentals-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: sec-ui-ux-design-fundamentals-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: sec-ui-ux-design-fundamentals-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: sec-ui-ux-design-fundamentals-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: sec-ui-ux-design-fundamentals-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: sec-ui-ux-design-fundamentals-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: digital-marketing-12-in-1, section: sec-digital-marketing-12-in-1-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: digital-marketing-12-in-1, section: sec-digital-marketing-12-in-1-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: digital-marketing-12-in-1, section: sec-digital-marketing-12-in-1-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: digital-marketing-12-in-1, section: sec-digital-marketing-12-in-1-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: digital-marketing-12-in-1, section: sec-digital-marketing-12-in-1-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: digital-marketing-12-in-1, section: sec-digital-marketing-12-in-1-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: digital-marketing-12-in-1, section: sec-digital-marketing-12-in-1-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: digital-marketing-12-in-1, section: sec-digital-marketing-12-in-1-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: foundations-of-stock-trading, section: sec-foundations-of-stock-trading-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: foundations-of-stock-trading, section: sec-foundations-of-stock-trading-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: foundations-of-stock-trading, section: sec-foundations-of-stock-trading-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: foundations-of-stock-trading, section: sec-foundations-of-stock-trading-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: foundations-of-stock-trading, section: sec-foundations-of-stock-trading-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: foundations-of-stock-trading, section: sec-foundations-of-stock-trading-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: foundations-of-stock-trading, section: sec-foundations-of-stock-trading-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: foundations-of-stock-trading, section: sec-foundations-of-stock-trading-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: react-router-in-practice, section: sec-react-router-in-practice-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: react-router-in-practice, section: sec-react-router-in-practice-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: react-router-in-practice, section: sec-react-router-in-practice-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: react-router-in-practice, section: sec-react-router-in-practice-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: react-router-in-practice, section: sec-react-router-in-practice-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: react-router-in-practice, section: sec-react-router-in-practice-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: react-router-in-practice, section: sec-react-router-in-practice-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: react-router-in-practice, section: sec-react-router-in-practice-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: typescript-for-teams, section: sec-typescript-for-teams-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: typescript-for-teams, section: sec-typescript-for-teams-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: typescript-for-teams, section: sec-typescript-for-teams-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: typescript-for-teams, section: sec-typescript-for-teams-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: typescript-for-teams, section: sec-typescript-for-teams-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: typescript-for-teams, section: sec-typescript-for-teams-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: typescript-for-teams, section: sec-typescript-for-teams-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: typescript-for-teams, section: sec-typescript-for-teams-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: data-analysis-with-sql, section: sec-data-analysis-with-sql-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: data-analysis-with-sql, section: sec-data-analysis-with-sql-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: data-analysis-with-sql, section: sec-data-analysis-with-sql-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: data-analysis-with-sql, section: sec-data-analysis-with-sql-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: data-analysis-with-sql, section: sec-data-analysis-with-sql-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: data-analysis-with-sql, section: sec-data-analysis-with-sql-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: data-analysis-with-sql, section: sec-data-analysis-with-sql-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: data-analysis-with-sql, section: sec-data-analysis-with-sql-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: cloud-fundamentals-aws, section: sec-cloud-fundamentals-aws-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: cloud-fundamentals-aws, section: sec-cloud-fundamentals-aws-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: cloud-fundamentals-aws, section: sec-cloud-fundamentals-aws-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: cloud-fundamentals-aws, section: sec-cloud-fundamentals-aws-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: cloud-fundamentals-aws, section: sec-cloud-fundamentals-aws-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: cloud-fundamentals-aws, section: sec-cloud-fundamentals-aws-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: cloud-fundamentals-aws, section: sec-cloud-fundamentals-aws-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: cloud-fundamentals-aws, section: sec-cloud-fundamentals-aws-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: product-management-essentials, section: sec-product-management-essentials-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: product-management-essentials, section: sec-product-management-essentials-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: product-management-essentials, section: sec-product-management-essentials-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: product-management-essentials, section: sec-product-management-essentials-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: product-management-essentials, section: sec-product-management-essentials-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: product-management-essentials, section: sec-product-management-essentials-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: product-management-essentials, section: sec-product-management-essentials-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: product-management-essentials, section: sec-product-management-essentials-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: startup-finance-for-founders, section: sec-startup-finance-for-founders-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: startup-finance-for-founders, section: sec-startup-finance-for-founders-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: startup-finance-for-founders, section: sec-startup-finance-for-founders-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: startup-finance-for-founders, section: sec-startup-finance-for-founders-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: startup-finance-for-founders, section: sec-startup-finance-for-founders-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: startup-finance-for-founders, section: sec-startup-finance-for-founders-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: startup-finance-for-founders, section: sec-startup-finance-for-founders-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: startup-finance-for-founders, section: sec-startup-finance-for-founders-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: brand-identity-design, section: sec-brand-identity-design-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: brand-identity-design, section: sec-brand-identity-design-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: brand-identity-design, section: sec-brand-identity-design-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: brand-identity-design, section: sec-brand-identity-design-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: brand-identity-design, section: sec-brand-identity-design-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: brand-identity-design, section: sec-brand-identity-design-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: brand-identity-design, section: sec-brand-identity-design-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: brand-identity-design, section: sec-brand-identity-design-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: motion-design-with-after-effects, section: sec-motion-design-with-after-effects-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: motion-design-with-after-effects, section: sec-motion-design-with-after-effects-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: motion-design-with-after-effects, section: sec-motion-design-with-after-effects-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: motion-design-with-after-effects, section: sec-motion-design-with-after-effects-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: motion-design-with-after-effects, section: sec-motion-design-with-after-effects-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: motion-design-with-after-effects, section: sec-motion-design-with-after-effects-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: motion-design-with-after-effects, section: sec-motion-design-with-after-effects-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: motion-design-with-after-effects, section: sec-motion-design-with-after-effects-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: seo-that-actually-ranks, section: sec-seo-that-actually-ranks-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: seo-that-actually-ranks, section: sec-seo-that-actually-ranks-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: seo-that-actually-ranks, section: sec-seo-that-actually-ranks-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: seo-that-actually-ranks, section: sec-seo-that-actually-ranks-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: seo-that-actually-ranks, section: sec-seo-that-actually-ranks-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: seo-that-actually-ranks, section: sec-seo-that-actually-ranks-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: seo-that-actually-ranks, section: sec-seo-that-actually-ranks-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: seo-that-actually-ranks, section: sec-seo-that-actually-ranks-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: portrait-photography-masterclass, section: sec-portrait-photography-masterclass-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: portrait-photography-masterclass, section: sec-portrait-photography-masterclass-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: portrait-photography-masterclass, section: sec-portrait-photography-masterclass-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: portrait-photography-masterclass, section: sec-portrait-photography-masterclass-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: portrait-photography-masterclass, section: sec-portrait-photography-masterclass-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: portrait-photography-masterclass, section: sec-portrait-photography-masterclass-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: portrait-photography-masterclass, section: sec-portrait-photography-masterclass-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: portrait-photography-masterclass, section: sec-portrait-photography-masterclass-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: music-production-in-ableton, section: sec-music-production-in-ableton-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: music-production-in-ableton, section: sec-music-production-in-ableton-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: music-production-in-ableton, section: sec-music-production-in-ableton-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: music-production-in-ableton, section: sec-music-production-in-ableton-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: music-production-in-ableton, section: sec-music-production-in-ableton-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: music-production-in-ableton, section: sec-music-production-in-ableton-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: music-production-in-ableton, section: sec-music-production-in-ableton-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: music-production-in-ableton, section: sec-music-production-in-ableton-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
+    - { course: advanced-excel-for-analysts, section: sec-advanced-excel-for-analysts-1, title: "Welcome and course map", content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: advanced-excel-for-analysts, section: sec-advanced-excel-for-analysts-1, title: "How this course is structured", content_type: 1, duration_minutes: 10, display_order: 2, is_preview: false, is_published: true }
+    - { course: advanced-excel-for-analysts, section: sec-advanced-excel-for-analysts-1, title: "Setting up your tools", content_type: 1, duration_minutes: 14, display_order: 3, is_preview: false, is_published: true }
+    - { course: advanced-excel-for-analysts, section: sec-advanced-excel-for-analysts-2, title: "The mental model", content_type: 1, duration_minutes: 16, display_order: 1, is_preview: false, is_published: true }
+    - { course: advanced-excel-for-analysts, section: sec-advanced-excel-for-analysts-2, title: "Worked example", content_type: 1, duration_minutes: 19, display_order: 2, is_preview: false, is_published: true }
+    - { course: advanced-excel-for-analysts, section: sec-advanced-excel-for-analysts-2, title: "Reference notes", content_type: 2, duration_minutes: 6, display_order: 3, is_preview: false, is_published: true }
+    - { course: advanced-excel-for-analysts, section: sec-advanced-excel-for-analysts-3, title: "Project walkthrough", content_type: 1, duration_minutes: 22, display_order: 1, is_preview: false, is_published: true }
+    - { course: advanced-excel-for-analysts, section: sec-advanced-excel-for-analysts-3, title: "Shipping it", content_type: 1, duration_minutes: 13, display_order: 2, is_preview: false, is_published: true }
 
   coupons:
     # discount_type 1 = PERCENT, 2 = FIXED
     - { code: LEARN10, discount_type: 1, discount_value: 10, max_uses: 500, used_count: 148, valid_until: '2026-12-31T23:59:59Z', is_active: true }
     - { code: WELCOME25, discount_type: 2, discount_value: 25, max_uses: 200, used_count: 62, valid_until: '2026-09-30T23:59:59Z', is_active: true }
+    - { code: NEWYEAR30, discount_type: 1, discount_value: 30, max_uses: 300, used_count: 91, valid_until: '2026-12-31T23:59:59Z', is_active: true }
+    - { code: STUDENT15, discount_type: 1, discount_value: 15, max_uses: 1000, used_count: 407, valid_until: '2026-11-30T23:59:59Z', is_active: true }
     - { code: EXPIRED20, discount_type: 1, discount_value: 20, max_uses: 200, used_count: 200, valid_until: '2026-01-31T23:59:59Z', is_active: false }
 
   enrollments:
-    # status 1 = ACTIVE, 2 = COMPLETED
+    # status 1 = ACTIVE, 2 = COMPLETED. Spread across progress values so My Learning
+    # shows a started course, a half-finished one and a completed one.
     - { user: student, course: complete-web-development-bootcamp, status: 1, progress_percent: 40 }
     - { user: student, course: machine-learning-a-z, status: 1, progress_percent: 0 }
+    - { user: student, course: react-router-in-practice, status: 1, progress_percent: 72 }
+    - { user: student, course: data-analysis-with-sql, status: 2, progress_percent: 100 }
+    - { user: student, course: portrait-photography-masterclass, status: 1, progress_percent: 15 }
     - { user: student_alt, course: ui-ux-design-fundamentals, status: 2, progress_percent: 100 }
+    - { user: student_alt, course: brand-identity-design, status: 1, progress_percent: 55 }
+    - { user: student_alt, course: seo-that-actually-ranks, status: 1, progress_percent: 25 }
 
   orders:
-    # status 0 = PENDING, 1 = PAID
-    - { order_number: ET-1042, user: student, status: 1, items: [complete-web-development-bootcamp, machine-learning-a-z], coupon: LEARN10 }
-    - { order_number: ET-1038, user: student_alt, status: 1, items: [ui-ux-design-fundamentals] }
+    # status 0 = PENDING, 1 = PAID. Order numbers are sequential so the admin list
+    # sorts the way an operator expects.
     - { order_number: ET-1031, user: student, status: 0, items: [python-programming-masterclass] }
+    - { order_number: ET-1032, user: student_alt, status: 1, items: [seo-that-actually-ranks], coupon: STUDENT15 }
+    - { order_number: ET-1035, user: student, status: 1, items: [react-router-in-practice] }
+    - { order_number: ET-1036, user: student_alt, status: 1, items: [brand-identity-design] }
+    - { order_number: ET-1038, user: student_alt, status: 1, items: [ui-ux-design-fundamentals] }
+    - { order_number: ET-1040, user: student, status: 1, items: [data-analysis-with-sql, portrait-photography-masterclass], coupon: WELCOME25 }
+    - { order_number: ET-1042, user: student, status: 1, items: [complete-web-development-bootcamp, machine-learning-a-z], coupon: LEARN10 }
+    - { order_number: ET-1044, user: student_alt, status: 0, items: [cloud-fundamentals-aws] }

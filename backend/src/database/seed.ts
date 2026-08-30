@@ -342,12 +342,30 @@ async function seedCategories(ds: DataSource, fixtures: RawFixtures, uuidMap: Re
       const __uniqCols: string[] = [];
       for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length === 1) __uniqCols.push(__ix.columns[0].propertyName);
       for (const __uq of meta.uniques) if (__uq.columns.length === 1) __uniqCols.push(__uq.columns[0].propertyName);
+      // COMPOSITE uniques too. Only single-column ones were considered, so an entity whose
+      // identity is a PAIR — an enrollment is one (user, course) — never matched an
+      // existing row and the seeder tried to insert it again on every run, failing on the
+      // constraint. Re-running a seed is normal; it must not report failures for rows that
+      // are already exactly right.
+      const __uniqPairs: string[][] = [];
+      for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length > 1) __uniqPairs.push(__ix.columns.map((c) => c.propertyName));
+      for (const __uq of meta.uniques) if (__uq.columns.length > 1) __uniqPairs.push(__uq.columns.map((c) => c.propertyName));
       const __registerRefs = (id: string) => {
         uuidMap["categories" + ':' + key] = id;
         if (__alias) { uuidMap["categories" + ':' + __alias] = id; uuidMap[__alias] = id; }
         for (const [bk, bv] of Object.entries(body as Record<string, unknown>)) {
           if (typeof bv === 'string' && /Id$/.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) uuidMap[bv] = id;
-          if (typeof bv === 'string' && /^(code|slug|key|sport|category|type)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { uuidMap[bv] = id; uuidMap["categories" + ':' + bv] = id; }
+          // `code|slug|key` NAME this row. `category`/`sport`/`type` do not — they POINT
+          // at another row, and registering one as this row's alias hands the pointer's
+          // name to the wrong table: seeding the first course with `category: development`
+          // rewrote uuidMap['development'] from the category's id to the COURSE's id, so
+          // every later course in that category resolved its category to a course and died
+          // on the foreign key. One course per category passed, the rest failed — which is
+          // to say the bug was invisible until a catalogue had two courses in a category.
+          //
+          // And first writer wins: a global alias is claimed by the entity that owns the
+          // name, not overwritten by whoever happens to be seeded last.
+          if (typeof bv === 'string' && /^(code|slug|key)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { if (uuidMap[bv] === undefined) uuidMap[bv] = id; uuidMap["categories" + ':' + bv] = id; }
         }
       };
       try {
@@ -358,8 +376,24 @@ async function seedCategories(ds: DataSource, fixtures: RawFixtures, uuidMap: Re
             if (__existing) break;
           }
         }
+        if (!__existing) {
+          for (const __pair of __uniqPairs) {
+            if (!__pair.every((c) => inserted[c] !== undefined && inserted[c] !== null)) continue;
+            const __where: Record<string, unknown> = {};
+            for (const c of __pair) __where[c] = inserted[c];
+            __existing = await repo.findOne({ where: __where } as object) as { id?: string } | null;
+            if (__existing) break;
+          }
+        }
         if (__existing && __existing.id) {
           __registerRefs(__existing.id);
+          // Actually write the fixture's fields onto the row. This branch used to only
+          // register the id and count it as "updated" while writing nothing, so the seed
+          // was insert-only: on a database that already had the row, any field ADDED to
+          // the fixture afterwards never landed. Adding course thumbnails, category icons
+          // and instructor avatars changed nothing on an existing database and the log
+          // still said "updated" — the demo came up with images on the new rows only.
+          await repo.save(repo.create({ ...(inserted as object), id: __existing.id } as object));
           updated++;
         } else {
           const saved = await repo.save(repo.create(inserted as object)) as { id?: string };
@@ -465,12 +499,30 @@ async function seedCourses(ds: DataSource, fixtures: RawFixtures, uuidMap: Recor
       const __uniqCols: string[] = [];
       for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length === 1) __uniqCols.push(__ix.columns[0].propertyName);
       for (const __uq of meta.uniques) if (__uq.columns.length === 1) __uniqCols.push(__uq.columns[0].propertyName);
+      // COMPOSITE uniques too. Only single-column ones were considered, so an entity whose
+      // identity is a PAIR — an enrollment is one (user, course) — never matched an
+      // existing row and the seeder tried to insert it again on every run, failing on the
+      // constraint. Re-running a seed is normal; it must not report failures for rows that
+      // are already exactly right.
+      const __uniqPairs: string[][] = [];
+      for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length > 1) __uniqPairs.push(__ix.columns.map((c) => c.propertyName));
+      for (const __uq of meta.uniques) if (__uq.columns.length > 1) __uniqPairs.push(__uq.columns.map((c) => c.propertyName));
       const __registerRefs = (id: string) => {
         uuidMap["courses" + ':' + key] = id;
         if (__alias) { uuidMap["courses" + ':' + __alias] = id; uuidMap[__alias] = id; }
         for (const [bk, bv] of Object.entries(body as Record<string, unknown>)) {
           if (typeof bv === 'string' && /Id$/.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) uuidMap[bv] = id;
-          if (typeof bv === 'string' && /^(code|slug|key|sport|category|type)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { uuidMap[bv] = id; uuidMap["courses" + ':' + bv] = id; }
+          // `code|slug|key` NAME this row. `category`/`sport`/`type` do not — they POINT
+          // at another row, and registering one as this row's alias hands the pointer's
+          // name to the wrong table: seeding the first course with `category: development`
+          // rewrote uuidMap['development'] from the category's id to the COURSE's id, so
+          // every later course in that category resolved its category to a course and died
+          // on the foreign key. One course per category passed, the rest failed — which is
+          // to say the bug was invisible until a catalogue had two courses in a category.
+          //
+          // And first writer wins: a global alias is claimed by the entity that owns the
+          // name, not overwritten by whoever happens to be seeded last.
+          if (typeof bv === 'string' && /^(code|slug|key)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { if (uuidMap[bv] === undefined) uuidMap[bv] = id; uuidMap["courses" + ':' + bv] = id; }
         }
       };
       try {
@@ -481,8 +533,24 @@ async function seedCourses(ds: DataSource, fixtures: RawFixtures, uuidMap: Recor
             if (__existing) break;
           }
         }
+        if (!__existing) {
+          for (const __pair of __uniqPairs) {
+            if (!__pair.every((c) => inserted[c] !== undefined && inserted[c] !== null)) continue;
+            const __where: Record<string, unknown> = {};
+            for (const c of __pair) __where[c] = inserted[c];
+            __existing = await repo.findOne({ where: __where } as object) as { id?: string } | null;
+            if (__existing) break;
+          }
+        }
         if (__existing && __existing.id) {
           __registerRefs(__existing.id);
+          // Actually write the fixture's fields onto the row. This branch used to only
+          // register the id and count it as "updated" while writing nothing, so the seed
+          // was insert-only: on a database that already had the row, any field ADDED to
+          // the fixture afterwards never landed. Adding course thumbnails, category icons
+          // and instructor avatars changed nothing on an existing database and the log
+          // still said "updated" — the demo came up with images on the new rows only.
+          await repo.save(repo.create({ ...(inserted as object), id: __existing.id } as object));
           updated++;
         } else {
           const saved = await repo.save(repo.create(inserted as object)) as { id?: string };
@@ -588,12 +656,30 @@ async function seedCourseSections(ds: DataSource, fixtures: RawFixtures, uuidMap
       const __uniqCols: string[] = [];
       for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length === 1) __uniqCols.push(__ix.columns[0].propertyName);
       for (const __uq of meta.uniques) if (__uq.columns.length === 1) __uniqCols.push(__uq.columns[0].propertyName);
+      // COMPOSITE uniques too. Only single-column ones were considered, so an entity whose
+      // identity is a PAIR — an enrollment is one (user, course) — never matched an
+      // existing row and the seeder tried to insert it again on every run, failing on the
+      // constraint. Re-running a seed is normal; it must not report failures for rows that
+      // are already exactly right.
+      const __uniqPairs: string[][] = [];
+      for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length > 1) __uniqPairs.push(__ix.columns.map((c) => c.propertyName));
+      for (const __uq of meta.uniques) if (__uq.columns.length > 1) __uniqPairs.push(__uq.columns.map((c) => c.propertyName));
       const __registerRefs = (id: string) => {
         uuidMap["course_sections" + ':' + key] = id;
         if (__alias) { uuidMap["course_sections" + ':' + __alias] = id; uuidMap[__alias] = id; }
         for (const [bk, bv] of Object.entries(body as Record<string, unknown>)) {
           if (typeof bv === 'string' && /Id$/.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) uuidMap[bv] = id;
-          if (typeof bv === 'string' && /^(code|slug|key|sport|category|type)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { uuidMap[bv] = id; uuidMap["course_sections" + ':' + bv] = id; }
+          // `code|slug|key` NAME this row. `category`/`sport`/`type` do not — they POINT
+          // at another row, and registering one as this row's alias hands the pointer's
+          // name to the wrong table: seeding the first course with `category: development`
+          // rewrote uuidMap['development'] from the category's id to the COURSE's id, so
+          // every later course in that category resolved its category to a course and died
+          // on the foreign key. One course per category passed, the rest failed — which is
+          // to say the bug was invisible until a catalogue had two courses in a category.
+          //
+          // And first writer wins: a global alias is claimed by the entity that owns the
+          // name, not overwritten by whoever happens to be seeded last.
+          if (typeof bv === 'string' && /^(code|slug|key)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { if (uuidMap[bv] === undefined) uuidMap[bv] = id; uuidMap["course_sections" + ':' + bv] = id; }
         }
       };
       try {
@@ -604,8 +690,24 @@ async function seedCourseSections(ds: DataSource, fixtures: RawFixtures, uuidMap
             if (__existing) break;
           }
         }
+        if (!__existing) {
+          for (const __pair of __uniqPairs) {
+            if (!__pair.every((c) => inserted[c] !== undefined && inserted[c] !== null)) continue;
+            const __where: Record<string, unknown> = {};
+            for (const c of __pair) __where[c] = inserted[c];
+            __existing = await repo.findOne({ where: __where } as object) as { id?: string } | null;
+            if (__existing) break;
+          }
+        }
         if (__existing && __existing.id) {
           __registerRefs(__existing.id);
+          // Actually write the fixture's fields onto the row. This branch used to only
+          // register the id and count it as "updated" while writing nothing, so the seed
+          // was insert-only: on a database that already had the row, any field ADDED to
+          // the fixture afterwards never landed. Adding course thumbnails, category icons
+          // and instructor avatars changed nothing on an existing database and the log
+          // still said "updated" — the demo came up with images on the new rows only.
+          await repo.save(repo.create({ ...(inserted as object), id: __existing.id } as object));
           updated++;
         } else {
           const saved = await repo.save(repo.create(inserted as object)) as { id?: string };
@@ -711,12 +813,30 @@ async function seedLessons(ds: DataSource, fixtures: RawFixtures, uuidMap: Recor
       const __uniqCols: string[] = [];
       for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length === 1) __uniqCols.push(__ix.columns[0].propertyName);
       for (const __uq of meta.uniques) if (__uq.columns.length === 1) __uniqCols.push(__uq.columns[0].propertyName);
+      // COMPOSITE uniques too. Only single-column ones were considered, so an entity whose
+      // identity is a PAIR — an enrollment is one (user, course) — never matched an
+      // existing row and the seeder tried to insert it again on every run, failing on the
+      // constraint. Re-running a seed is normal; it must not report failures for rows that
+      // are already exactly right.
+      const __uniqPairs: string[][] = [];
+      for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length > 1) __uniqPairs.push(__ix.columns.map((c) => c.propertyName));
+      for (const __uq of meta.uniques) if (__uq.columns.length > 1) __uniqPairs.push(__uq.columns.map((c) => c.propertyName));
       const __registerRefs = (id: string) => {
         uuidMap["lessons" + ':' + key] = id;
         if (__alias) { uuidMap["lessons" + ':' + __alias] = id; uuidMap[__alias] = id; }
         for (const [bk, bv] of Object.entries(body as Record<string, unknown>)) {
           if (typeof bv === 'string' && /Id$/.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) uuidMap[bv] = id;
-          if (typeof bv === 'string' && /^(code|slug|key|sport|category|type)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { uuidMap[bv] = id; uuidMap["lessons" + ':' + bv] = id; }
+          // `code|slug|key` NAME this row. `category`/`sport`/`type` do not — they POINT
+          // at another row, and registering one as this row's alias hands the pointer's
+          // name to the wrong table: seeding the first course with `category: development`
+          // rewrote uuidMap['development'] from the category's id to the COURSE's id, so
+          // every later course in that category resolved its category to a course and died
+          // on the foreign key. One course per category passed, the rest failed — which is
+          // to say the bug was invisible until a catalogue had two courses in a category.
+          //
+          // And first writer wins: a global alias is claimed by the entity that owns the
+          // name, not overwritten by whoever happens to be seeded last.
+          if (typeof bv === 'string' && /^(code|slug|key)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { if (uuidMap[bv] === undefined) uuidMap[bv] = id; uuidMap["lessons" + ':' + bv] = id; }
         }
       };
       try {
@@ -727,8 +847,24 @@ async function seedLessons(ds: DataSource, fixtures: RawFixtures, uuidMap: Recor
             if (__existing) break;
           }
         }
+        if (!__existing) {
+          for (const __pair of __uniqPairs) {
+            if (!__pair.every((c) => inserted[c] !== undefined && inserted[c] !== null)) continue;
+            const __where: Record<string, unknown> = {};
+            for (const c of __pair) __where[c] = inserted[c];
+            __existing = await repo.findOne({ where: __where } as object) as { id?: string } | null;
+            if (__existing) break;
+          }
+        }
         if (__existing && __existing.id) {
           __registerRefs(__existing.id);
+          // Actually write the fixture's fields onto the row. This branch used to only
+          // register the id and count it as "updated" while writing nothing, so the seed
+          // was insert-only: on a database that already had the row, any field ADDED to
+          // the fixture afterwards never landed. Adding course thumbnails, category icons
+          // and instructor avatars changed nothing on an existing database and the log
+          // still said "updated" — the demo came up with images on the new rows only.
+          await repo.save(repo.create({ ...(inserted as object), id: __existing.id } as object));
           updated++;
         } else {
           const saved = await repo.save(repo.create(inserted as object)) as { id?: string };
@@ -834,12 +970,30 @@ async function seedCoupons(ds: DataSource, fixtures: RawFixtures, uuidMap: Recor
       const __uniqCols: string[] = [];
       for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length === 1) __uniqCols.push(__ix.columns[0].propertyName);
       for (const __uq of meta.uniques) if (__uq.columns.length === 1) __uniqCols.push(__uq.columns[0].propertyName);
+      // COMPOSITE uniques too. Only single-column ones were considered, so an entity whose
+      // identity is a PAIR — an enrollment is one (user, course) — never matched an
+      // existing row and the seeder tried to insert it again on every run, failing on the
+      // constraint. Re-running a seed is normal; it must not report failures for rows that
+      // are already exactly right.
+      const __uniqPairs: string[][] = [];
+      for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length > 1) __uniqPairs.push(__ix.columns.map((c) => c.propertyName));
+      for (const __uq of meta.uniques) if (__uq.columns.length > 1) __uniqPairs.push(__uq.columns.map((c) => c.propertyName));
       const __registerRefs = (id: string) => {
         uuidMap["coupons" + ':' + key] = id;
         if (__alias) { uuidMap["coupons" + ':' + __alias] = id; uuidMap[__alias] = id; }
         for (const [bk, bv] of Object.entries(body as Record<string, unknown>)) {
           if (typeof bv === 'string' && /Id$/.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) uuidMap[bv] = id;
-          if (typeof bv === 'string' && /^(code|slug|key|sport|category|type)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { uuidMap[bv] = id; uuidMap["coupons" + ':' + bv] = id; }
+          // `code|slug|key` NAME this row. `category`/`sport`/`type` do not — they POINT
+          // at another row, and registering one as this row's alias hands the pointer's
+          // name to the wrong table: seeding the first course with `category: development`
+          // rewrote uuidMap['development'] from the category's id to the COURSE's id, so
+          // every later course in that category resolved its category to a course and died
+          // on the foreign key. One course per category passed, the rest failed — which is
+          // to say the bug was invisible until a catalogue had two courses in a category.
+          //
+          // And first writer wins: a global alias is claimed by the entity that owns the
+          // name, not overwritten by whoever happens to be seeded last.
+          if (typeof bv === 'string' && /^(code|slug|key)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { if (uuidMap[bv] === undefined) uuidMap[bv] = id; uuidMap["coupons" + ':' + bv] = id; }
         }
       };
       try {
@@ -850,8 +1004,24 @@ async function seedCoupons(ds: DataSource, fixtures: RawFixtures, uuidMap: Recor
             if (__existing) break;
           }
         }
+        if (!__existing) {
+          for (const __pair of __uniqPairs) {
+            if (!__pair.every((c) => inserted[c] !== undefined && inserted[c] !== null)) continue;
+            const __where: Record<string, unknown> = {};
+            for (const c of __pair) __where[c] = inserted[c];
+            __existing = await repo.findOne({ where: __where } as object) as { id?: string } | null;
+            if (__existing) break;
+          }
+        }
         if (__existing && __existing.id) {
           __registerRefs(__existing.id);
+          // Actually write the fixture's fields onto the row. This branch used to only
+          // register the id and count it as "updated" while writing nothing, so the seed
+          // was insert-only: on a database that already had the row, any field ADDED to
+          // the fixture afterwards never landed. Adding course thumbnails, category icons
+          // and instructor avatars changed nothing on an existing database and the log
+          // still said "updated" — the demo came up with images on the new rows only.
+          await repo.save(repo.create({ ...(inserted as object), id: __existing.id } as object));
           updated++;
         } else {
           const saved = await repo.save(repo.create(inserted as object)) as { id?: string };
@@ -957,12 +1127,30 @@ async function seedEnrollments(ds: DataSource, fixtures: RawFixtures, uuidMap: R
       const __uniqCols: string[] = [];
       for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length === 1) __uniqCols.push(__ix.columns[0].propertyName);
       for (const __uq of meta.uniques) if (__uq.columns.length === 1) __uniqCols.push(__uq.columns[0].propertyName);
+      // COMPOSITE uniques too. Only single-column ones were considered, so an entity whose
+      // identity is a PAIR — an enrollment is one (user, course) — never matched an
+      // existing row and the seeder tried to insert it again on every run, failing on the
+      // constraint. Re-running a seed is normal; it must not report failures for rows that
+      // are already exactly right.
+      const __uniqPairs: string[][] = [];
+      for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length > 1) __uniqPairs.push(__ix.columns.map((c) => c.propertyName));
+      for (const __uq of meta.uniques) if (__uq.columns.length > 1) __uniqPairs.push(__uq.columns.map((c) => c.propertyName));
       const __registerRefs = (id: string) => {
         uuidMap["enrollments" + ':' + key] = id;
         if (__alias) { uuidMap["enrollments" + ':' + __alias] = id; uuidMap[__alias] = id; }
         for (const [bk, bv] of Object.entries(body as Record<string, unknown>)) {
           if (typeof bv === 'string' && /Id$/.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) uuidMap[bv] = id;
-          if (typeof bv === 'string' && /^(code|slug|key|sport|category|type)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { uuidMap[bv] = id; uuidMap["enrollments" + ':' + bv] = id; }
+          // `code|slug|key` NAME this row. `category`/`sport`/`type` do not — they POINT
+          // at another row, and registering one as this row's alias hands the pointer's
+          // name to the wrong table: seeding the first course with `category: development`
+          // rewrote uuidMap['development'] from the category's id to the COURSE's id, so
+          // every later course in that category resolved its category to a course and died
+          // on the foreign key. One course per category passed, the rest failed — which is
+          // to say the bug was invisible until a catalogue had two courses in a category.
+          //
+          // And first writer wins: a global alias is claimed by the entity that owns the
+          // name, not overwritten by whoever happens to be seeded last.
+          if (typeof bv === 'string' && /^(code|slug|key)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { if (uuidMap[bv] === undefined) uuidMap[bv] = id; uuidMap["enrollments" + ':' + bv] = id; }
         }
       };
       try {
@@ -973,8 +1161,24 @@ async function seedEnrollments(ds: DataSource, fixtures: RawFixtures, uuidMap: R
             if (__existing) break;
           }
         }
+        if (!__existing) {
+          for (const __pair of __uniqPairs) {
+            if (!__pair.every((c) => inserted[c] !== undefined && inserted[c] !== null)) continue;
+            const __where: Record<string, unknown> = {};
+            for (const c of __pair) __where[c] = inserted[c];
+            __existing = await repo.findOne({ where: __where } as object) as { id?: string } | null;
+            if (__existing) break;
+          }
+        }
         if (__existing && __existing.id) {
           __registerRefs(__existing.id);
+          // Actually write the fixture's fields onto the row. This branch used to only
+          // register the id and count it as "updated" while writing nothing, so the seed
+          // was insert-only: on a database that already had the row, any field ADDED to
+          // the fixture afterwards never landed. Adding course thumbnails, category icons
+          // and instructor avatars changed nothing on an existing database and the log
+          // still said "updated" — the demo came up with images on the new rows only.
+          await repo.save(repo.create({ ...(inserted as object), id: __existing.id } as object));
           updated++;
         } else {
           const saved = await repo.save(repo.create(inserted as object)) as { id?: string };
@@ -1080,12 +1284,30 @@ async function seedOrders(ds: DataSource, fixtures: RawFixtures, uuidMap: Record
       const __uniqCols: string[] = [];
       for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length === 1) __uniqCols.push(__ix.columns[0].propertyName);
       for (const __uq of meta.uniques) if (__uq.columns.length === 1) __uniqCols.push(__uq.columns[0].propertyName);
+      // COMPOSITE uniques too. Only single-column ones were considered, so an entity whose
+      // identity is a PAIR — an enrollment is one (user, course) — never matched an
+      // existing row and the seeder tried to insert it again on every run, failing on the
+      // constraint. Re-running a seed is normal; it must not report failures for rows that
+      // are already exactly right.
+      const __uniqPairs: string[][] = [];
+      for (const __ix of meta.indices) if (__ix.isUnique && __ix.columns.length > 1) __uniqPairs.push(__ix.columns.map((c) => c.propertyName));
+      for (const __uq of meta.uniques) if (__uq.columns.length > 1) __uniqPairs.push(__uq.columns.map((c) => c.propertyName));
       const __registerRefs = (id: string) => {
         uuidMap["orders" + ':' + key] = id;
         if (__alias) { uuidMap["orders" + ':' + __alias] = id; uuidMap[__alias] = id; }
         for (const [bk, bv] of Object.entries(body as Record<string, unknown>)) {
           if (typeof bv === 'string' && /Id$/.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) uuidMap[bv] = id;
-          if (typeof bv === 'string' && /^(code|slug|key|sport|category|type)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { uuidMap[bv] = id; uuidMap["orders" + ':' + bv] = id; }
+          // `code|slug|key` NAME this row. `category`/`sport`/`type` do not — they POINT
+          // at another row, and registering one as this row's alias hands the pointer's
+          // name to the wrong table: seeding the first course with `category: development`
+          // rewrote uuidMap['development'] from the category's id to the COURSE's id, so
+          // every later course in that category resolved its category to a course and died
+          // on the foreign key. One course per category passed, the rest failed — which is
+          // to say the bug was invisible until a catalogue had two courses in a category.
+          //
+          // And first writer wins: a global alias is claimed by the entity that owns the
+          // name, not overwritten by whoever happens to be seeded last.
+          if (typeof bv === 'string' && /^(code|slug|key)$/i.test(bk) && !/^[0-9a-f]{8}-/.test(bv)) { if (uuidMap[bv] === undefined) uuidMap[bv] = id; uuidMap["orders" + ':' + bv] = id; }
         }
       };
       try {
@@ -1096,8 +1318,24 @@ async function seedOrders(ds: DataSource, fixtures: RawFixtures, uuidMap: Record
             if (__existing) break;
           }
         }
+        if (!__existing) {
+          for (const __pair of __uniqPairs) {
+            if (!__pair.every((c) => inserted[c] !== undefined && inserted[c] !== null)) continue;
+            const __where: Record<string, unknown> = {};
+            for (const c of __pair) __where[c] = inserted[c];
+            __existing = await repo.findOne({ where: __where } as object) as { id?: string } | null;
+            if (__existing) break;
+          }
+        }
         if (__existing && __existing.id) {
           __registerRefs(__existing.id);
+          // Actually write the fixture's fields onto the row. This branch used to only
+          // register the id and count it as "updated" while writing nothing, so the seed
+          // was insert-only: on a database that already had the row, any field ADDED to
+          // the fixture afterwards never landed. Adding course thumbnails, category icons
+          // and instructor avatars changed nothing on an existing database and the log
+          // still said "updated" — the demo came up with images on the new rows only.
+          await repo.save(repo.create({ ...(inserted as object), id: __existing.id } as object));
           updated++;
         } else {
           const saved = await repo.save(repo.create(inserted as object)) as { id?: string };
@@ -1294,15 +1532,22 @@ async function seedUsersWithUuidMap(ds: DataSource, fixtures: RawFixtures, uuidM
 // entity by table name (plural/singular/stem tolerant); rows are filled like a user
 // (enum-coerce with case + enum[0] fallback, required scalars, NOT NULL FKs via
 // __ensureRef, owner FK pointed at a seeded member so member-scoped lists aren't empty).
-async function seedSeedData(ds: DataSource, fixtures: RawFixtures, uuidMap: Record<string, string>): Promise<void> {
+async function seedSeedData(ds: DataSource, fixtures: RawFixtures, uuidMap: Record<string, string>, handled: string[] = []): Promise<void> {
   const sd = (fixtures as Record<string, unknown>)['seed_data'] as Record<string, unknown[]> | undefined;
   if (!sd || typeof sd !== 'object') { console.log('seed: no seed_data section — skipping'); return; }
+  // Skip what a dedicated seeder above already inserted. This generic pass ran over
+  // EVERY seed_data section including the ones just handled, so it re-inserted each row
+  // and logged the unique-constraint rejection: roughly 250 lines of "row failed" on a
+  // seed that had in fact succeeded completely. It is only here for sections that have
+  // no dedicated seeder.
+  const skip = new Set(handled.map((h) => h.toLowerCase()));
   const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
   const singular = (s: string) => s.replace(/ies$/, 'y').replace(/s$/, '');
   const anyMemberId = Object.keys(uuidMap).filter((k) => k.indexOf('users:') === 0).map((k) => uuidMap[k])[0];
   let total = 0;
   for (const [resource, rows] of Object.entries(sd)) {
     if (!Array.isArray(rows) || !rows.length) continue;
+    if (skip.has(resource.toLowerCase())) continue;
     const meta =
       ds.entityMetadatas.find((m) => norm(m.tableName) === norm(resource)) ||
       ds.entityMetadatas.find((m) => norm(m.tableName) === norm(singular(resource)) || norm(singular(m.tableName)) === norm(singular(resource))) ||
@@ -1372,6 +1617,99 @@ async function seedSeedData(ds: DataSource, fixtures: RawFixtures, uuidMap: Reco
   console.log('seed: seed_data — ' + total + ' demo rows total');
 }
 
+/**
+ * Turn each order fixture's `items: [<course-slug>, ...]` into real order lines, then
+ * make the order's money add up.
+ *
+ * seedOrders drops every fixture key that is not a column on `orders`, and `items` is a
+ * relation, not a column — so the seeded orders had no lines and subtotal/total of 0.
+ * Nothing failed: the admin order list rendered rows reading "0", every order detail
+ * showed an empty table, and the dashboard's revenue figure was zero on a database that
+ * was supposedly full of paid orders. For a demo that is the whole screen.
+ *
+ * Prices come from the seeded courses, and the discount from the named coupon, so the
+ * arithmetic on screen is the arithmetic the application itself would produce.
+ */
+async function seedOrderItems(ds: DataSource, fixtures: RawFixtures): Promise<void> {
+  const rows = ((fixtures as Record<string, any>)['seed_data'] || {})['orders'];
+  if (!Array.isArray(rows) || !rows.length) return;
+
+  const find = (needle: string) =>
+    ds.entityMetadatas.find((m) => m.tableName === needle) ||
+    ds.entityMetadatas.find((m) => m.tableName.replace(/_/g, '') === needle.replace(/_/g, ''));
+  const orderMeta = find('orders');
+  const itemMeta = find('order_items');
+  const courseMeta = find('courses');
+  const couponMeta = find('coupons');
+  if (!orderMeta || !itemMeta || !courseMeta) return;
+
+  const orderRepo = ds.getRepository(orderMeta.target);
+  const itemRepo = ds.getRepository(itemMeta.target);
+  const courseRepo = ds.getRepository(courseMeta.target);
+  const couponRepo = couponMeta ? ds.getRepository(couponMeta.target) : null;
+
+  let lines = 0, priced = 0;
+  for (const raw of rows) {
+    const fx = raw as Record<string, unknown>;
+    const slugs = Array.isArray(fx.items) ? (fx.items as unknown[]).map(String) : [];
+    if (!fx.order_number || !slugs.length) continue;
+
+    const order = (await orderRepo.findOne({
+      where: { orderNumber: String(fx.order_number) } as object,
+    })) as Record<string, unknown> | null;
+    if (!order) continue;
+
+    // Idempotent: re-running the seed must not double the lines.
+    await itemRepo.delete({ orderId: order.id } as object).catch(() => undefined);
+
+    let subtotal = 0;
+    for (const slug of slugs) {
+      const course = (await courseRepo.findOne({ where: { slug } as object })) as Record<
+        string,
+        unknown
+      > | null;
+      if (!course) { console.warn('  seed order ' + fx.order_number + ': no course ' + slug); continue; }
+      const unitPrice = Number(course.price ?? 0);
+      subtotal += unitPrice;
+      await itemRepo.save(
+        itemRepo.create({
+          orderId: order.id,
+          courseId: course.id,
+          titleSnapshot: String(course.title ?? slug),
+          unitPrice,
+          quantity: 1,
+        } as object),
+      );
+      lines++;
+    }
+
+    // The discount the named coupon actually describes — percent or fixed amount.
+    let discount = 0;
+    if (fx.coupon && couponRepo) {
+      const coupon = (await couponRepo.findOne({
+        where: { code: String(fx.coupon) } as object,
+      })) as Record<string, unknown> | null;
+      if (coupon) {
+        const value = Number(coupon.discountValue ?? 0);
+        discount =
+          Number(coupon.discountType) === 1
+            ? Math.round(subtotal * (value / 100) * 100) / 100
+            : Math.min(value, subtotal);
+        (order as Record<string, unknown>).couponId = coupon.id;
+      }
+    }
+
+    order.subtotal = Math.round(subtotal * 100) / 100;
+    order.discountTotal = discount;
+    order.total = Math.round((subtotal - discount) * 100) / 100;
+    // A paid order that never recorded WHEN it was paid reads as a data bug on screen.
+    if (Number(order.status) === 1 && !order.paidAt) order.paidAt = order.placedAt ?? new Date();
+    await orderRepo.save(order as object);
+    priced++;
+  }
+  console.log('seed: order items — ' + lines + ' line(s) across ' + priced + ' order(s)');
+}
+
 // Multi-entity seed orchestrator. Replaces the original seedUsers call.
 async function seedAllWithUuidMap(ds: DataSource, fixtures: RawFixtures): Promise<void> {
   const uuidMap: Record<string, string> = {};
@@ -1383,7 +1721,10 @@ async function seedAllWithUuidMap(ds: DataSource, fixtures: RawFixtures): Promis
   await seedCoupons(ds, fixtures, uuidMap);
   await seedEnrollments(ds, fixtures, uuidMap);
   await seedOrders(ds, fixtures, uuidMap);
-  await seedSeedData(ds, fixtures, uuidMap);
+  await seedSeedData(ds, fixtures, uuidMap, [
+    'categories', 'courses', 'course_sections', 'lessons', 'coupons', 'enrollments', 'orders',
+  ]);
+  await seedOrderItems(ds, fixtures);
   await reassertFixtureUsers(ds, fixtures, uuidMap);
   console.log('seed: multi-entity done — ' + Object.keys(uuidMap).length + ' refs mapped');
 }

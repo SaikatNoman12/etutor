@@ -1,0 +1,17 @@
+{
+  "frontend": "admin",
+  "total": 22,
+  "scaffolded": 10,
+  "unconverted_stubs": [
+    "app/pages/admin/adm-00-login.tsx",
+    "app/pages/admin/adm-01-dashboard.tsx",
+    "app/pages/admin/adm-02-courses.tsx",
+    "app/pages/admin/adm-03-course-detail.tsx",
+    "app/pages/admin/adm-04-categories.tsx",
+    "app/pages/admin/adm-05-users.tsx",
+    "app/pages/admin/adm-06-orders.tsx",
+    "app/pages/admin/adm-07-order-detail.tsx",
+    "app/pages/admin/adm-08-enrollments.tsx",
+    "app/pages/admin/adm-09-coupons.tsx"
+  ]
+}

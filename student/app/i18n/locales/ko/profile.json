@@ -1,0 +1,21 @@
+{
+  "saveError": "Could not save your profile",
+  "saved": "Profile saved",
+  "title": "My profile",
+  "photoSoon": "Photo upload is not available yet",
+  "changePhoto": "Change photo",
+  "fullName": "Full name",
+  "email": "Email",
+  "headline": "Headline",
+  "country": "Country",
+  "bio": "Bio",
+  "saving": "Saving…",
+  "save": "Save changes",
+  "account": "Account",
+  "loadError": "We could not load your account. Please try again.",
+  "retry": "Try again",
+  "enrolledCourses": "Enrolled courses",
+  "paidOrders": "Paid orders",
+  "signOut": "Sign out",
+  "home": "Home"
+}

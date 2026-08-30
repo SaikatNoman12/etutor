@@ -1,0 +1,1401 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/Applications/nomaan-all/potential/etutor/admin/node_modules/.bin/playwright",
+      "test",
+      "--reporter=list,json"
+    ],
+    "configFile": "/Applications/nomaan-all/potential/etutor/admin/playwright.config.ts",
+    "rootDir": "/Applications/nomaan-all/potential/etutor/admin/tests/stories",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": "/Applications/nomaan-all/potential/etutor/admin/tests/global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Applications/nomaan-all/potential/etutor/admin/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Applications/nomaan-all/potential/etutor/admin/tests/stories",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "_index.spec.ts",
+      "file": "_index.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "UNKNOWN — UNKNOWN",
+          "file": "_index.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "no acceptance criteria declared",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Applications/nomaan-all/potential/etutor/admin/tests/stories/_index.spec.ts",
+                        "line": 29,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": -1,
+                      "parallelIndex": -1,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:00.631Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Applications/nomaan-all/potential/etutor/admin/tests/stories/_index.spec.ts",
+                            "line": 29,
+                            "column": 8
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "a93f5562734dd60853d0-e9c0abf3203f5970283d",
+              "file": "_index.spec.ts",
+              "line": 29,
+              "column": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-00-login.spec.ts",
+      "file": "ADM-00-login.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-00-LOGIN — Admin console sign-in",
+          "file": "ADM-00-login.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin signs in",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1986,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:01.022Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d43c420f955cceb33dc5-7eb235c3ff9e9212a3ea",
+              "file": "ADM-00-login.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin dashboard loads",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1897,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:01.022Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d43c420f955cceb33dc5-2df4c82cb4508dd63892",
+              "file": "ADM-00-login.spec.ts",
+              "line": 68,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-01-dashboard.spec.ts",
+      "file": "ADM-01-dashboard.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-01-DASHBOARD — Console dashboard",
+          "file": "ADM-01-dashboard.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens the dashboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1961,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:01.035Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f1c4a200fb3fa69068f1-717c1ed81d49143bb125",
+              "file": "ADM-01-dashboard.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin reads recent orders",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1914,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:01.021Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f1c4a200fb3fa69068f1-7ccbb69e4af2129676ab",
+              "file": "ADM-01-dashboard.spec.ts",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin clicks All orders",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1307,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:03.150Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f1c4a200fb3fa69068f1-ff8322ef4709ae70d553",
+              "file": "ADM-01-dashboard.spec.ts",
+              "line": 100,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-02-courses.spec.ts",
+      "file": "ADM-02-courses.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-02-COURSES — Course management listing",
+          "file": "ADM-02-courses.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens the listing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1524,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:03.162Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ac36b0e6e8a597e5f754-548ff8551ef070d83184",
+              "file": "ADM-02-courses.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin searches by title",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1506,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:03.243Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ac36b0e6e8a597e5f754-896caa198006fc87cb5c",
+              "file": "ADM-02-courses.spec.ts",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin sorts by price",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1546,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:03.254Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ac36b0e6e8a597e5f754-7652af1bfc6cc25a2ba2",
+              "file": "ADM-02-courses.spec.ts",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "AC-4 — Admin creates a course",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1359,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:04.471Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ac36b0e6e8a597e5f754-0d6d889216e406033a16",
+              "file": "ADM-02-courses.spec.ts",
+              "line": 138,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-03-course-detail.spec.ts",
+      "file": "ADM-03-course-detail.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-03-COURSE-DETAIL — Course editor with sections and lessons",
+          "file": "ADM-03-course-detail.spec.ts",
+          "line": 68,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens a course",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1610,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:04.702Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b01b87f7721f4e8b8c85-fa34d00bb9abf75437ad",
+              "file": "ADM-03-course-detail.spec.ts",
+              "line": 74,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin edits the price and saves",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1692,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:04.762Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b01b87f7721f4e8b8c85-dde1b011b0bd5ed5659c",
+              "file": "ADM-03-course-detail.spec.ts",
+              "line": 110,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin adds a lesson",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1597,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:04.834Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b01b87f7721f4e8b8c85-56cc526dfe741fde79f6",
+              "file": "ADM-03-course-detail.spec.ts",
+              "line": 141,
+              "column": 3
+            },
+            {
+              "title": "AC-4 — Admin deletes a lesson",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1258,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:05.843Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b01b87f7721f4e8b8c85-43b894d0018ed11f9bb5",
+              "file": "ADM-03-course-detail.spec.ts",
+              "line": 172,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-04-categories.spec.ts",
+      "file": "ADM-04-categories.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-04-CATEGORIES — Category management",
+          "file": "ADM-04-categories.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens the listing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1114,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:06.329Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "284615324a020870828d-a060d5e7ed0921997a7a",
+              "file": "ADM-04-categories.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin creates a category",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1187,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:06.446Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "284615324a020870828d-50133da8d997ebdc2475",
+              "file": "ADM-04-categories.spec.ts",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin changes the display order",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1203,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:06.471Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "284615324a020870828d-d5dc49b3b1775c977a54",
+              "file": "ADM-04-categories.spec.ts",
+              "line": 103,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-05-users.spec.ts",
+      "file": "ADM-05-users.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-05-USERS — User management",
+          "file": "ADM-05-users.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens the listing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1148,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:07.140Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "968faa01ef71247fc922-1a9049fe9cd43cf23b73",
+              "file": "ADM-05-users.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin filters by role",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1155,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:07.455Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "968faa01ef71247fc922-a5663dfc8038a6172d1b",
+              "file": "ADM-05-users.spec.ts",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin suspends a user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1138,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:07.648Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "968faa01ef71247fc922-42dc78802e9c37845c74",
+              "file": "ADM-05-users.spec.ts",
+              "line": 100,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-06-orders.spec.ts",
+      "file": "ADM-06-orders.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-06-ORDERS — Order management listing",
+          "file": "ADM-06-orders.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens the listing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1196,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:07.710Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41c449adfdd28084160e-e61b442af7c50a6b041e",
+              "file": "ADM-06-orders.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin filters by status",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1187,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:08.301Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41c449adfdd28084160e-7765339770add97e7a6b",
+              "file": "ADM-06-orders.spec.ts",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin marks a pending order paid",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1180,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:08.635Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41c449adfdd28084160e-4281d35e87cf85679bf1",
+              "file": "ADM-06-orders.spec.ts",
+              "line": 100,
+              "column": 3
+            },
+            {
+              "title": "AC-4 — Admin opens an order",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1146,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:08.799Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41c449adfdd28084160e-1ed3055b2e7658bd5033",
+              "file": "ADM-06-orders.spec.ts",
+              "line": 138,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-07-order-detail.spec.ts",
+      "file": "ADM-07-order-detail.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-07-ORDER-DETAIL — Order detail with refund",
+          "file": "ADM-07-order-detail.spec.ts",
+          "line": 68,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens an order",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1075,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:08.923Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4509095a68049c20e8c9-db56e229fff9734181f3",
+              "file": "ADM-07-order-detail.spec.ts",
+              "line": 74,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin marks the order paid",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1047,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:09.499Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4509095a68049c20e8c9-b0921e5d4a96e8c1cb7d",
+              "file": "ADM-07-order-detail.spec.ts",
+              "line": 110,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin refunds the order",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1069,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:09.837Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4509095a68049c20e8c9-b987a779102a20e12076",
+              "file": "ADM-07-order-detail.spec.ts",
+              "line": 149,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-08-enrollments.spec.ts",
+      "file": "ADM-08-enrollments.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-08-ENROLLMENTS — Enrollment monitoring (read-only)",
+          "file": "ADM-08-enrollments.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens the listing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1102,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:09.960Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "73584409616069812cd8-7dce7afc04102c798375",
+              "file": "ADM-08-enrollments.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin searches by course",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1055,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:10.017Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "73584409616069812cd8-25faaa1524ee62e69a9a",
+              "file": "ADM-08-enrollments.spec.ts",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin sorts by progress",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1046,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:10.556Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "73584409616069812cd8-3e3f8f821594b4d4b970",
+              "file": "ADM-08-enrollments.spec.ts",
+              "line": 103,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ADM-09-coupons.spec.ts",
+      "file": "ADM-09-coupons.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "US-ADM-09-COUPONS — Coupon management",
+          "file": "ADM-09-coupons.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-1 — Admin opens the listing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1091,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:10.923Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d62108c0d8edd9c9289b-5b0a47a87dd69b585fa8",
+              "file": "ADM-09-coupons.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "AC-2 — Admin creates a coupon",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1117,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:11.082Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d62108c0d8edd9c9289b-0519bf38868c5a8d2f8f",
+              "file": "ADM-09-coupons.spec.ts",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "AC-3 — Admin deactivates a coupon",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1180,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-30T11:32:11.084Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d62108c0d8edd9c9289b-83f8b34ef40a94a83264",
+              "file": "ADM-09-coupons.spec.ts",
+              "line": 103,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-08-30T11:31:59.908Z",
+    "duration": 12401.31,
+    "expected": 32,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

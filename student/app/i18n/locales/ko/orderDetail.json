@@ -1,0 +1,21 @@
+{
+  "statusPaid": "Paid",
+  "statusPending": "Pending",
+  "statusCancelled": "Cancelled",
+  "statusRefunded": "Refunded",
+  "backToOrders": "Orders",
+  "title": "Order",
+  "items": "Items",
+  "itemsError": "We could not load this order. Please try again.",
+  "retry": "Try again",
+  "noItems": "This order has no items.",
+  "total": "Total",
+  "goToLearning": "Go to my learning",
+  "details": "Details",
+  "detailsError": "We could not load the order details.",
+  "placed": "Placed",
+  "paid": "Paid",
+  "method": "Method",
+  "coupon": "Coupon",
+  "home": "Home"
+}

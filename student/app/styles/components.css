@@ -1,0 +1,961 @@
+/* base-components.css — neutral component classes for base HTML.
+ * Every value comes from TOKEN_CONTRACT variables; no literals beyond
+ * structural layout (flex/grid/percentages). Base pages compose these
+ * classes; themes restyle them by swapping the variable sheet. */
+
+/* ---------- reset & document ---------- */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+}
+/* p + headings carry browser-default em margins (h1 .67em, h2 .83em, p 1em). This
+   system owns vertical rhythm with flex gap (.stack/.card/.main), so those must be 0
+   — otherwise a raw <p>/<h*>, or a title+caption stack, gets a stray ~16px gap that
+   no class-based gate can see (it's a UA default, not a class). */
+@layer base {
+  p, h1, h2, h3, h4, h5, h6 { margin: 0; }
+}
+/* the hidden attribute must always win: a component class with an explicit display
+   (e.g. a flex/grid card set) otherwise out-specifies [hidden]'s UA display:none and
+   leaks content meant to stay hidden (a paywalled body, an inactive tab). */
+[hidden] { display: none !important; }
+@layer base {
+  body {
+    margin: 0;
+    word-break: keep-all;       /* keep CJK words from breaking mid-word (no-op for Latin) */
+    overflow-wrap: break-word;  /* let long words / URLs wrap instead of overflowing */
+    background: var(--c-canvas);
+    color: var(--c-body);
+    font-family: var(--t-body-md-family);
+    font-size: var(--t-body-md-size);
+    font-weight: var(--t-body-md-weight);
+    line-height: var(--t-body-md-lh);
+    letter-spacing: var(--t-body-md-ls);
+  }
+}
+@layer base {
+  a { color: var(--c-link); text-decoration: none; }
+}
+a:hover { text-decoration: underline; }
+@layer base {
+  img { max-width: 100%; display: block; }
+}
+
+/* ---------- icons (Lucide) ----------
+ * Lucide replaces each <i data-lucide="name"> with an inline <svg class="lucide">.
+ * Size + color INHERIT from surrounding text (1em / currentColor) so an icon in
+ * a caption is small and one in a title is large — no per-icon sizing needed.
+ * Override with width/height on the element when a control needs a fixed size. */
+.lucide { width: 1.15em; height: 1.15em; stroke-width: 2; vertical-align: -0.18em; flex-shrink: 0; }
+/* standalone icon sizes — for an icon that is NOT sitting in a text run
+ * (icon-only buttons, nav rails). Add the class to the <i data-lucide> element
+ * (Lucide copies it onto the generated <svg>). Inline icons keep the .lucide
+ * em default; a standalone icon picks ONE fixed size and reuses it in that
+ * context (don't mix 16/20 in one row of actions). See AUTHORING_RULES rule 10. */
+.icon-sm { width: 16px; height: 16px; }
+.icon-md { width: 20px; height: 20px; }
+.icon-lg { width: 24px; height: 24px; }
+
+/* ---------- type roles ---------- */
+.t-display-xl { font-family: var(--t-display-xl-family); font-size: var(--t-display-xl-size); font-weight: var(--t-display-xl-weight); line-height: var(--t-display-xl-lh); letter-spacing: var(--t-display-xl-ls); color: var(--c-ink); margin: 0; }
+.t-display-lg { font-family: var(--t-display-lg-family); font-size: var(--t-display-lg-size); font-weight: var(--t-display-lg-weight); line-height: var(--t-display-lg-lh); letter-spacing: var(--t-display-lg-ls); color: var(--c-ink); margin: 0; }
+.t-display-md { font-family: var(--t-display-md-family); font-size: var(--t-display-md-size); font-weight: var(--t-display-md-weight); line-height: var(--t-display-md-lh); letter-spacing: var(--t-display-md-ls); color: var(--c-ink); margin: 0; }
+.t-title-lg { font-family: var(--t-title-lg-family); font-size: var(--t-title-lg-size); font-weight: var(--t-title-lg-weight); line-height: var(--t-title-lg-lh); letter-spacing: var(--t-title-lg-ls); color: var(--c-ink); margin: 0; }
+.t-title-md { font-family: var(--t-title-md-family); font-size: var(--t-title-md-size); font-weight: var(--t-title-md-weight); line-height: var(--t-title-md-lh); letter-spacing: var(--t-title-md-ls); color: var(--c-ink); margin: 0; }
+.t-body-lg { font-family: var(--t-body-lg-family); font-size: var(--t-body-lg-size); font-weight: var(--t-body-lg-weight); line-height: var(--t-body-lg-lh); letter-spacing: var(--t-body-lg-ls); margin: 0; }
+.t-body { font-family: var(--t-body-md-family); font-size: var(--t-body-md-size); font-weight: var(--t-body-md-weight); line-height: var(--t-body-md-lh); letter-spacing: var(--t-body-md-ls); margin: 0; }
+.t-body-sm { font-family: var(--t-body-sm-family); font-size: var(--t-body-sm-size); font-weight: var(--t-body-sm-weight); line-height: var(--t-body-sm-lh); letter-spacing: var(--t-body-sm-ls); margin: 0; }
+.t-caption { font-family: var(--t-caption-family); font-size: var(--t-caption-size); font-weight: var(--t-caption-weight); line-height: var(--t-caption-lh); letter-spacing: var(--t-caption-ls); color: var(--c-muted); margin: 0; }
+.t-code { font-family: var(--t-code-family); font-size: var(--t-code-size); font-weight: var(--t-code-weight); line-height: var(--t-code-lh); margin: 0; }
+.t-muted { color: var(--c-muted); }
+/* weight emphasis — compose with any size class or plain body text
+   (e.g. <span class="t-body-sm t-semibold">). Defined after the size roles
+   so they win on weight; theme-owned via the --t-weight-* scale. */
+.t-medium { font-weight: var(--t-weight-medium, 500); }
+.t-semibold { font-weight: var(--t-weight-semibold, var(--t-button-weight)); }
+.t-bold { font-weight: var(--t-weight-bold, 700); }
+
+/* ---------- layout ---------- */
+.container { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-xl); }
+.section { padding: var(--space-section) 0; }
+.stack-sm > * + * { margin-top: var(--space-sm); }
+.stack-md > * + * { margin-top: var(--space-md); }
+.stack-lg > * + * { margin-top: var(--space-lg); }
+.stack-xl > * + * { margin-top: var(--space-xl); }
+.row { display: flex; align-items: center; gap: var(--space-md); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-xl); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-xl); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg); }
+@media (max-width: 900px) {
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* ---------- app shell (sidebar + CENTERED content) ----------
+ * The content column is centred in the main area — max-width + auto margins,
+ * never left-pinned. A wide screen must NOT show a large empty right gutter.
+ * width:100% is REQUIRED, not cosmetic: in a multi-app system where the member
+ * (mobile) app centers the whole `body` to hold a phone frame, an .app-shell with
+ * no explicit width shrinks to its content and floats to the middle — the admin
+ * console then gets asymmetric left/right gutters on narrow pages. Pinning width
+ * to 100% makes the admin console full-bleed regardless of any body centering the
+ * member app introduced. (See AUTHORING_RULES "Multi-app shells".) */
+.app-shell { display: flex; min-height: 100vh; width: 100%; }
+.app-main { flex: 1; min-width: 0; }
+.app-body { max-width: var(--container-max); margin: 0 auto; padding: var(--space-xl); }
+@media (max-width: 760px) { .app-shell > .sidebar { display: none; } }
+
+/* ---------- navbar ---------- */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--c-canvas);
+  border-bottom: var(--border-w) solid var(--c-hairline);
+  position: sticky; top: 0; z-index: 10;
+}
+.nav-brand { font-family: var(--t-title-lg-family); font-size: var(--t-title-lg-size); font-weight: var(--t-title-lg-weight); color: var(--c-ink); }
+.nav-links { display: flex; gap: var(--space-xl); list-style: none; margin: 0; padding: 0; }
+.nav-link { font-family: var(--t-button-family); font-size: var(--t-body-sm-size); font-weight: var(--t-button-weight); color: var(--c-body); cursor: pointer; }
+
+/* ---------- mobile app bar (the ONE header for mobile screens) ---------- */
+/* Every mobile screen uses .appbar so header height is identical across the
+   app. Fixed 56px, sticky top, horizontal padding only (content centers).
+   Do NOT author per-page <header> styles — use this component. */
+.appbar {
+  display: flex; align-items: center; gap: var(--space-md);
+  min-height: 56px; padding: 0 var(--space-lg);
+  background: var(--c-surface);
+  border-bottom: var(--border-w) solid var(--c-hairline);
+  position: sticky; top: 0; z-index: 20;
+}
+.appbar .back { display: inline-flex; align-items: center; color: var(--c-ink); }
+.appbar h1, .appbar .appbar-title { margin: 0; font-family: var(--t-title-md-family);
+  font-size: var(--t-title-md-size); font-weight: var(--t-title-md-weight); color: var(--c-ink); }
+.nav-link:hover { color: var(--c-primary); text-decoration: none; }
+/* active keys off aria-current (the router-owned marker OUTPUT_RULES mandates), with
+   .is-active as an alias for authored demos — never .is-active alone, or the active
+   tab is styled by a class the pages don't carry and the nav renders all-inactive. */
+.nav-link.is-active, .nav-link[aria-current="page"] { color: var(--c-primary); }
+
+/* ---------- mobile nav toggle (hamburger) ----------
+ * Optional hamburger that makes a top .nav (and the desktop .sidebar) reachable
+ * on mobile — WITHOUT it, .nav-links overflow and .sidebar links vanish ≤760px.
+ * Opt-in and backward-compatible: a .nav with no .nav-toggle is unchanged, and
+ * the button is display:none on desktop so wide layouts don't shift.
+ * Add the button and wire a 1-line toggle (same spirit as lucide.createIcons):
+ *   <button class="nav-toggle" data-testid="x-nav-toggle" aria-label="Menu"
+ *     aria-expanded="false"
+ *     onclick="const n=this.closest('.nav');const o=n.classList.toggle('is-open');
+ *              this.setAttribute('aria-expanded',o)">
+ *     <i data-lucide="menu"></i></button>
+ * Give the collapsible actions row the .nav-actions class so it stacks too.
+ * Shown only ≤760px; the drawer opens on .is-open (CSS keeps it closed for the
+ * static screenshot). For an .app-shell, toggle .is-open on the .sidebar. */
+.nav-toggle {
+  display: none; align-items: center; justify-content: center;
+  min-width: var(--control-h); min-height: var(--control-h);
+  color: var(--c-ink); background: transparent;
+  border: var(--border-w) solid transparent; border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.nav-toggle:hover { background: var(--c-surface-soft); }
+@media (max-width: 760px) {
+  .nav:has(.nav-toggle) { flex-wrap: wrap; row-gap: var(--space-sm); }
+  .nav-toggle { display: inline-flex; }
+  /* links + actions collapse into a stacked drawer, hidden until .is-open */
+  .nav:has(.nav-toggle) .nav-links,
+  .nav:has(.nav-toggle) .nav-actions { order: 3; flex-basis: 100%; display: none; }
+  .nav.is-open .nav-links,
+  .nav.is-open .nav-actions {
+    display: flex; flex-direction: column; align-items: stretch; gap: var(--space-xs);
+  }
+  /* reveal the desktop sidebar as an overlay drawer on mobile */
+  .app-shell > .sidebar.is-open {
+    display: flex; position: fixed; top: 0; left: 0; bottom: 0; z-index: 40;
+    width: min(280px, 80vw); box-shadow: var(--shadow-3);
+  }
+}
+
+/* ---------- sidebar (desktop side nav) ----------
+ * Vertical nav rail. 240px width is structural layout (allowed); every
+ * colour/space/radius comes from tokens. Compose .nav-link items inside. */
+.sidebar {
+  display: flex; flex-direction: column; gap: var(--space-xxs);
+  width: 240px; flex-shrink: 0;
+  padding: var(--space-lg) var(--space-md);
+  background: var(--c-surface);
+  border-right: var(--border-w) solid var(--c-hairline);
+}
+.sidebar .nav-link {
+  display: flex; align-items: center; gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md); color: var(--c-body);
+}
+.sidebar .nav-link:hover { background: var(--c-surface-soft); }
+.sidebar .nav-link.is-active, .sidebar .nav-link[aria-current="page"] { background: var(--c-primary-soft); color: var(--c-primary); }
+
+/* ---------- in-shell top bar (app-shell / sidebar layouts) ----------
+ * Holds the mobile hamburger + page title + actions above .app-body. On desktop
+ * the .nav-toggle is hidden (the sidebar is visible); ≤760px the sidebar hides
+ * and the hamburger toggles .sidebar.is-open. The title stays on ONE line
+ * (nowrap + ellipsis) so it never breaks beside the hamburger; the subtitle
+ * drops on mobile. */
+.app-topbar {
+  display: flex; align-items: center; gap: var(--space-md);
+  min-height: 56px; padding: var(--space-sm) var(--space-xl);
+  border-bottom: var(--border-w) solid var(--c-hairline);
+  background: var(--c-canvas); position: sticky; top: 0; z-index: 15;
+}
+.app-topbar .topbar-title { flex: 1; min-width: 0; }
+.app-topbar .topbar-title > * { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.app-topbar .topbar-sub { color: var(--c-muted); font-size: var(--t-caption-size); }
+@media (max-width: 600px) {
+  .app-topbar { padding: var(--space-sm) var(--space-lg); }
+  .app-topbar .topbar-sub { display: none; }
+}
+
+/* ---------- bottom navigation bar (mobile tab bar) ----------
+ * Pinned to the device bottom (position: sticky; bottom: 0 — the real mobile
+ * pattern; AUTHORING_RULES "Bottom bars stay pinned"). 56px matches .appbar. */
+.tabbar {
+  display: flex; align-items: center; justify-content: space-around;
+  min-height: 56px; padding: 0 var(--space-sm);
+  background: var(--c-surface);
+  border-top: var(--border-w) solid var(--c-hairline);
+  position: sticky; bottom: 0; z-index: 20;
+}
+.tabbar-item {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-xxs);
+  flex: 1; padding: var(--space-xs) 0;
+  font-family: var(--t-caption-family); font-size: var(--t-caption-size);
+  font-weight: var(--t-caption-weight); letter-spacing: var(--t-caption-ls);
+  color: var(--c-muted); cursor: pointer; text-decoration: none;
+}
+.tabbar-item:hover { color: var(--c-body); }
+.tabbar-item.is-active, .tabbar-item[aria-current="page"] { color: var(--c-primary); }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sm);
+  font-family: var(--t-button-family); font-size: var(--t-button-size);
+  font-weight: var(--t-button-weight); line-height: var(--t-button-lh); letter-spacing: var(--t-button-ls);
+  min-height: var(--control-h); padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--btn-radius, var(--radius-md));
+  border: var(--border-w) solid transparent;
+  text-transform: var(--btn-case);
+  cursor: pointer; text-decoration: none; transition: background-color 120ms, color 120ms, border-color 120ms;
+}
+.btn:hover { text-decoration: none; }
+.btn-primary { background: var(--c-primary); color: var(--c-on-primary); }
+.btn-primary:hover { background: var(--c-primary-active); }
+.btn-secondary { background: var(--c-surface); color: var(--c-primary); border-color: var(--c-hairline-strong); }
+.btn-secondary:hover { background: var(--c-surface-soft); }
+.btn-ghost { background: transparent; color: var(--c-body); }
+.btn-ghost:hover { background: var(--c-surface-soft); }
+.btn-danger { background: var(--c-error); color: var(--c-on-primary); }
+.btn-sm { min-height: 40px; font-size: var(--t-body-sm-size); padding: var(--space-sm) var(--space-lg); }
+.btn-lg { min-height: 48px; font-size: var(--t-body-lg-size); padding: var(--space-lg) var(--space-xxl); }
+.btn:disabled, .btn[disabled] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+/* ---------- card ---------- */
+.card {
+  background: var(--c-surface);
+  border: var(--border-w) solid var(--c-hairline);
+  border-radius: var(--card-radius, var(--radius-lg));
+  box-shadow: var(--shadow-1);
+  padding: var(--space-xl);
+}
+.card-flat { box-shadow: none; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-lg); }
+/* clickable card — opt-in hover lift (do NOT apply to static KPI/info cards) */
+.card-interactive { cursor: pointer; transition: box-shadow 150ms, transform 150ms, border-color 150ms; }
+.card-interactive:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: var(--c-hairline-strong); }
+
+/* ---------- image-led card (the modern consumer card: image then content) ----------
+ * <article class="card card-media card-interactive">
+ *   <div class="media media-photo"><img src="…" alt="…" loading="lazy"></div>
+ *   <div class="card-media-body"> … title / meta / price … </div>
+ * </article>
+ * Built on .card so radius/elevation/border stay token-driven; the media bleeds
+ * to the card edges (zero padding + overflow clip). */
+.card-media { padding: 0; overflow: hidden; }
+.card-media > .media { border-radius: 0; aspect-ratio: auto; height: var(--card-media-h); }
+.card-media-body { padding: var(--space-lg); }
+
+/* text-over-image card — caption sits on the photo with a scrim for legibility */
+.card-overlay { position: relative; padding: 0; overflow: hidden; }
+.card-overlay > .media { border-radius: 0; }
+.card-overlay-body {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: var(--space-lg);
+  background: var(--overlay-scrim); color: var(--c-on-primary);
+}
+.card-overlay-body .t-title-md, .card-overlay-body .t-title-lg { color: var(--c-on-primary); }
+
+/* ---------- media / framed image (real photos) ----------
+ * Aspect-locked image slot: reserves space (no layout shift), clips with
+ * object-fit:cover, rounds via --img-radius, and shows --media-fallback behind
+ * the <img> so a slow/failed load is never a blank box or broken-image icon.
+ *   <div class="media media-photo"><img src="…" alt="…" loading="lazy"></div>
+ * Ratio via .media-square / .media-photo / .media-video / .media-portrait. */
+.media {
+  position: relative; overflow: hidden;
+  border-radius: var(--img-radius);
+  background: var(--media-fallback);
+  aspect-ratio: var(--aspect-photo);
+}
+.media > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.media-square { aspect-ratio: var(--aspect-square); }
+.media-photo { aspect-ratio: var(--aspect-photo); }
+.media-video { aspect-ratio: var(--aspect-video); }
+.media-portrait { aspect-ratio: var(--aspect-portrait); }
+
+/* hero with a real background image + scrim (vs the flat-color .hero) */
+.hero-media {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--media-fallback);
+  min-height: 220px; display: flex;
+}
+.hero-media > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-media-body {
+  position: relative; z-index: 1; align-self: flex-end; width: 100%;
+  padding: var(--space-xl);
+  background: var(--overlay-scrim); color: var(--c-on-primary);
+}
+.hero-media-body .t-display-md, .hero-media-body .t-title-lg { color: var(--c-on-primary); }
+
+/* horizontal scroller — mobile carousels (specialty chips, "recommended" rows) */
+.scroller {
+  display: flex; gap: var(--space-md);
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  padding-bottom: var(--space-xs);
+  -webkit-overflow-scrolling: touch;
+}
+.scroller > * { scroll-snap-align: start; flex: 0 0 auto; }
+.scroller::-webkit-scrollbar { display: none; }
+
+/* ---------- forms ---------- */
+.field { display: flex; flex-direction: column; gap: var(--space-xs); }
+.label { font-family: var(--t-caption-family); font-size: var(--t-body-sm-size); font-weight: var(--t-caption-weight); color: var(--c-ink); }
+.input, .select, .textarea {
+  font-family: var(--t-body-md-family); font-size: var(--t-body-md-size);
+  color: var(--c-ink); background: var(--c-canvas);
+  border: var(--border-w) solid var(--c-hairline-strong);
+  border-radius: var(--input-radius, var(--radius-sm));
+  min-height: var(--control-h); padding: var(--space-sm) var(--space-md);
+}
+.input:focus, .select:focus, .textarea:focus {
+  outline: 2px solid var(--c-primary); outline-offset: -1px; border-color: var(--c-primary);
+}
+.input::placeholder, .textarea::placeholder { color: var(--c-muted); }
+.help-text { font-size: var(--t-caption-size); color: var(--c-muted); }
+.error-text { font-size: var(--t-caption-size); color: var(--c-error); }
+/* error state — pair with .error-text below the field */
+.input.is-error, .select.is-error, .textarea.is-error {
+  border-color: var(--c-error);
+  background: color-mix(in srgb, var(--c-error) 6%, var(--c-canvas));
+}
+.input.is-error:focus, .select.is-error:focus, .textarea.is-error:focus {
+  outline-color: var(--c-error); border-color: var(--c-error);
+}
+.field.is-error .label { color: var(--c-error); }
+/* disabled state */
+.input:disabled, .select:disabled, .textarea:disabled,
+.input[disabled], .select[disabled], .textarea[disabled] {
+  background: var(--c-surface-soft); color: var(--c-muted); cursor: not-allowed;
+}
+/* multi-field form layout — 2 columns that collapse to 1 ≤600px (mirrors the
+ * .grid-* collapse). Wrap .field items in .form-grid; a full-width field
+ * (textarea, address) gets .field-wide. Keeps forms responsive instead of every
+ * field full-width or hand-laid per page. */
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+.form-grid .field-wide { grid-column: 1 / -1; }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+/* search bar — the ONE search control for lists/tables: an .input with a leading
+ * Lucide icon. <div class="search"><i data-lucide="search"></i>
+ *   <input class="input" placeholder="Search…"></div>  (see CONSISTENCY_RULES §3). */
+.search { position: relative; display: inline-flex; align-items: center; width: 100%; max-width: 300px; }
+.search > .lucide { position: absolute; left: var(--space-md); color: var(--c-muted); pointer-events: none; }
+.search > .input { width: 100%; padding-left: calc(var(--space-md) + var(--space-xl)); }
+
+/* ---------- badge / status ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  font-family: var(--t-caption-family); font-size: var(--t-caption-size); font-weight: var(--t-caption-weight); letter-spacing: var(--t-caption-ls);
+  padding: var(--space-xxs) var(--space-sm);
+  border-radius: var(--radius-pill);
+  background: var(--c-surface-soft); color: var(--c-body);
+}
+.badge-primary { background: var(--c-primary-soft); color: var(--c-primary); }
+.badge-success { background: color-mix(in srgb, var(--c-success) 12%, var(--c-canvas)); color: var(--c-success); }
+.badge-warning { background: color-mix(in srgb, var(--c-warning) 12%, var(--c-canvas)); color: var(--c-warning); }
+.badge-error { background: color-mix(in srgb, var(--c-error) 12%, var(--c-canvas)); color: var(--c-error); }
+
+/* ---------- tabs ---------- */
+.tabs { display: flex; gap: var(--space-lg); border-bottom: var(--border-w) solid var(--c-hairline); }
+.tab {
+  font-family: var(--t-button-family); font-size: var(--t-body-sm-size); font-weight: var(--t-button-weight);
+  color: var(--c-muted); background: none; border: none; cursor: pointer;
+  min-height: var(--control-h); padding: var(--space-sm) var(--space-xs);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.tab:hover { color: var(--c-body); }
+.tab.is-active, .tab[aria-current="page"] { color: var(--c-primary); border-bottom-color: var(--c-primary); }
+
+/* ---------- table ---------- */
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  text-align: left; font-family: var(--t-caption-family); font-size: var(--t-caption-size);
+  font-weight: var(--t-caption-weight); letter-spacing: var(--t-caption-ls); text-transform: uppercase;
+  color: var(--c-muted); padding: var(--space-md) var(--space-lg);
+  border-bottom: var(--border-w) solid var(--c-hairline-strong);
+}
+.table td {
+  font-size: var(--t-body-sm-size); color: var(--c-body);
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: var(--border-w) solid var(--c-hairline);
+}
+.table tbody tr:hover { background: var(--c-surface-soft); }
+/* wrap a wide data table in <div class="table-wrap"> so it scrolls horizontally
+ * on narrow screens instead of clipping under the card (mobile-safe tables). */
+.table-wrap { overflow-x: auto; }
+
+/* ---------- data-viz (CSS-only, token-driven) ----------
+ * Bar chart: <div class="chart"><div class="chart-col">
+ *   <span class="bar" style="height:72%"></span><span class="bar-label">Jan</span>
+ *   </div> … </div>   (bar height % set inline). Use .bar.is-soft for muted bars. */
+.chart { display: flex; align-items: flex-end; gap: var(--space-sm); height: 160px; }
+.chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: var(--space-xs); height: 100%; }
+.chart-col .bar { width: 100%; max-width: 40px; min-height: 4px; background: var(--c-primary); border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+.chart-col .bar.is-soft { background: var(--c-primary-soft); }
+.chart-col .bar-label { font-size: var(--t-caption-size); color: var(--c-muted); }
+/* Heatmap: grid of cells, intensity via .l1–.l4; set columns with style="--cols:N". */
+.heatmap { display: grid; grid-template-columns: repeat(var(--cols, 7), 1fr); gap: var(--space-xxs); }
+.heatmap .cell { aspect-ratio: 1; border-radius: var(--radius-xs); background: var(--c-surface-soft); }
+.heatmap .cell.l1 { background: color-mix(in srgb, var(--c-primary) 22%, var(--c-canvas)); }
+.heatmap .cell.l2 { background: color-mix(in srgb, var(--c-primary) 45%, var(--c-canvas)); }
+.heatmap .cell.l3 { background: color-mix(in srgb, var(--c-primary) 70%, var(--c-canvas)); }
+.heatmap .cell.l4 { background: var(--c-primary); }
+
+/* ---------- list ---------- */
+.list { list-style: none; margin: 0; padding: 0; }
+.list-item {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg);
+  padding: var(--space-lg);
+  border-bottom: var(--border-w) solid var(--c-hairline);
+}
+.list-item:hover { background: var(--c-surface-soft); }
+.list-item:last-child { border-bottom: 0; }
+
+/* ---------- stat / metric tile ---------- *
+ * <div class="stat"><span class="stat-value">$1,840</span><span class="stat-label">Left</span></div>
+ * flex column, so label/value stack regardless of DOM order (value = big, label = caption). */
+.stat { display: flex; flex-direction: column; gap: var(--space-xxs); }
+.stat-label { font-size: var(--t-caption-size); font-weight: var(--t-caption-weight); letter-spacing: var(--t-caption-ls); color: var(--c-muted); }
+.stat-value { font-family: var(--t-display-md-family); font-size: var(--t-display-md-size); font-weight: var(--t-weight-bold); line-height: 1.1; color: var(--c-ink); }
+
+/* ---------- hero ---------- */
+.hero { padding: var(--space-section) 0; text-align: center; background: var(--hero-bg); }
+.hero .t-body-lg { color: var(--c-muted); max-width: 640px; margin-left: auto; margin-right: auto; }
+
+/* ---------- footer ---------- */
+.footer {
+  border-top: var(--border-w) solid var(--c-hairline);
+  padding: var(--space-xxl) 0;
+  color: var(--c-muted); font-size: var(--t-body-sm-size);
+}
+
+/* ---------- platform constants (token-contract exception) ----------
+ * Third-party login buttons keep their platform-mandated identity across
+ * ALL themes (provider brand guidelines forbid recoloring; Apple HIG).
+ * These are content, not theme — the ONLY sanctioned literal colors
+ * outside theme.css. Never reuse these hexes anywhere else.
+ * The set below is EXAMPLES — include only the providers the PRD names,
+ * and add a market's providers here first before using a new class
+ * (e.g. .btn-google/.btn-apple for a global app, .btn-kakao for Korea). */
+.btn-google { background: #ffffff; color: #1f1f1f; border-color: #747775; }
+.btn-google:hover { background: #f7f8f8; }
+.btn-apple { background: #000000; color: #ffffff; border-color: transparent; }
+.btn-apple:hover { background: #1a1a1a; }
+.btn-kakao { background: #fee500; color: rgba(0, 0, 0, 0.85); border-color: transparent; }
+.btn-kakao:hover { background: #f4db00; }
+
+/* ---------- misc ---------- */
+.divider { border: none; border-top: var(--border-w) solid var(--c-hairline); margin: var(--space-xl) 0; }
+/* avatar — initials by default; drop an <img> inside for a real photo.
+ *   initials: <span class="avatar">SA</span>
+ *   photo:   <span class="avatar"><img src="https://i.pravatar.cc/96?img=5" alt="Sadia"></span> */
+.avatar { width: 36px; height: 36px; border-radius: var(--radius-pill); background: var(--c-surface-soft); overflow: hidden; display: inline-flex; align-items: center; justify-content: center; font-size: var(--t-caption-size); font-weight: var(--t-caption-weight); color: var(--c-muted); flex-shrink: 0; }
+.avatar > img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-lg { width: 48px; height: 48px; }
+.avatar-xl { width: 64px; height: 64px; font-size: var(--t-body-md-size); }
+.empty-state { text-align: center; padding: var(--space-section) var(--space-xl); color: var(--c-muted); }
+.kpi { display: flex; flex-direction: column; gap: var(--space-xs); }
+.kpi-value { font-family: var(--t-display-md-family); font-size: var(--t-display-md-size); font-weight: var(--t-display-md-weight); color: var(--c-ink); }
+.kpi-label { font-size: var(--t-caption-size); color: var(--c-muted); letter-spacing: var(--t-caption-ls); }
+
+/* ---------- media placeholder (token-only imagery slot) ----------
+ * Marks where the brand layer will place imagery (hero graphics, empty-state
+ * illustrations, banner/photo slots, the flexible middle of bottom-anchored
+ * screens). Base pages must never leave such regions blank — drop a
+ * .media-placeholder with data-component="media" and a .t-caption naming what
+ * belongs there. Dashed, striped, fully token-driven so it theme-swaps. */
+.media-placeholder {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--space-sm); text-align: center;
+  min-height: 120px; padding: var(--space-xl);
+  border: var(--border-w) dashed var(--c-hairline-strong);
+  border-radius: var(--radius-lg);
+  background: var(--media-bg, repeating-linear-gradient(45deg, var(--c-surface-soft), var(--c-surface-soft) 10px, var(--c-canvas) 10px, var(--c-canvas) 20px));
+  color: var(--c-muted);
+}
+
+/* ======================================================================
+ * Consistency components (admin tables / modals / actions / states)
+ * Single source for the patterns that otherwise drift per page. Every
+ * value is a token; structural literals only. See CONSISTENCY_RULES.md.
+ * ====================================================================== */
+
+/* ---------- data table (extends .table) ----------
+ * Compose on top of .table. .table-scroll wraps a wide table for horizontal
+ * scroll; sortable headers carry aria-sort; numeric cells right-align with
+ * tabular figures; tfoot is the totals row. Never re-style .table per page. */
+.table-scroll { width: 100%; overflow-x: auto; }
+.table th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+.table th.sortable .sort-icon { opacity: 0.5; }
+.table th[aria-sort] .sort-icon { opacity: 1; color: var(--c-ink); }
+.table th[aria-sort="ascending"], .table th[aria-sort="descending"] { color: var(--c-ink); }
+.table th[aria-sort="ascending"] .sort-icon { transform: rotate(180deg); }  /* flip the chevron so ascending vs descending is visible */
+/* sticky header — wrap the table in .table-scroll with a max-height to scroll */
+.table--sticky thead th { position: sticky; top: 0; z-index: 1; background: var(--c-surface); }
+/* pinned first column (id/name) for wide admin tables */
+.table--pin-first th:first-child, .table--pin-first td:first-child {
+  position: sticky; left: 0; background: var(--c-surface); z-index: 1;
+}
+.table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.table tfoot td {
+  font-weight: var(--t-weight-semibold, var(--t-button-weight)); color: var(--c-ink);
+  border-top: var(--border-w) solid var(--c-hairline-strong);
+}
+.table.is-compact th, .table.is-compact td { padding: var(--space-sm) var(--space-md); }
+.table .row-group th {
+  text-transform: none; color: var(--c-body); background: var(--c-surface-soft);
+  font-weight: var(--t-weight-semibold, var(--t-button-weight));
+}
+/* in-table empty / loading row — a <td colspan> that keeps the header + filters
+ * visible. Reuses .empty-state inside; never a parallel empty class. */
+.table-empty { text-align: center; padding: var(--space-section) var(--space-xl); color: var(--c-muted); }
+/* truncated cell text — pair with title="" for the full value on hover */
+.truncate { max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- pagination (page-local — NOT shared chrome) ---------- */
+.pagination { display: flex; align-items: center; gap: var(--space-sm); }
+.pagination .page-info { color: var(--c-muted); font-size: var(--t-body-sm-size); }
+.pagination button {
+  min-height: 40px; min-width: 40px; padding: 0 var(--space-md);
+  font-family: var(--t-button-family); font-size: var(--t-body-sm-size); font-weight: var(--t-button-weight);
+  color: var(--c-body); background: var(--c-surface);
+  border: var(--border-w) solid var(--c-hairline-strong); border-radius: var(--radius-sm); cursor: pointer;
+}
+.pagination button:hover:not(:disabled) { background: var(--c-surface-soft); }
+.pagination button[aria-current="page"] { background: var(--c-primary-soft); color: var(--c-primary); border-color: var(--c-primary); }
+.pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- row actions (per-object ⋯ menu / inline CTA) ----------
+ * The single source for a row's action entry point (AUTHORING_RULES #3).
+ * Trigger is the ⋯ button; .row-menu is the dropdown. */
+.row-actions { position: relative; display: inline-flex; }
+.row-actions-trigger {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: var(--radius-sm);
+  color: var(--c-body); background: transparent; border: none; cursor: pointer;
+}
+.row-actions-trigger:hover { background: var(--c-surface-soft); }
+.row-menu {
+  position: absolute; right: 0; top: 100%; z-index: 30; min-width: 160px;
+  background: var(--c-surface); border: var(--border-w) solid var(--c-hairline);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-2); padding: var(--space-xs);
+}
+.row-menu-item {
+  display: flex; align-items: center; gap: var(--space-sm); width: 100%;
+  padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm);
+  font-size: var(--t-body-sm-size); color: var(--c-body); background: none; border: none; cursor: pointer; text-align: left;
+}
+.row-menu-item:hover { background: var(--c-surface-soft); }
+.row-menu-item.is-danger { color: var(--c-error); }
+
+/* ---------- bulk action bar (low-risk repetitive only; AUTHORING_RULES #8) ----------
+ * Row checkboxes + a bar showing the selected count/sum + a primary action that
+ * opens a confirm .modal. Ineligible rows render a disabled .row-check with the
+ * reason in aria-label. The bar is hidden when nothing is selected. */
+.row-check { width: 20px; height: 20px; accent-color: var(--c-primary); cursor: pointer; }
+.row-check:disabled { cursor: not-allowed; opacity: 0.5; }
+.bulk-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--c-primary-soft); color: var(--c-primary);
+  border-radius: var(--radius-md);
+}
+.bulk-bar .bulk-count { font-weight: var(--t-weight-semibold, var(--t-button-weight)); }
+.bulk-bar[hidden] { display: none; }
+
+/* ---------- modal / dialog (single source — confirm | form | select) ----------
+ * One overlay vocabulary reused by every dialog AND bulk-confirm AND mobile
+ * bottom-sheet. Sizes: sm (confirm) / md (form, select) / lg only when a full
+ * page is wrong. Footer buttons right-aligned, order [cancel][primary].
+ * a11y (see CONSISTENCY_RULES "Modal a11y"): role="dialog" aria-modal="true"
+ * aria-labelledby the title; trap focus; ESC + scrim click close. */
+.modal-scrim {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center; padding: var(--space-lg);
+  background: color-mix(in srgb, var(--c-ink) 45%, transparent);
+}
+/* toggle the overlay with the `hidden` attribute (needed because .modal-scrim
+ * sets display:flex, which beats the UA [hidden] rule). */
+.modal-scrim[hidden] { display: none; }
+.modal {
+  width: 100%; max-width: var(--modal-md, 520px);
+  background: var(--c-surface); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3); display: flex; flex-direction: column; max-height: 90vh;
+}
+.modal.modal-sm { max-width: var(--modal-sm, 400px); }
+.modal.modal-lg { max-width: var(--modal-lg, 720px); }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-md);
+  padding: var(--space-lg) var(--space-xl); border-bottom: var(--border-w) solid var(--c-hairline);
+}
+.modal-title { margin: 0; font-family: var(--t-title-md-family); font-size: var(--t-title-md-size); font-weight: var(--t-title-md-weight); color: var(--c-ink); }
+.modal-close { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border: none; background: none; color: var(--c-muted); cursor: pointer; border-radius: var(--radius-sm); }
+.modal-close:hover { background: var(--c-surface-soft); }
+.modal-body { padding: var(--space-xl); overflow-y: auto; }
+.modal-footer { display: flex; justify-content: flex-end; gap: var(--space-md); padding: var(--space-lg) var(--space-xl); border-top: var(--border-w) solid var(--c-hairline); }
+/* mobile: a modal becomes a bottom-sheet (single shared pattern) */
+.bottom-sheet {
+  width: 100%; max-width: 100%; margin-top: auto;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 90vh;
+}
+@media (max-width: 600px) {
+  .modal-scrim { align-items: flex-end; padding: 0; }
+  .modal { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-width: 100%; }
+}
+
+/* ---------- filter chip (removable active filter) ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: var(--space-xs);
+  padding: var(--space-xxs) var(--space-sm); border-radius: var(--radius-pill);
+  background: var(--c-surface-soft); color: var(--c-body);
+  font-size: var(--t-caption-size); font-weight: var(--t-caption-weight);
+}
+.chip .chip-remove { display: inline-flex; align-items: center; cursor: pointer; color: var(--c-muted); background: none; border: none; padding: 0; }
+.chip .chip-remove:hover { color: var(--c-ink); }
+/* empty-state variant — "no results for this filter" vs the default "no data yet".
+ * A MODIFIER on the existing .empty-state, never a parallel class (Hard rule). */
+.empty-state.is-filtered { color: var(--c-body); }
+
+/* ---------- feedback: toast / skeleton / spinner ----------
+ * Shared so loading + success/error feedback don't get re-drawn per page
+ * (AUTHORING_RULES "Component vocabulary" names toast/skeleton as shared). */
+.toast {
+  display: flex; align-items: center; gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg); border-radius: var(--radius-md);
+  background: var(--c-surface); border: var(--border-w) solid var(--c-hairline); box-shadow: var(--shadow-2);
+  color: var(--c-body);
+}
+.toast.is-success { border-color: var(--c-success); color: var(--c-success); }
+.toast.is-error { border-color: var(--c-error); color: var(--c-error); }
+.skeleton {
+  background: linear-gradient(90deg, var(--c-surface-soft) 25%, var(--c-hairline) 37%, var(--c-surface-soft) 63%);
+  background-size: 400% 100%; border-radius: var(--radius-sm); min-height: 1em;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+@keyframes skeleton-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+.spinner {
+  width: 24px; height: 24px; border-radius: var(--radius-pill);
+  border: 2px solid var(--c-hairline); border-top-color: var(--c-primary);
+  animation: spinner-rotate 0.8s linear infinite;
+}
+@keyframes spinner-rotate { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2s; } }
+
+/* ---------- keyboard focus (single source — WCAG 2.4.7) ----------
+ * Every interactive control shows the SAME focus ring on keyboard focus.
+ * :focus-visible so mouse clicks don't ring. Inputs keep their own :focus
+ * (above) for the always-on field outline. */
+.btn:focus-visible, .tab:focus-visible, .nav-link:focus-visible, .tabbar-item:focus-visible,
+.nav-toggle:focus-visible,
+a:focus-visible, .chip:focus-visible, .chip-remove:focus-visible,
+.row-actions-trigger:focus-visible, .row-menu-item:focus-visible,
+.table th.sortable:focus-visible, .pagination button:focus-visible,
+.modal-close:focus-visible, .row-check:focus-visible {
+  outline: 2px solid var(--c-focus-ring); outline-offset: 2px; border-radius: var(--radius-sm);
+}
+
+
+/* sub-page nav — back-link + breadcrumb (generic; most apps with detail pages need these) */
+.back-link { display: inline-flex; align-items: center; gap: var(--space-xs); font-family: var(--t-button-family); font-size: var(--t-body-sm-size); font-weight: var(--t-button-weight); color: var(--c-body); margin-bottom: var(--space-lg); }
+.back-link:hover { color: var(--c-primary); text-decoration: none; }
+.breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); list-style: none; margin: 0 0 var(--space-md); padding: 0; font-size: var(--t-body-sm-size); color: var(--c-muted); }
+.breadcrumb a { color: var(--c-muted); }
+.breadcrumb a:hover { color: var(--c-primary); }
+.breadcrumb li[aria-hidden] { color: var(--c-hairline-strong); }
+
+/* ==========================================================================
+ * E-Tutor additions — classes the base vocabulary does not cover.
+ * Everything below is NEW; no base class is re-declared (CONSISTENCY_RULES 8).
+ * Values are token-only.
+ * ========================================================================== */
+
+/* ---------- student chrome: top bar ---------- */
+.site-topbar {
+  background: var(--c-surface);
+  border-bottom: var(--border-w) solid var(--c-hairline);
+  position: sticky; top: 0; z-index: 30;
+}
+.site-topbar__utility {
+  background: var(--c-canvas);
+  border-bottom: var(--border-w) solid var(--c-hairline);
+}
+.site-topbar__inner {
+  max-width: var(--container-max); margin: 0 auto;
+  display: flex; align-items: center; gap: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+}
+.site-topbar__spacer { flex: 1; }
+.brand { display: inline-flex; align-items: center; gap: var(--space-sm); color: var(--c-ink); }
+.brand__mark {
+  width: 32px; height: 32px; border-radius: var(--radius-md);
+  background: var(--c-primary); color: var(--c-on-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.brand__name {
+  font-family: var(--t-title-lg-family); font-size: var(--t-title-lg-size);
+  font-weight: var(--t-weight-bold); color: var(--c-ink); letter-spacing: -0.2px;
+}
+.site-nav { display: flex; align-items: center; gap: var(--space-xl); list-style: none; margin: 0; padding: 0; }
+.site-nav__link {
+  font-family: var(--t-button-family); font-size: var(--t-body-sm-size);
+  font-weight: var(--t-weight-medium); color: var(--c-body); white-space: nowrap;
+}
+.site-nav__link:hover { color: var(--c-primary); text-decoration: none; }
+.site-nav__link[aria-current="page"] { color: var(--c-primary); font-weight: var(--t-weight-semibold); }
+.icon-btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: var(--control-h); height: var(--control-h);
+  border: none; background: none; color: var(--c-primary);
+  border-radius: var(--radius-md); cursor: pointer;
+}
+.icon-btn:hover { background: var(--c-primary-soft); }
+.icon-btn__count {
+  position: absolute; top: var(--space-xs); right: var(--space-xs);
+  min-width: 18px; height: 18px; padding: 0 var(--space-xxs);
+  border-radius: var(--radius-pill);
+  background: var(--c-primary); color: var(--c-on-primary);
+  font-size: var(--t-caption-size); font-weight: var(--t-weight-bold);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* ---------- student chrome: footer ---------- */
+.site-footer { background: var(--c-canvas); border-top: var(--border-w) solid var(--c-hairline); }
+.site-footer__inner {
+  max-width: var(--container-max); margin: 0 auto;
+  padding: var(--space-xxl) var(--space-xl);
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-xl);
+}
+.site-footer__title {
+  font-family: var(--t-caption-family); font-size: var(--t-caption-size);
+  font-weight: var(--t-weight-bold); color: var(--c-ink);
+  text-transform: uppercase; letter-spacing: var(--t-caption-ls);
+  margin-bottom: var(--space-md);
+}
+.site-footer__link { display: block; color: var(--c-body); font-size: var(--t-body-sm-size); padding: var(--space-xs) 0; }
+.site-footer__link:hover { color: var(--c-primary); text-decoration: none; }
+.site-footer__social { display: flex; gap: var(--space-sm); }
+.social-btn {
+  width: 36px; height: 36px; border-radius: var(--radius-md);
+  background: var(--c-primary-soft); color: var(--c-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.social-btn:hover { background: var(--c-primary); color: var(--c-on-primary); text-decoration: none; }
+.store-badges { display: flex; flex-direction: column; gap: var(--space-sm); }
+.store-badges img { width: 148px; height: auto; border-radius: var(--radius-sm); }
+.site-footer__bottom {
+  border-top: var(--border-w) solid var(--c-hairline);
+  max-width: var(--container-max); margin: 0 auto;
+  padding: var(--space-md) var(--space-xl);
+  display: flex; justify-content: space-between; align-items: center;
+  color: var(--c-muted); font-size: var(--t-caption-size);
+}
+@media (max-width: 900px) { .site-footer__inner { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .site-footer__inner { grid-template-columns: 1fr; } }
+
+/* ---------- page scaffolding ---------- */
+.page { max-width: var(--container-max); margin: 0 auto; padding: var(--space-xxl) var(--space-xl); }
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-lg); margin-bottom: var(--space-xl); }
+.section-head { margin-bottom: var(--space-xl); }
+.section-head__rule { width: 48px; height: 3px; background: var(--c-primary); border-radius: var(--radius-pill); margin-top: var(--space-sm); }
+.split { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-xl); align-items: start; }
+.split--wide { grid-template-columns: 3fr 1fr; }
+@media (max-width: 900px) { .split, .split--wide { grid-template-columns: 1fr; } }
+.sticky-col { position: sticky; top: calc(var(--space-section) + var(--space-xl)); }
+
+/* ---------- hero ---------- */
+.hero-split {
+  background: var(--hero-bg);
+  border-bottom: var(--border-w) solid var(--c-hairline);
+}
+.hero-split__inner {
+  max-width: var(--container-max); margin: 0 auto;
+  padding: var(--space-section) var(--space-xl);
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xxl); align-items: center;
+}
+@media (max-width: 900px) { .hero-split__inner { grid-template-columns: 1fr; } }
+
+/* ---------- course card extras ---------- */
+.course-card__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+.course-card__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: var(--border-w) solid var(--c-hairline);
+  margin-top: var(--space-md); padding-top: var(--space-md);
+}
+.price { font-family: var(--t-title-md-family); font-size: var(--t-title-md-size); font-weight: var(--t-weight-bold); color: var(--c-primary); }
+.price--lg { font-size: var(--t-display-md-size); }
+.price--was { color: var(--c-muted); font-weight: var(--t-weight-regular); text-decoration: line-through; margin-left: var(--space-xs); font-size: var(--t-body-sm-size); }
+.rating { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--c-ink); font-size: var(--t-body-sm-size); }
+.rating .lucide { color: var(--c-primary); }
+
+/* ---------- category tile ---------- */
+.category-tile {
+  display: flex; align-items: center; gap: var(--space-md);
+  padding: var(--space-md); border-radius: var(--radius-lg);
+  background: var(--c-surface); border: var(--border-w) solid var(--c-hairline);
+}
+.category-tile:hover { box-shadow: var(--shadow-1); text-decoration: none; border-color: var(--c-primary); }
+.category-tile__icon {
+  width: 56px; height: 56px; border-radius: var(--radius-md);
+  background: var(--c-primary-soft);
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.category-tile__icon img { width: 32px; height: 32px; object-fit: contain; }
+
+/* ---------- filters ---------- */
+.filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-bottom: var(--space-xl); }
+.filter-bar .search { max-width: 320px; }
+
+/* ---------- accordion (syllabus) ---------- */
+.accordion { border: var(--border-w) solid var(--c-hairline); border-radius: var(--radius-lg); overflow: hidden; background: var(--c-surface); }
+.accordion__item + .accordion__item { border-top: var(--border-w) solid var(--c-hairline); }
+.accordion__trigger {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--space-md);
+  padding: var(--space-lg); background: none; border: none; cursor: pointer; text-align: left;
+  font-family: var(--t-title-md-family); font-size: var(--t-title-md-size);
+  font-weight: var(--t-title-md-weight); color: var(--c-ink);
+}
+.accordion__trigger:hover { background: var(--c-surface-soft); }
+.accordion__panel { padding: 0 var(--space-lg) var(--space-lg); }
+.accordion__panel[hidden] { display: none; }
+
+/* ---------- buy box ---------- */
+.buybox { position: sticky; top: var(--space-xl); }
+.feature-row { display: flex; align-items: flex-start; gap: var(--space-md); }
+.feature-row__num {
+  width: 28px; height: 28px; border-radius: var(--radius-pill); flex-shrink: 0;
+  background: var(--c-primary-soft); color: var(--c-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: var(--t-caption-size); font-weight: var(--t-weight-bold);
+}
+
+/* ---------- progress ---------- */
+.progress { height: 8px; border-radius: var(--radius-pill); background: var(--c-hairline); overflow: hidden; }
+.progress__fill { height: 100%; background: var(--c-primary); border-radius: var(--radius-pill); }
+
+/* ---------- lesson list / player ---------- */
+.player-stage {
+  aspect-ratio: var(--aspect-video); border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--media-fallback);
+  display: flex; align-items: center; justify-content: center; color: var(--c-muted);
+}
+.lesson-row { display: flex; align-items: center; gap: var(--space-md); width: 100%; }
+.lesson-row__icon { color: var(--c-primary); flex-shrink: 0; }
+.lesson-row__body { flex: 1; min-width: 0; }
+
+/* ---------- cart ---------- */
+.cart-line {
+  display: flex; gap: var(--space-lg); padding: var(--space-lg) 0;
+  border-bottom: var(--border-w) solid var(--c-hairline);
+}
+.cart-line__thumb { width: 112px; flex-shrink: 0; }
+.cart-line__body { flex: 1; min-width: 0; }
+.qty { display: inline-flex; align-items: center; gap: var(--space-md); border: var(--border-w) solid var(--c-hairline); border-radius: var(--radius-pill); padding: var(--space-xxs) var(--space-sm); }
+.qty__btn {
+  width: 28px; height: 28px; border-radius: var(--radius-pill); border: none;
+  background: var(--c-surface-soft); color: var(--c-primary); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.qty__btn:hover { background: var(--c-primary-soft); }
+.summary-row { display: flex; align-items: center; justify-content: space-between; }
+.summary-row--total { border-top: var(--border-w) solid var(--c-hairline); padding-top: var(--space-md); margin-top: var(--space-md); }
+.coupon-row { display: flex; gap: var(--space-sm); }
+
+/* ---------- auth ---------- */
+.auth-wrap { display: flex; align-items: center; justify-content: center; padding: var(--space-section) var(--space-xl); }
+.auth-card { width: 100%; max-width: 420px; }
+
+/* ---------- steps (become an instructor) ---------- */
+.step-row { display: flex; align-items: center; gap: var(--space-md); }
+.step-row__num {
+  width: 32px; height: 32px; border-radius: var(--radius-pill); flex-shrink: 0;
+  background: var(--c-primary-soft); color: var(--c-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: var(--t-weight-bold);
+}
+
+/* ---------- admin extras ---------- */
+.admin-sidebar__brand { padding: var(--space-lg); border-bottom: var(--border-w) solid var(--c-hairline); }
+.admin-sidebar__group {
+  padding: var(--space-lg) var(--space-lg) var(--space-xs);
+  font-size: var(--t-caption-size); font-weight: var(--t-weight-bold);
+  color: var(--c-muted); text-transform: uppercase; letter-spacing: var(--t-caption-ls);
+}
+.table-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.table-toolbar__spacer { flex: 1; }
+.detail-list { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-sm) var(--space-xl); }
+.detail-list dt { color: var(--c-muted); font-size: var(--t-body-sm-size); margin: 0; }
+.detail-list dd { color: var(--c-ink); font-size: var(--t-body-sm-size); margin: 0; }
+
+/* ---------- accessible orange-as-text ----------
+ * --c-primary is the brand FILL (#ff6636). At 2.9:1 on canvas it is not a legal
+ * text color, so every rule that paints TEXT with it is repointed to
+ * --c-primary-text (4.56:1). Fills, borders and backgrounds keep the brand value. */
+.nav-link:hover,
+.nav-link.is-active, .nav-link[aria-current="page"],
+.sidebar .nav-link.is-active, .sidebar .nav-link[aria-current="page"],
+.tabbar-item.is-active, .tabbar-item[aria-current="page"],
+.tab.is-active, .tab[aria-current="page"],
+.badge-primary,
+.pagination button[aria-current="page"],
+.back-link:hover, .breadcrumb a:hover,
+.site-nav__link:hover, .site-nav__link[aria-current="page"],
+.icon-btn, .social-btn, .category-tile__icon,
+.price, .rating .lucide, .feature-row__num, .qty__btn, .step-row__num,
+.lesson-row__icon { color: var(--c-primary-text); }
+.icon-btn:hover { color: var(--c-primary-text); }
+.social-btn:hover { color: var(--c-on-primary); }
+
+/* ---------- safe-area insets ----------
+ * Layout-owned, so it lives in the shared sheet rather than in every page's own
+ * <style>: the chrome is one component and its notch/home-bar padding is part of it.
+ * Applied to the shells, not to body, so a full-bleed media band still reaches the edge. */
+.site-topbar__inner,
+.site-footer__inner,
+.site-footer__bottom,
+.app-topbar,
+.page {
+  padding-left: max(var(--space-xl), env(safe-area-inset-left));
+  padding-right: max(var(--space-xl), env(safe-area-inset-right));
+}
+.site-footer__bottom { padding-bottom: max(var(--space-md), env(safe-area-inset-bottom)); }
+.app-body { padding-bottom: max(var(--space-xl), env(safe-area-inset-bottom)); }

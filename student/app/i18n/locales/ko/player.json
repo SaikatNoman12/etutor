@@ -1,0 +1,15 @@
+{
+  "completeSuccess": "Lesson marked complete",
+  "completeError": "Could not save your progress",
+  "backToLearning": "My learning",
+  "loadError": "We could not load this lesson. Please try again.",
+  "retry": "Try again",
+  "empty": "There are no lessons available for this course yet.",
+  "saving": "Saving…",
+  "markComplete": "Mark as complete",
+  "nextLesson": "Next lesson",
+  "courseContent": "Course content",
+  "complete": "complete",
+  "min": "min",
+  "pickLessonHint": "Pick a lesson to switch the stage and title."
+}

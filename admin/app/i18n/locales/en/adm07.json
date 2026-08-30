@@ -1,0 +1,22 @@
+{
+  "backOrders": "Orders",
+  "order": "Order",
+  "loading": "Loading…",
+  "error": "Unable to load this order",
+  "course": "Course",
+  "unitPrice": "Unit price",
+  "quantity": "Quantity",
+  "noItems": "No items on this order",
+  "total": "Total",
+  "saving": "Saving…",
+  "markPaid": "Mark as paid",
+  "refunding": "Refunding…",
+  "refund": "Refund",
+  "details": "Details",
+  "student": "Student",
+  "email": "Email",
+  "placed": "Placed",
+  "coupon": "Coupon",
+  "method": "Method",
+  "openStudent": "Open student"
+}

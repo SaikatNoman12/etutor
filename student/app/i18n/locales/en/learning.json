@@ -1,0 +1,12 @@
+{
+  "title": "My learning",
+  "searchPlaceholder": "Search my courses",
+  "loadError": "We could not load your courses. Please try again.",
+  "retry": "Try again",
+  "empty": "You have not enrolled in any courses yet.",
+  "browse": "Browse courses",
+  "complete": "complete",
+  "review": "Review",
+  "continue": "Continue",
+  "home": "Home"
+}

@@ -1,0 +1,51 @@
+{
+  "app": {
+    "name": "E-Tutor",
+    "tagline": "Learn with experts, anytime, anywhere"
+  },
+  "brand": {
+    "name": "E-Tutor"
+  },
+  "nav": {
+    "home": "Home",
+    "courses": "Courses",
+    "instructors": "Instructors",
+    "myLearning": "My learning",
+    "orders": "Orders",
+    "profile": "Profile",
+    "cart": "Cart",
+    "menu": "Menu"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "browseCourses": "Browse courses"
+  },
+  "actions": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "confirm": "Confirm",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "loading": "Loading..."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "We couldn't find the page you were looking for. It may have been moved or removed.",
+    "backToHome": "Back to home"
+  },
+  "empty": {
+    "title": "Nothing here yet",
+    "description": "There's no data to display."
+  },
+  "language": {
+    "en": "English",
+    "ko": "한국어"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "orderPlaced": "Order placed",
+  "paymentConfirmed": "Payment confirmed and courses unlocked",
+  "orderFailed": "Could not place the order",
+  "cart": "Cart",
+  "title": "Checkout",
+  "billingDetails": "Billing details",
+  "fullName": "Full name",
+  "email": "Email",
+  "country": "Country",
+  "paymentMethod": "Payment method",
+  "placing": "Placing order…",
+  "placeOrder": "Place order",
+  "orderSummary": "Order summary",
+  "loadError": "We could not load your order summary. Please try again.",
+  "retry": "Try again",
+  "empty": "Your cart is empty.",
+  "coupon": "Coupon {{code}}",
+  "discount": "Discount",
+  "total": "Total",
+  "home": "Home"
+}

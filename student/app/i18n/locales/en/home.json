@@ -1,0 +1,22 @@
+{
+  "students": "students",
+  "heroSubtitle": "Browse expert-led courses, enrol in one click and pick up exactly where you left off.",
+  "categoriesTitle": "Browse top categories",
+  "categoriesSubtitle": "Pick a subject and start today",
+  "loadError": "We could not load categories right now.",
+  "course": "course",
+  "courses": "courses",
+  "bestSellingTitle": "Best selling courses",
+  "bestSellingSubtitle": "What learners are buying this month",
+  "recentTitle": "Recently added",
+  "recentSubtitle": "Fresh from our instructors",
+  "teachTitle": "Teach on E-Tutor",
+  "teachSubtitle": "Four steps from idea to first learner",
+  "step1": "Plan your curriculum",
+  "step2": "Record your lessons",
+  "step3": "Publish and set a price",
+  "step4": "Get paid every month",
+  "becomeInstructor": "Become an instructor",
+  "instructorsTitle": "Top instructors",
+  "instructorsSubtitle": "Learn from people who do the work"
+}

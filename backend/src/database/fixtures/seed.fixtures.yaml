@@ -1,0 +1,211 @@
+# E-Tutor test fixtures — the credentials and seed rows every user story references.
+# Authored by hand: no pipeline phase writes this file. scaffold-seed-script inserts
+# `users` and `seed_data`; global-setup logs each user in and saves its storageState;
+# scaffold-story-specs maps a story's `role` to the fixture user by numeric `role`.
+#
+# Role numbers are UserRole from the PRD (Section 1 / Section 6): student 1,
+# instructor 2, admin 99. They are integers here because the seed writes the integer
+# column and the spec generator ranks privilege numerically.
+
+generated: 2026-08-24
+project: etutor
+
+users:
+  student:
+    key: student
+    email: student@etutor.test
+    password: Student123!
+    role: 1
+    role_name: STUDENT
+    display_name: Nadia Rahman
+    full_name: Nadia Rahman
+    status: 1
+    email_verified: true
+    country: Bangladesh
+    storage_state: storageState-student.json
+    fullName: "Student"  # [scaffold-fixture-completeness] added
+
+  student_alt:
+    key: student_alt
+    email: student2@etutor.test
+    password: Student123!
+    role: 1
+    role_name: STUDENT
+    display_name: Tomas Berg
+    full_name: Tomas Berg
+    status: 1
+    email_verified: true
+    country: Sweden
+    storage_state: storageState-student-alt.json
+    fullName: "Student Alt"  # [scaffold-fixture-completeness] added
+
+  instructor:
+    key: instructor
+    email: instructor@etutor.test
+    password: Instructor123!
+    role: 2
+    role_name: INSTRUCTOR
+    display_name: James Smith
+    full_name: James Smith
+    status: 1
+    email_verified: true
+    headline: Senior Software Engineer
+    bio: Fifteen years building web platforms; teaching the parts that took me longest to learn.
+    storage_state: storageState-instructor.json
+    fullName: "Instructor"  # [scaffold-fixture-completeness] added
+
+  instructor_alt:
+    key: instructor_alt
+    email: instructor2@etutor.test
+    password: Instructor123!
+    role: 2
+    role_name: INSTRUCTOR
+    display_name: Amelia Clark
+    full_name: Amelia Clark
+    status: 1
+    email_verified: true
+    headline: Product Designer
+    bio: Designer turned educator, focused on interface craft.
+    storage_state: storageState-instructor-alt.json
+    fullName: "Instructor Alt"  # [scaffold-fixture-completeness] added
+
+  admin:
+    key: admin
+    email: admin@etutor.test
+    password: Admin123!
+    role: 99
+    role_name: ADMIN
+    display_name: Site Admin
+    full_name: Site Admin
+    status: 1
+    email_verified: true
+    storage_state: storageState-admin.json
+    fullName: "Admin"  # [scaffold-fixture-completeness] added
+
+seed_data:
+  categories:
+    - { slug: development, name: Development, display_order: 1, is_active: true }
+    - { slug: business, name: Business, display_order: 2, is_active: true }
+    - { slug: finance-accounting, name: Finance & Accounting, display_order: 3, is_active: true }
+    - { slug: it-software, name: IT & Software, display_order: 4, is_active: true }
+    - { slug: design, name: Design, display_order: 5, is_active: true }
+    - { slug: marketing, name: Marketing, display_order: 6, is_active: true }
+    - { slug: photography, name: Photography, display_order: 7, is_active: true }
+    - { slug: music, name: Music, display_order: 8, is_active: true }
+
+  courses:
+    # status 1 = PUBLISHED, 0 = DRAFT. level 1 = BEGINNER, 2 = INTERMEDIATE, 3 = ADVANCED.
+    - slug: complete-web-development-bootcamp
+      title: The Complete Web Development Bootcamp
+      category: development
+      instructor: instructor
+      price: 89.00
+      compare_at_price: 129.00
+      level: 1
+      status: 1
+      duration_minutes: 2520
+      rating_avg: 4.8
+      rating_count: 1204
+      student_count: 12480
+      summary: Build and deploy real applications from the first week.
+    - slug: machine-learning-a-z
+      title: Machine Learning A-Z with Python and R
+      category: it-software
+      instructor: instructor
+      price: 94.00
+      compare_at_price: 140.00
+      level: 2
+      status: 1
+      duration_minutes: 2760
+      rating_avg: 4.7
+      rating_count: 931
+      student_count: 9315
+      summary: Regression to deep learning, one worked dataset at a time.
+    - slug: python-programming-masterclass
+      title: Python Programming Masterclass
+      category: development
+      instructor: instructor
+      price: 74.00
+      compare_at_price: 110.00
+      level: 1
+      status: 1
+      duration_minutes: 1980
+      rating_avg: 4.6
+      rating_count: 890
+      student_count: 8902
+      summary: The language from first principles, ending in three shipped tools.
+    - slug: ui-ux-design-fundamentals
+      title: UI/UX Design Fundamentals with Figma
+      category: design
+      instructor: instructor_alt
+      price: 79.00
+      compare_at_price: 120.00
+      level: 1
+      status: 1
+      duration_minutes: 1560
+      rating_avg: 4.9
+      rating_count: 621
+      student_count: 6218
+      summary: Interface craft, from grid to prototype.
+    - slug: digital-marketing-12-in-1
+      title: "Digital Marketing: 12 Courses in 1"
+      category: marketing
+      instructor: instructor_alt
+      price: 68.00
+      compare_at_price: 99.00
+      level: 2
+      status: 1
+      duration_minutes: 2100
+      rating_avg: 4.5
+      rating_count: 764
+      student_count: 7640
+      summary: Every channel, with the measurement that makes each one honest.
+    - slug: foundations-of-stock-trading
+      title: Foundations of Stock Trading
+      category: finance-accounting
+      instructor: instructor
+      price: 59.00
+      compare_at_price: 85.00
+      level: 1
+      status: 0
+      duration_minutes: 1320
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
+      summary: A draft course, used to prove that unpublished rows stay out of the catalogue.
+
+  course_sections:
+    - { course: complete-web-development-bootcamp, title: Getting started, display_order: 1 }
+    - { course: complete-web-development-bootcamp, title: HTML and semantic markup, display_order: 2 }
+    - { course: complete-web-development-bootcamp, title: CSS and layout, display_order: 3 }
+    - { course: machine-learning-a-z, title: Foundations, display_order: 1 }
+    - { course: ui-ux-design-fundamentals, title: Interface basics, display_order: 1 }
+
+  lessons:
+    # content_type 1 = VIDEO, 2 = ARTICLE
+    - { course: complete-web-development-bootcamp, section: Getting started, title: Welcome and course map, content_type: 1, duration_minutes: 8, display_order: 1, is_preview: true, is_published: true }
+    - { course: complete-web-development-bootcamp, section: Getting started, title: How the web works, content_type: 1, duration_minutes: 12, display_order: 2, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: HTML and semantic markup, title: Semantic HTML, content_type: 1, duration_minutes: 15, display_order: 1, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: HTML and semantic markup, title: Lecture notes, content_type: 2, duration_minutes: 5, display_order: 2, is_preview: false, is_published: true }
+    - { course: complete-web-development-bootcamp, section: CSS and layout, title: CSS box model, content_type: 1, duration_minutes: 14, display_order: 1, is_preview: false, is_published: true }
+    - { course: machine-learning-a-z, section: Foundations, title: What a model is, content_type: 1, duration_minutes: 11, display_order: 1, is_preview: true, is_published: true }
+    - { course: machine-learning-a-z, section: Foundations, title: Loading a dataset, content_type: 1, duration_minutes: 17, display_order: 2, is_preview: false, is_published: true }
+    - { course: ui-ux-design-fundamentals, section: Interface basics, title: Grids and spacing, content_type: 1, duration_minutes: 13, display_order: 1, is_preview: true, is_published: true }
+
+  coupons:
+    # discount_type 1 = PERCENT, 2 = FIXED
+    - { code: LEARN10, discount_type: 1, discount_value: 10, max_uses: 500, used_count: 148, valid_until: '2026-12-31T23:59:59Z', is_active: true }
+    - { code: WELCOME25, discount_type: 2, discount_value: 25, max_uses: 200, used_count: 62, valid_until: '2026-09-30T23:59:59Z', is_active: true }
+    - { code: EXPIRED20, discount_type: 1, discount_value: 20, max_uses: 200, used_count: 200, valid_until: '2026-01-31T23:59:59Z', is_active: false }
+
+  enrollments:
+    # status 1 = ACTIVE, 2 = COMPLETED
+    - { user: student, course: complete-web-development-bootcamp, status: 1, progress_percent: 40 }
+    - { user: student, course: machine-learning-a-z, status: 1, progress_percent: 0 }
+    - { user: student_alt, course: ui-ux-design-fundamentals, status: 2, progress_percent: 100 }
+
+  orders:
+    # status 0 = PENDING, 1 = PAID
+    - { order_number: ET-1042, user: student, status: 1, items: [complete-web-development-bootcamp, machine-learning-a-z], coupon: LEARN10 }
+    - { order_number: ET-1038, user: student_alt, status: 1, items: [ui-ux-design-fundamentals] }
+    - { order_number: ET-1031, user: student, status: 0, items: [python-programming-masterclass] }

@@ -1,0 +1,408 @@
+{
+  "app": {
+    "name": "E-Tutor",
+    "tagline": "Welcome"
+  },
+  "brand": {
+    "name": "E-Tutor"
+  },
+  "nav": {
+    "menu": "Menu",
+    "home": "Home"
+  },
+  "actions": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "confirm": "Confirm",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "loading": "Loading...",
+    "actions": "actions",
+    "selectedCount": "selectedCount",
+    "clear": "clear",
+    "editEntity": "editEntity",
+    "createEntity": "createEntity",
+    "create": "create",
+    "view": "view",
+    "rowMenu": "rowMenu",
+    "selectRow": "selectRow",
+    "export": "export",
+    "selectAll": "selectAll",
+    "saving": "saving",
+    "retry": "retry",
+    "suspend": "suspend",
+    "activate": "activate",
+    "deactivate": "deactivate"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "We couldn't find the page you were looking for. It may have been moved or removed.",
+    "backToHome": "Back to home",
+    "home": "Back to home"
+  },
+  "empty": {
+    "title": "Nothing here yet",
+    "description": "There's no data to display.",
+    "error": "Unable to load this order"
+  },
+  "language": {
+    "en": "English",
+    "ko": "한국어"
+  },
+  "pagination": {
+    "page": "page",
+    "prev": "prev",
+    "next": "Next"
+  },
+  "admin": {
+    "dashboard": {
+      "kpi": {
+        "publishedCourses": "Published courses",
+        "students": "Students",
+        "paidOrders": "Paid orders (30d)",
+        "revenue": "Revenue (30d)"
+      },
+      "home": "Home",
+      "title": "Enrollments",
+      "metrics": "Key metrics",
+      "metricsError": "Unable to load metrics",
+      "recentOrders": "Recent orders",
+      "allOrders": "All orders",
+      "ordersError": "Unable to load orders",
+      "ordersEmpty": "No orders yet",
+      "col": {
+        "order": "Order",
+        "student": "Student",
+        "total": "Total",
+        "status": "Status"
+      },
+      "topCourses": "Top courses",
+      "topCoursesError": "Unable to load courses",
+      "topCoursesEmpty": "No courses yet"
+    },
+    "courses": {
+      "updated": "updated",
+      "updateFailed": "updateFailed",
+      "created": "created",
+      "deleted": "deleted",
+      "deleteFailed": "deleteFailed",
+      "exportStarted": "exportStarted",
+      "bulkDeleted": "bulkDeleted",
+      "bulkDeleteFailed": "bulkDeleteFailed",
+      "status": {
+        "published": "published",
+        "archived": "archived",
+        "draft": "draft"
+      },
+      "col": {
+        "course": "Course",
+        "category": "category",
+        "instructor": "instructor",
+        "price": "price",
+        "students": "Students",
+        "status": "Status"
+      },
+      "title": "Enrollments",
+      "searchPlaceholder": "Search",
+      "new": "new",
+      "selectAll": "selectAll",
+      "loadError": "loadError",
+      "empty": "No enrollments found",
+      "insights": {
+        "search": "search",
+        "price": "price"
+      },
+      "noMatches": "noMatches",
+      "noData": "noData",
+      "editTitle": "editTitle",
+      "newTitle": "newTitle",
+      "field": {
+        "title": "Enrollments",
+        "category": "category",
+        "categoryHint": "categoryHint",
+        "instructor": "instructor",
+        "instructorHint": "instructorHint",
+        "price": "price",
+        "level": "level",
+        "select": "select",
+        "status": "Status",
+        "summary": "summary"
+      },
+      "level": {
+        "beginner": "beginner",
+        "intermediate": "intermediate",
+        "advanced": "advanced"
+      }
+    },
+    "courseDetail": {
+      "selectLesson": "selectLesson",
+      "order": "Order",
+      "section": "section",
+      "lesson": "lesson",
+      "type": "type",
+      "duration": "duration",
+      "backToCourses": "backToCourses",
+      "loadError": "loadError",
+      "notFound": "notFound",
+      "course": "Course",
+      "titleField": "titleField",
+      "slug": "slug",
+      "category": "category",
+      "selectCategory": "selectCategory",
+      "instructor": "instructor",
+      "selectInstructor": "selectInstructor",
+      "price": "price",
+      "status": "Status",
+      "summary": "summary",
+      "saving": "saving",
+      "saveCourse": "saveCourse",
+      "sectionsAndLessons": "sectionsAndLessons",
+      "addLesson": "addLesson",
+      "searchLessons": "searchLessons",
+      "export": "export",
+      "deleting": "deleting",
+      "delete": "delete",
+      "noLessons": "noLessons",
+      "durationMinutes": "durationMinutes",
+      "atAGlance": "atAGlance",
+      "students": "Students",
+      "rating": "rating",
+      "lessons": "lessons",
+      "viewEnrollments": "viewEnrollments"
+    },
+    "categories": {
+      "stat": {
+        "total": "Total",
+        "active": "active",
+        "courses": "courses"
+      },
+      "updated": "updated",
+      "created": "created",
+      "deleted": "deleted",
+      "deleteFailed": "deleteFailed",
+      "exportStarted": "exportStarted",
+      "bulkDeleted": "bulkDeleted",
+      "bulkDeleteFailed": "bulkDeleteFailed",
+      "status": {
+        "active": "active",
+        "hidden": "hidden"
+      },
+      "col": {
+        "name": "name",
+        "slug": "slug",
+        "courses": "courses",
+        "order": "Order",
+        "active": "active"
+      },
+      "title": "Enrollments",
+      "searchPlaceholder": "Search",
+      "new": "new",
+      "selectAll": "selectAll",
+      "loadError": "loadError",
+      "empty": "No enrollments found",
+      "quickAdd": "quickAdd",
+      "field": {
+        "name": "name",
+        "slug": "slug",
+        "order": "Order",
+        "active": "active"
+      },
+      "reorder": "reorder",
+      "entity": "entity"
+    },
+    "users": {
+      "role": {
+        "admin": "admin",
+        "instructor": "instructor",
+        "student": "Student"
+      },
+      "updated": "updated",
+      "created": "created",
+      "updateFailed": "updateFailed",
+      "createFailed": "createFailed",
+      "exportStarted": "exportStarted",
+      "bulkSuspended": "bulkSuspended",
+      "bulkSuspendFailed": "bulkSuspendFailed",
+      "status": {
+        "suspended": "suspended",
+        "active": "active"
+      },
+      "col": {
+        "name": "name",
+        "email": "Email",
+        "role": "role",
+        "courses": "courses",
+        "status": "Status"
+      },
+      "title": "Enrollments",
+      "searchPlaceholder": "Search",
+      "new": "new",
+      "selectAll": "selectAll",
+      "loadError": "loadError",
+      "empty": "No enrollments found",
+      "instructors": "instructors",
+      "noInstructors": "noInstructors",
+      "editTitle": "editTitle",
+      "newTitle": "newTitle",
+      "field": {
+        "name": "name",
+        "email": "Email",
+        "role": "role",
+        "status": "Status"
+      }
+    },
+    "coupons": {
+      "stat": {
+        "total": "Total",
+        "active": "active",
+        "redemptions": "redemptions"
+      },
+      "updated": "updated",
+      "created": "created",
+      "activated": "activated",
+      "deactivated": "deactivated",
+      "updateFailed": "updateFailed",
+      "deleted": "deleted",
+      "deleteFailed": "deleteFailed",
+      "exportStarted": "exportStarted",
+      "bulkDeleted": "bulkDeleted",
+      "bulkDeleteFailed": "bulkDeleteFailed",
+      "status": {
+        "expired": "expired",
+        "active": "active",
+        "inactive": "inactive"
+      },
+      "col": {
+        "code": "code",
+        "discount": "discount",
+        "used": "used",
+        "validUntil": "validUntil",
+        "active": "active"
+      },
+      "title": "Enrollments",
+      "searchPlaceholder": "Search",
+      "new": "new",
+      "selectAll": "selectAll",
+      "loadError": "loadError",
+      "empty": "No enrollments found",
+      "quickAdd": "quickAdd",
+      "field": {
+        "code": "code",
+        "value": "value",
+        "status": "Status",
+        "type": "type",
+        "maxUses": "maxUses",
+        "validUntil": "validUntil"
+      },
+      "retire": "retire",
+      "entity": "entity",
+      "type": {
+        "percent": "percent",
+        "fixed": "fixed"
+      }
+    }
+  },
+  "common": {
+    "loading": "loading"
+  },
+  "orders": {
+    "updated": "updated",
+    "updateFailed": "updateFailed",
+    "columns": {
+      "order": "Order",
+      "student": "Student",
+      "items": "items",
+      "total": "Total",
+      "status": "Status",
+      "placed": "Placed"
+    },
+    "title": "Enrollments",
+    "filterByStatus": "filterByStatus",
+    "allStatuses": "allStatuses",
+    "paidCount": "paidCount",
+    "exportQueued": "exportQueued",
+    "bulkDeleteUnsupported": "bulkDeleteUnsupported",
+    "empty": "No enrollments found",
+    "quickUpdate": "quickUpdate",
+    "order": "Order",
+    "status": "Status",
+    "note": "note",
+    "entity": "entity"
+  },
+  "errors": {
+    "loadFailed": "Load Failed",
+    "unexpected": "Unexpected"
+  },
+  "adm07": {
+    "backOrders": "Orders",
+    "order": "Order",
+    "loading": "loading",
+    "error": "Unable to load this order",
+    "course": "Course",
+    "unitPrice": "Unit price",
+    "quantity": "Quantity",
+    "noItems": "No items on this order",
+    "total": "Total",
+    "saving": "saving",
+    "markPaid": "Mark as paid",
+    "refunding": "Refunding…",
+    "refund": "Refund",
+    "details": "Details",
+    "student": "Student",
+    "email": "Email",
+    "placed": "Placed",
+    "coupon": "Coupon",
+    "method": "Method",
+    "openStudent": "Open student"
+  },
+  "adm08": {
+    "dashboard": "Dashboard",
+    "title": "Enrollments",
+    "searchPlaceholder": "Search",
+    "searching": "Searching…",
+    "error": "Unable to load this order",
+    "results": "results",
+    "sorting": "Sorting…",
+    "sortedBy": "Sorted by",
+    "loading": "loading",
+    "empty": "No enrollments found",
+    "pagination": "Pagination",
+    "prevPage": "Previous page",
+    "nextPage": "Next page"
+  },
+  "workflow": {
+    "current_state": "current_state",
+    "actions": "actions",
+    "no_actions": "no_actions",
+    "by_state": "by_state"
+  },
+  "auth": {
+    "forgot_password": {
+      "title": "Enrollments",
+      "success": "Success",
+      "email_label": "Email",
+      "submit": "Submit",
+      "back_to_login": "Back to sign in"
+    },
+    "login": {
+      "title": "Enrollments",
+      "email_label": "Email",
+      "password_label": "Password",
+      "submit": "Submit",
+      "signup_cta": "Signup cta",
+      "forgot_cta": "Forgot cta"
+    },
+    "signup": {
+      "title": "Enrollments",
+      "password_label": "Password",
+      "submit": "Submit",
+      "login_cta": "Login cta"
+    }
+  }
+}

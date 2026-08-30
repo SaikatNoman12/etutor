@@ -1,0 +1,15 @@
+{
+  "dashboard": "Dashboard",
+  "title": "Enrollments",
+  "searchPlaceholder": "Search",
+  "searching": "Searching…",
+  "error": "Unable to load enrollments",
+  "results": "results",
+  "sorting": "Sorting…",
+  "sortedBy": "Sorted by",
+  "loading": "Loading…",
+  "empty": "No enrollments found",
+  "pagination": "Pagination",
+  "prevPage": "Previous page",
+  "nextPage": "Next page"
+}

@@ -1,0 +1,14 @@
+{
+  "frontend": "student",
+  "total": 26,
+  "scaffolded": 14,
+  "unconverted_stubs": [
+    "app/pages/a-01-signin.tsx",
+    "app/pages/a-02-signup.tsx",
+    "app/pages/s-01-home.tsx",
+    "app/pages/s-02-courses.tsx",
+    "app/pages/s-03-course-detail.tsx",
+    "app/pages/s-04-instructors.tsx",
+    "app/pages/s-05-instructor-detail.tsx"
+  ]
+}

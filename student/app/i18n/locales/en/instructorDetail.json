@@ -1,0 +1,13 @@
+{
+  "kpiCourses": "Courses",
+  "kpiStudents": "Students",
+  "kpiRating": "Average rating",
+  "back": "Instructors",
+  "profileError": "We could not load this instructor.",
+  "coursesBy": "Courses by",
+  "coursesError": "We could not load these courses. Please try again.",
+  "retry": "Try again",
+  "coursesEmpty": "This instructor has not published any courses yet.",
+  "students": "students",
+  "navHint": "Selecting a course opens its detail page."
+}

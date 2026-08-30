@@ -1,0 +1,51 @@
+{
+  "app": {
+    "name": "E-Tutor",
+    "tagline": "전문가와 함께 언제 어디서나 배우세요"
+  },
+  "brand": {
+    "name": "E-Tutor"
+  },
+  "nav": {
+    "home": "홈",
+    "courses": "강좌",
+    "instructors": "강사",
+    "myLearning": "내 학습",
+    "orders": "주문",
+    "profile": "프로필",
+    "cart": "장바구니",
+    "menu": "메뉴"
+  },
+  "auth": {
+    "signIn": "로그인",
+    "createAccount": "회원가입",
+    "browseCourses": "강좌 둘러보기"
+  },
+  "actions": {
+    "submit": "제출",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "수정",
+    "back": "뒤로",
+    "next": "다음",
+    "confirm": "확인",
+    "close": "닫기",
+    "search": "검색",
+    "filter": "필터",
+    "loading": "로딩 중..."
+  },
+  "notFound": {
+    "title": "페이지를 찾을 수 없습니다",
+    "description": "찾으시는 페이지가 존재하지 않거나 이동되었을 수 있습니다.",
+    "backToHome": "홈으로 돌아가기"
+  },
+  "empty": {
+    "title": "아직 데이터가 없습니다",
+    "description": "표시할 항목이 없습니다."
+  },
+  "language": {
+    "en": "English",
+    "ko": "한국어"
+  }
+}

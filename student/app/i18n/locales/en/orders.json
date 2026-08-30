@@ -1,0 +1,17 @@
+{
+  "title": "My orders",
+  "searchPlaceholder": "Search orders",
+  "colOrder": "Order",
+  "colPlaced": "Placed",
+  "colItems": "Items",
+  "colTotal": "Total",
+  "colStatus": "Status",
+  "colDetail": "Detail",
+  "loadError": "We could not load your orders. Please try again.",
+  "retry": "Try again",
+  "empty": "You haven",
+  "emptyGuest": "Sign in to view your orders.",
+  "view": "View",
+  "home": "Home",
+  "viewDetail": "View order"
+}

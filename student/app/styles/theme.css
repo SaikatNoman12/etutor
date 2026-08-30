@@ -1,0 +1,159 @@
+/* theme.css — E-Tutor brand theme.
+ * Implements every slot in TOKEN_CONTRACT.md (schema: base-theme.css).
+ * Palette + type lifted from the E-Tutor reference build:
+ *   primary #FF6636 · ink #1D2026 · canvas #F5F7FA · hairline #EBEBFF · Roboto. */
+:root {
+  /* color */
+  --c-primary: #ff6636;
+  --c-primary-active: #d94d21;
+  --c-primary-soft: #ffeee8;
+  --c-on-primary: #1d2026;
+  --c-ink: #1d2026;
+  --c-body: #4e5566;
+  --c-muted: #666c7e;
+  --c-canvas: #f5f7fa;
+  --c-surface: #ffffff;
+  --c-surface-soft: #f5f7fa;
+  --c-hairline: #ebebff;
+  --c-hairline-strong: #c8cbd9;
+  --c-link: #c7502a;
+  --c-success: #15711f;
+  --c-warning: #8a5306;
+  --c-error: #882929;
+  --c-focus-ring: #c7502a;
+  --c-primary-text: #c7502a;   /* orange as TEXT — AA on canvas; --c-primary stays the brand fill */
+
+  /* type families */
+  --font-display: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* type roles */
+  --t-display-xl-family: var(--font-display);
+  --t-display-xl-size: 48px;
+  --t-display-xl-weight: 700;
+  --t-display-xl-lh: 1.15;
+  --t-display-xl-ls: -0.5px;
+
+  --t-display-lg-family: var(--font-display);
+  --t-display-lg-size: 32px;
+  --t-display-lg-weight: 700;
+  --t-display-lg-lh: 1.2;
+  --t-display-lg-ls: -0.3px;
+
+  --t-display-md-family: var(--font-display);
+  --t-display-md-size: 24px;
+  --t-display-md-weight: 600;
+  --t-display-md-lh: 1.25;
+  --t-display-md-ls: -0.2px;
+
+  --t-title-lg-family: var(--font-display);
+  --t-title-lg-size: 20px;
+  --t-title-lg-weight: 600;
+  --t-title-lg-lh: 1.3;
+  --t-title-lg-ls: 0px;
+
+  --t-title-md-family: var(--font-display);
+  --t-title-md-size: 16px;
+  --t-title-md-weight: 600;
+  --t-title-md-lh: 1.35;
+  --t-title-md-ls: 0px;
+
+  --t-body-lg-family: var(--font-body);
+  --t-body-lg-size: 18px;
+  --t-body-lg-weight: 400;
+  --t-body-lg-lh: 1.55;
+  --t-body-lg-ls: 0px;
+
+  --t-body-md-family: var(--font-body);
+  --t-body-md-size: 15px;
+  --t-body-md-weight: 400;
+  --t-body-md-lh: 1.6;
+  --t-body-md-ls: 0px;
+
+  --t-body-sm-family: var(--font-body);
+  --t-body-sm-size: 14px;
+  --t-body-sm-weight: 400;
+  --t-body-sm-lh: 1.5;
+  --t-body-sm-ls: 0px;
+
+  --t-caption-family: var(--font-body);
+  --t-caption-size: 12px;
+  --t-caption-weight: 500;
+  --t-caption-lh: 1.4;
+  --t-caption-ls: 0.2px;
+
+  --t-button-family: var(--font-body);
+  --t-button-size: 15px;
+  --t-button-weight: 600;
+  --t-button-lh: 1;
+  --t-button-ls: 0px;
+
+  --t-weight-regular: 400;
+  --t-weight-medium: 500;
+  --t-weight-semibold: 600;
+  --t-weight-bold: 700;
+
+  --t-code-family: var(--font-mono);
+  --t-code-size: 13px;
+  --t-code-weight: 400;
+  --t-code-lh: 1.5;
+  --t-code-ls: 0px;
+
+  /* shape */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-pill: 9999px;
+
+  /* spacing */
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-xxl: 32px;
+  --space-section: 64px;
+
+  /* elevation & misc */
+  --shadow-0: 0 1px 2px rgb(29 32 38 / 0.05);
+  --shadow-1: 0 1px 3px rgb(29 32 38 / 0.08);
+  --shadow-2: 0 8px 24px rgb(29 32 38 / 0.10);
+  --shadow-3: 0 16px 48px rgb(29 32 38 / 0.16);
+  --shadow-hover: 0 12px 28px rgb(29 32 38 / 0.14);
+  --border-w: 1px;
+  --container-max: 1240px;
+  --control-h: 44px;
+
+  /* imagery & media */
+  --aspect-square: 1 / 1;
+  --aspect-photo: 4 / 3;
+  --aspect-video: 16 / 9;
+  --aspect-portrait: 3 / 4;
+  --img-radius: var(--radius-lg);
+  --card-media-h: 180px;
+  --media-fallback: linear-gradient(135deg, var(--c-surface-soft), var(--c-primary-soft));
+  --overlay-scrim: linear-gradient(to top, rgb(29 32 38 / 0.72), rgb(29 32 38 / 0.10) 60%, transparent);
+
+  /* signature */
+  --hero-bg: var(--c-canvas);
+  --btn-case: none;
+}
+
+@media (max-width: 600px) {
+  :root {
+    --control-h: 40px;
+    --t-display-xl-size: 30px;
+    --t-display-lg-size: 24px;
+    --t-display-md-size: 20px;
+    --t-title-lg-size: 18px;
+    --t-title-md-size: 15px;
+    --t-body-lg-size: 16px;
+    --t-body-md-size: 14px;
+    --t-button-size: 14px;
+    --space-section: 40px;
+  }
+}

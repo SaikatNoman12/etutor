@@ -1,0 +1,20 @@
+{
+  "title": "All courses",
+  "count": "courses",
+  "searchPlaceholder": "Search courses",
+  "category": "Category",
+  "allCategories": "All categories",
+  "level": "Level",
+  "allLevels": "All levels",
+  "sortBy": "Sort by",
+  "sortPopular": "Most popular",
+  "sortNewest": "Newest",
+  "sortPriceAsc": "Price: low to high",
+  "sortPriceDesc": "Price: high to low",
+  "loadError": "We could not load the courses. Please try again.",
+  "retry": "Try again",
+  "empty": "No courses match your filters yet.",
+  "students": "students",
+  "pagination": "Pagination",
+  "home": "Home"
+}

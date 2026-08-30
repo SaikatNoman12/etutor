@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "noEmit": true },
+  "include": [
+    "src/modules/**/*.entity.ts",
+    "src/modules/**/entities/**/*.ts",
+    "src/common/**/*.ts",
+    "src/shared/**/*.ts",
+    "src/core/**/*.ts",
+    "src/database/migrations/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist", "test"]
+}

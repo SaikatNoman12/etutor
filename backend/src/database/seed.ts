@@ -21,6 +21,7 @@ import * as bcrypt from 'bcrypt';
 import { DataSource } from 'typeorm';
 import { config as dotenvConfig } from 'dotenv';
 import { user_role } from 'src/common/enums/user-role.enum';
+import { buildDbConnection } from './connection.options';
 
 dotenvConfig();
 
@@ -128,28 +129,20 @@ function coerceEnumValue(col: { enum?: unknown; type?: unknown }, v: unknown): u
 }
 
 function buildDataSource(): DataSource {
-  const isProd = process.env.NODE_ENV === 'production';
-  // v93: read POSTGRES_* primary (matches app.module.ts + data-source.ts)
-  // with DB_* as fallback for legacy / alternate naming conventions.
-  // v92 evidence: seed silently fell through to 'postgres' admin DB when
-  // env had POSTGRES_DATABASE=fsp but no DB_DATABASE → wrong DB → no users.
+  // Connection details from database/connection.options.ts — the SAME builder the app and
+  // the migration CLI use. This function read POSTGRES_* only, and its comment claimed it
+  // "matches app.module.ts + data-source.ts" — which stopped being true the moment those
+  // two learned DATABASE_URL. Pointed at a hosted database by connection string, the seed
+  // quietly connected to localhost instead and reported success: the remote database was
+  // still empty and nothing said so.
   return new DataSource({
     type: 'postgres',
-    host: process.env.POSTGRES_HOST || process.env.DB_HOST || 'localhost',
-    port: Number(process.env.POSTGRES_PORT || process.env.DB_PORT || 5432),
-    username: process.env.POSTGRES_USER || process.env.DB_USERNAME || process.env.DB_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || process.env.DB_PASSWORD || 'postgres',
-    database: process.env.POSTGRES_DATABASE || process.env.DB_DATABASE || process.env.DB_NAME || 'postgres',
+    ...buildDbConnection(),
     synchronize: false,
     logging: false,
-    // v93: path was '../../modules' (one level too deep). When seed.ts lives
-    // at backend/src/database/seed.ts, __dirname = backend/src/database, so
-    // '../modules' resolves to backend/src/modules. The old '../../modules'
-    // pointed at backend/modules which doesn't exist → ZERO entities found
-    // → seed logged "no User entity registered" → no users → auth 401.
+    // seed.ts lives at backend/src/database/, so __dirname/../modules is backend/src/modules.
     entities: [path.join(__dirname, '../modules/**/*.entity.{ts,js}')],
-    ssl: isProd ? { rejectUnauthorized: false } : false,
-  });
+  } as never);
 }
 
 async function seedUsers(ds: DataSource, fixtures: RawFixtures): Promise<void> {

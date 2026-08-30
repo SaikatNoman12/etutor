@@ -12,6 +12,31 @@ against PostgreSQL.
 | `admin/` | React Router 7 (framework mode) · Tailwind v4 · TanStack Query | 3901 |
 | `student/` | React Router 7 (framework mode) · Tailwind v4 · TanStack Query | 3902 |
 
+## Deployed
+
+| Piece | Where |
+|---|---|
+| Student site | https://etutor-student.vercel.app |
+| Admin console | https://etutor-admin.vercel.app |
+| API | https://etutor-api.onrender.com/api |
+| Database | Neon Postgres (free tier) |
+
+Render auto-deploys `main`. The API sleeps after 15 minutes idle on the free tier, so
+the first request after a quiet spell takes around 50 seconds — open the site once
+before demoing it.
+
+The blueprint for the API service is [render.yaml](render.yaml). Its secrets are
+marked `sync: false` and are set in the dashboard, never here. Two of its settings are
+load-bearing and easy to get wrong:
+
+- `buildCommand: npm ci --include=dev` — `NODE_ENV=production` tells npm to skip
+  devDependencies, and typescript is one. Without the flag `tsc` falls through to
+  whatever TypeScript the build image happens to carry.
+- `AUTH_COOKIE_SAMESITE=none` with `AUTH_COOKIE_SECURE=true` — the apps and the API are
+  on different hosts, so every request between them is cross-site and a Strict or Lax
+  cookie is never attached. The failure is silent: login succeeds, the browser stores
+  the cookie, and the next call is a 401.
+
 ## Features
 
 - **Catalogue** — courses, categories, instructors, search/filter/sort, and a course detail

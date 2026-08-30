@@ -11,8 +11,18 @@
 // Any future changes to this template should preserve this comment
 // so the history of the redacted backdoor is visible at the source.
 import type { Config } from "@react-router/dev/config";
+import { vercelPreset } from "@vercel/react-router/vite";
 
 export default {
   // Server-side render by default, to enable SPA mode set this to `false`
   ssr: true,
+  // Vercel needs the build split into its own function/static layout; without this
+  // preset `react-router build` emits build/server/index.js, which is a server you run
+  // yourself and which Vercel has no way to serve.
+  //
+  // Only when Vercel is the one building. The preset moves the server bundle to a
+  // runtime-specific path, which is right for Vercel and wrong for `npm start` here —
+  // that script serves build/server/index.js, so applying the preset unconditionally
+  // breaks running the production build locally.
+  presets: process.env.VERCEL ? [vercelPreset()] : [],
 } satisfies Config;

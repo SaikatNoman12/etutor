@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { catchError, map, Observable, throwError } from "rxjs";
+import { authCookieOptions } from "../utils/auth-cookie.options";
 
 /**
  * SetTokenInterceptor — automatically sets httpOnly cookies when the service
@@ -22,7 +23,6 @@ export class SetTokenInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const res = context.switchToHttp().getResponse();
-    const isProduction = this.configService.get<string>("MODE") === "PROD";
 
     return next.handle().pipe(
       map((value) => {
@@ -39,12 +39,7 @@ export class SetTokenInterceptor implements NestInterceptor {
           res.cookie(
             this.configService.getOrThrow<string>("AUTH_TOKEN_COOKIE_NAME"),
             accessToken,
-            {
-              httpOnly: true,
-              secure: isProduction,
-              sameSite: isProduction ? "strict" : "lax",
-              path: "/",
-            },
+            authCookieOptions(this.configService),
           );
         }
 
@@ -54,12 +49,7 @@ export class SetTokenInterceptor implements NestInterceptor {
               "AUTH_REFRESH_TOKEN_COOKIE_NAME",
             ),
             refreshToken,
-            {
-              httpOnly: true,
-              secure: isProduction,
-              sameSite: isProduction ? "strict" : "lax",
-              path: "/",
-            },
+            authCookieOptions(this.configService),
           );
         }
 

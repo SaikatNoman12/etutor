@@ -5,6 +5,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsc",
+    "postbuild": "node -e \"const fs=require('fs'),p='dist/database/fixtures';fs.mkdirSync(p,{recursive:true});fs.copyFileSync('src/database/fixtures/seed.fixtures.yaml',p+'/seed.fixtures.yaml')\"",
     "start:dev": "ts-node --transpile-only -r tsconfig-paths/register src/main.ts",
     "start": "node dist/main.js",
     "test": "jest --passWithNoTests --runInBand",

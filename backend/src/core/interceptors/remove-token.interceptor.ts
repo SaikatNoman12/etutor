@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { catchError, map, Observable, throwError } from "rxjs";
+import { authCookieOptions } from "../utils/auth-cookie.options";
 
 /**
  * RemoveTokenInterceptor — clears httpOnly auth cookies on logout.
@@ -29,10 +30,10 @@ export class RemoveTokenInterceptor implements NestInterceptor {
           res.cookie(
             this.configService.getOrThrow<string>("AUTH_TOKEN_COOKIE_NAME"),
             "",
-            {
-              httpOnly: true,
-              path: "/",
-            },
+            // The identical attributes the cookie was SET with. A cross-site response
+            // clearing it without SameSite=None; Secure is rejected by the browser, so
+            // the old cookie survives and logout does not log anyone out.
+            { ...authCookieOptions(this.configService), maxAge: 0 },
           );
 
           // Clear refresh token cookie
@@ -41,10 +42,10 @@ export class RemoveTokenInterceptor implements NestInterceptor {
               "AUTH_REFRESH_TOKEN_COOKIE_NAME",
             ),
             "",
-            {
-              httpOnly: true,
-              path: "/",
-            },
+            // The identical attributes the cookie was SET with. A cross-site response
+            // clearing it without SameSite=None; Secure is rejected by the browser, so
+            // the old cookie survives and logout does not log anyone out.
+            { ...authCookieOptions(this.configService), maxAge: 0 },
           );
 
           // Strip sensitive data — only return success + message

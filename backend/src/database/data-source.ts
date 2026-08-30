@@ -16,32 +16,23 @@ import 'reflect-metadata';
 import * as path from 'path';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { config as dotenv } from 'dotenv';
+import { buildDbConnection, buildDbPaths } from './connection.options';
 
 dotenv();
 
-const SRC = path.resolve(__dirname, '..');
-
+// Connection details come from database/connection.options.ts — the same builder the
+// running app uses, so the CLI and the app cannot disagree about which database this is.
 function buildOptions(): DataSourceOptions {
-  const url = process.env.DATABASE_URL || process.env.DB_URL;
-  const common = {
+  const paths = buildDbPaths(__dirname);
+  return {
     type: 'postgres' as const,
-    entities: [path.join(SRC, 'modules/**/*.entity.{ts,js}')],
-    migrations: [path.join(SRC, 'database/migrations/*.{ts,js}')],
+    ...buildDbConnection(),
+    entities: paths.entities,
+    migrations: paths.migrations,
     synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
     migrationsRun: process.env.MIGRATIONS_AUTO_RUN !== 'false',
     logging: process.env.TYPEORM_LOGGING === 'true',
-  };
-  if (url) {
-    return { ...common, url };
-  }
-  return {
-    ...common,
-    host: process.env.POSTGRES_HOST || process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || process.env.DB_PORT || '5432', 10),
-    username: process.env.POSTGRES_USER || process.env.DB_USERNAME || process.env.DB_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || process.env.DB_PASSWORD || 'postgres',
-    database: process.env.POSTGRES_DATABASE || process.env.DB_DATABASE || process.env.DB_NAME || 'app',
-  };
+  } as DataSourceOptions;
 }
 
 export const dataSourceOptions: DataSourceOptions = buildOptions();

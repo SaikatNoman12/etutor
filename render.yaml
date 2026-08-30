@@ -1,0 +1,67 @@
+# Render blueprint — the API only.
+#
+# The two React apps are hosted separately (Vercel), and the database is a managed
+# Postgres elsewhere, so this file describes one service: build the NestJS app and run
+# it. Render sets PORT; the app reads it.
+#
+# The environment variables marked `sync: false` are NOT in this file on purpose — a
+# blueprint is committed, and a JWT secret and a database URL are not things to commit.
+# Render prompts for them when the blueprint is applied, or set them in the dashboard.
+services:
+  - type: web
+    name: etutor-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: MODE
+        # Production behaviour: no dev-origin CORS fallback, secure cookies.
+        value: PROD
+      - key: NODE_ENV
+        value: production
+
+      # Database. One connection string from the managed Postgres; DATABASE_SSL is what
+      # a hosted provider terminating TLS at a proxy needs (see connection.options.ts).
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SSL
+        value: "true"
+      # The schema is created by the InitialSchema migration on boot. Never turn
+      # synchronize on here: it would rewrite a live schema from the entities.
+      - key: MIGRATIONS_AUTO_RUN
+        value: "true"
+      - key: TYPEORM_SYNCHRONIZE
+        value: "false"
+
+      # Auth. AUTH_JWT_SECRET is prompted for — generate one with `openssl rand -base64 32`.
+      - key: AUTH_JWT_SECRET
+        sync: false
+      - key: AUTH_TOKEN_COOKIE_NAME
+        value: access_token
+      - key: AUTH_TOKEN_EXPIRE_TIME
+        value: "86400"
+      - key: AUTH_REFRESH_TOKEN_COOKIE_NAME
+        value: refresh_token
+      - key: AUTH_REFRESH_TOKEN_EXPIRE_TIME
+        value: "2592000"
+
+      # The apps are on a different host from this API, which makes every request they
+      # make CROSS-SITE. A Strict or Lax cookie is not attached to those, so the session
+      # would be dropped on the request after login. None requires Secure, which requires
+      # HTTPS — both hosts serve HTTPS.
+      - key: AUTH_COOKIE_SAMESITE
+        value: none
+      - key: AUTH_COOKIE_SECURE
+        value: "true"
+
+      # CORS. The exact origins of the two deployed apps, comma-separated. In PROD the
+      # app trusts this list alone — no localhost fallback.
+      - key: ALLOW_ORIGINS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

@@ -21,6 +21,9 @@ CLAUDE.md
 HANDOFF.md
 .run-ports.jsonl
 
+# Vercel CLI scratch: link metadata and build output, per-machine.
+.vercel/
+
 # Test and QA artifacts. All regenerable: the Playwright suites rewrite them on
 # each run, and storageState-*.json carries a REAL authenticated session cookie.
 test-results/

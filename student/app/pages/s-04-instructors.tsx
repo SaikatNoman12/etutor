@@ -103,7 +103,7 @@ export default function InstructorListPage() {
   }, [allInstructors, search]);
 
   return (
-    <div className="mx-auto max-w-[1240px] px-[24px] py-[32px]" data-testid="s-04-instructors-page">
+    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-04-instructors-page">
       {/* page-head */}
       <div className="mb-[24px] flex items-end justify-between gap-[16px]">
         <div>

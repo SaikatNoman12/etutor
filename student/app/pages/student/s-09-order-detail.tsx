@@ -133,7 +133,7 @@ export default function OrderDetailPage() {
   }, [order1, t]);
 
   return (
-    <section className="mx-auto max-w-[1240px] px-[24px] py-[32px]" data-testid="s-09-order-detail-page">
+    <section className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-09-order-detail-page">
       {/* back-link (page content — the top nav is shared chrome) */}
       <Link
         to="/orders"

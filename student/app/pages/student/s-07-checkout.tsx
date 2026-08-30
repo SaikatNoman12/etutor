@@ -209,7 +209,7 @@ export default function CheckoutPage() {
 
   return (
     <div
-      className="mx-auto max-w-[1240px] px-[24px] py-[32px]"
+      className="mx-auto max-w-[1240px] py-[32px]"
       data-testid="s-07-checkout-page"
     >
       <Link

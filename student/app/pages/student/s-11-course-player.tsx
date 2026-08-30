@@ -154,7 +154,7 @@ export default function CoursePlayerPage() {
     'inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50';
 
   return (
-    <div className="mx-auto max-w-[1240px] px-[24px] py-[32px]" data-testid="s-11-course-player-page">
+    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-11-course-player-page">
       <Link
         to="/my-learning"
         className="mb-[16px] inline-flex items-center gap-[4px] text-[14px] font-semibold text-[var(--c-body)] no-underline hover:text-[var(--c-primary-text)]"

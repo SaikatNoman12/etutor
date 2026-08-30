@@ -149,7 +149,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="mx-auto max-w-[1240px] px-[24px] py-[32px]" data-testid="s-12-profile-page">
+    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-12-profile-page">
       <h1
         className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
         data-testid="s-12-profile-heading"

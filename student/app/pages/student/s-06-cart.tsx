@@ -205,7 +205,7 @@ export default function CartPage() {
   const canCheckout = role != null && !busy;
 
   return (
-    <div className="mx-auto max-w-[1240px] px-[24px] py-[32px]" data-testid="s-06-cart-page">
+    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-06-cart-page">
       {/* page-head */}
       <div className="mb-[24px] flex items-end justify-between gap-[16px]">
         <h1

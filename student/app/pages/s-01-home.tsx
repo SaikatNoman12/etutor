@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
+import { useAppSelector } from '~/hooks/useAppSelector';
 import { listCourses, listCategories, listInstructors } from '~/services/httpServices/catalogueService';
 import type { CourseRow, CategoryCard, InstructorRow } from '~/types/view-models';
 import { Star } from 'lucide-react';
@@ -44,6 +45,7 @@ function Media({ src, alt, className }: { src?: string; alt: string; className?:
 export default function HomePage() {
   const { t } = useTranslation('common');
   const dispatch = useAppDispatch();
+  const user = useAppSelector((s) => s.auth?.user);
 
   const [data1, setData1] = useState<unknown>(null);
   const [loading1, setLoading1] = useState<boolean>(true);
@@ -163,7 +165,7 @@ export default function HomePage() {
           data-testid="s-01-home-ac-4"
           className="border-b border-[var(--c-hairline)] bg-[var(--c-canvas)]"
         >
-          <div className="grid grid-cols-1 items-center gap-[32px] px-[24px] py-[64px] lg:grid-cols-2">
+          <div className="grid grid-cols-1 items-center gap-[32px] py-[64px] lg:grid-cols-2">
             <div className="flex flex-col gap-[16px]">
               <h1 data-testid="s-01-home-heading" className="text-[48px] font-bold leading-[1.15] tracking-[-0.5px] text-[var(--c-ink)]">
                 {t('app.tagline', 'Learn with experts, anytime, anywhere')}
@@ -195,7 +197,7 @@ export default function HomePage() {
         </section>
 
         {/* Browse top categories — AC-2 (category strip) */}
-        <section data-testid="s-01-home-ac-2" className="px-[24px] py-[32px]">
+        <section data-testid="s-01-home-ac-2" className="py-[32px]">
           <div className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.categoriesTitle', 'Browse top categories')}
@@ -244,7 +246,7 @@ export default function HomePage() {
         </section>
 
         {/* Best selling courses — AC-1 (opens home, sees the live catalogue) */}
-        <section data-testid="s-01-home-ac-1" className="px-[24px] py-[32px]">
+        <section data-testid="s-01-home-ac-1" className="py-[32px]">
           <div className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.bestSellingTitle', 'Best selling courses')}
@@ -273,7 +275,7 @@ export default function HomePage() {
         </section>
 
         {/* Recently added — AC-3 (click a course card → /courses/:slug) */}
-        <section data-testid="s-01-home-ac-3" className="px-[24px] py-[32px]">
+        <section data-testid="s-01-home-ac-3" className="py-[32px]">
           <div className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.recentTitle', 'Recently added')}
@@ -301,22 +303,29 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* Teach on E-Tutor — static instructor onboarding steps */}
-        <section className="px-[24px] py-[32px]">
+        {/* Learn on E-Tutor — the learner's path through this app, in the order
+            the app actually offers it: catalogue → checkout → player → progress.
+            It was a "Teach on E-Tutor" pitch with a "Become an instructor" button.
+            Instructors are appointed by E-Tutor, so that button had nowhere to
+            lead; the section is the same shape, addressed to the person the site
+            is for. */}
+        <section data-testid="s-01-home-learn" className="py-[32px]">
           <div className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
-              {t('home.teachTitle', 'Teach on E-Tutor')}
+              {t('home.learnTitle', 'Learn on E-Tutor')}
             </h2>
-            <p className="text-[14px] text-[var(--c-muted)]">{t('home.teachSubtitle', 'Four steps from idea to first learner')}</p>
+            <p className="text-[14px] text-[var(--c-muted)]">
+              {t('home.learnSubtitle', 'Four steps from browsing to your first finished lesson')}
+            </p>
             <div className="mt-[8px] h-[3px] w-[48px] rounded-full bg-[var(--c-primary)]" />
           </div>
           <div className="grid grid-cols-1 items-start gap-[24px] lg:grid-cols-[2fr_1fr]">
             <div className="flex flex-col gap-[16px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
               {[
-                t('home.step1', 'Plan your curriculum'),
-                t('home.step2', 'Record your lessons'),
-                t('home.step3', 'Publish and set a price'),
-                t('home.step4', 'Get paid every month'),
+                t('home.learnStep1', 'Find a course in the catalogue'),
+                t('home.learnStep2', 'Add it to your cart and check out'),
+                t('home.learnStep3', 'Watch the lessons at your own pace'),
+                t('home.learnStep4', 'Pick up where you left off, lesson by lesson'),
               ].map((label, i) => (
                 <div key={i} className="flex items-center gap-[12px]">
                   <span className="inline-flex h-[32px] w-[32px] flex-shrink-0 items-center justify-center rounded-full bg-[var(--c-primary-soft)] text-[14px] font-bold text-[var(--c-primary-text)]">
@@ -325,18 +334,28 @@ export default function HomePage() {
                   <span className="text-[15px] text-[var(--c-ink)]">{label}</span>
                 </div>
               ))}
-              {/* No "Become an instructor" call to action: instructors are chosen and
-                  onboarded by E-Tutor, not recruited from the open web, so the public
-                  site has nowhere for that button to lead. */}
+              {/* Where the button leads depends on whether there is anything to
+                  come back to. Sending a signed-in learner to the catalogue they
+                  have already bought from is the small wrongness this section had
+                  before, in the other direction. */}
+              <Link
+                to={user ? '/my-learning' : '/courses'}
+                data-testid="s-01-home-learn-cta"
+                className="mt-[8px] inline-flex min-h-[44px] w-fit items-center justify-center rounded-[6px] bg-[var(--c-primary)] px-[24px] text-[15px] font-semibold text-[var(--c-on-primary)] transition hover:bg-[var(--c-primary-active)]"
+              >
+                {user
+                  ? t('home.learnCtaMember', 'Go to my learning')
+                  : t('home.learnCtaGuest', 'Browse courses')}
+              </Link>
             </div>
             <div className="aspect-[4/3] w-full overflow-hidden rounded-[8px] bg-[var(--c-canvas)]">
-              <Media src="/images/teach-instructor.jpg" alt={t('home.becomeInstructor', 'Become an instructor')} />
+              <Media src="/images/learn-journey.jpg" alt={t('home.learnTitle', 'Learn on E-Tutor')} />
             </div>
           </div>
         </section>
 
         {/* Top instructors */}
-        <section className="px-[24px] py-[32px]">
+        <section className="py-[32px]">
           <div className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.instructorsTitle', 'Top instructors')}

@@ -119,7 +119,7 @@ export default function CourseDetailPage() {
   const instructorId = instructor?.id ?? course?.instructorId ?? '';
 
   return (
-    <div className="mx-auto max-w-[1240px] px-[24px] py-[32px]" data-testid="s-03-course-detail-page">
+    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-03-course-detail-page">
       {/* breadcrumb — page content nav (RULE-F13 allows breadcrumbs) */}
       <nav
         className="mb-[24px] flex items-center gap-[8px] text-[14px] text-[var(--c-muted)]"

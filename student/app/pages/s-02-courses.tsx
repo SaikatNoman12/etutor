@@ -202,7 +202,7 @@ export default function CourseListPage() {
   const currentPage = Math.min(page, totalPages);
 
   return (
-    <div className="mx-auto max-w-[1240px] px-[24px] py-[32px]" data-testid="s-02-courses-page">
+    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-02-courses-page">
       {/* page-head */}
       <div className="flex items-end justify-between gap-[16px] mb-[24px]">
         <div>

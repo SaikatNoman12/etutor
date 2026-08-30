@@ -13,7 +13,13 @@ services:
     runtime: node
     plan: free
     rootDir: backend
-    buildCommand: npm ci && npm run build
+    # --include=dev on purpose. NODE_ENV=production below tells npm to skip
+    # devDependencies, which is right for the running service and wrong for the build:
+    # typescript lives there, so `tsc` fell through to whatever TypeScript happened to be
+    # on the build image — a newer major that has removed `baseUrl` and
+    # `moduleResolution: node10`, and the build failed on options this project uses
+    # correctly.
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start
     healthCheckPath: /api/health
     envVars:

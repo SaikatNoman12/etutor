@@ -12,7 +12,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "noEmit": true,
+    // No "noEmit" here. It was set, so `npm run build` — which is plain `tsc` — compiled
+    // nothing: the build "succeeded", dist/ held no JavaScript, and `node dist/main.js`
+    // would have died on a missing file. Nobody noticed locally because development runs
+    // through ts-node. `npm run typecheck` passes --noEmit itself, which is where that
+    // flag belongs.
     "outDir": "./dist",
     "baseUrl": "./"
   },

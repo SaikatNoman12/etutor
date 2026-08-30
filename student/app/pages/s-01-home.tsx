@@ -19,9 +19,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { listCourses, listCategories, listInstructors } from '~/services/httpServices/catalogueService';
-import type { Course } from '~/types/course';
-import type { Category } from '~/types/category';
-import type { User } from '~/types/user';
+import type { CourseRow, CategoryCard, InstructorRow } from '~/types/view-models';
 import { Star } from 'lucide-react';
 
 /** Type-safe extraction of a list from an unknown API payload (bare array, {items}, or {data}). */
@@ -56,6 +54,9 @@ export default function HomePage() {
   const [data3, setData3] = useState<unknown>(null);
   const [loading3, setLoading3] = useState<boolean>(true);
   const [error3, setError3] = useState<string | null>(null);
+  const [data4, setData4] = useState<unknown>(null);
+  const [loading4, setLoading4] = useState<boolean>(true);
+  const [error4, setError4] = useState<string | null>(null);
 
   // Best-selling / recently-added courses — GET /api/courses via the catalogue
   // read thunk (httpService client, withCredentials + 401→refresh retry).
@@ -80,6 +81,21 @@ export default function HomePage() {
       .finally(() => { if (!cancelled) setLoading2(false); });
     return () => { cancelled = true; };
   }, [dispatch]);
+  // Recently added — GET /api/courses?sort=newest. This used to re-sort the
+  // best-selling payload by `createdAt`, a field the catalogue projection does
+  // not send: every comparison was `new Date(undefined)` vs `new Date(undefined)`,
+  // so "Recently added" silently rendered the four most POPULAR courses. The
+  // endpoint orders by publishedAt itself — ask it.
+  useEffect(() => {
+    let cancelled = false;
+    setLoading4(true);
+    setError4(null);
+    dispatch(listCourses({ sort: 'newest' })).unwrap()
+      .then((d) => { if (!cancelled) setData4(d); })
+      .catch((e: unknown) => { if (!cancelled) setError4(e instanceof Error ? e.message : 'Failed to load'); })
+      .finally(() => { if (!cancelled) setLoading4(false); });
+    return () => { cancelled = true; };
+  }, [dispatch]);
   // Top instructors — GET /api/instructors.
   useEffect(() => {
     let cancelled = false;
@@ -92,21 +108,16 @@ export default function HomePage() {
     return () => { cancelled = true; };
   }, [dispatch]);
 
-  const courses = toArray<Course>(data1);
-  const categories = toArray<Category>(data2);
-  const instructors = toArray<User>(data3);
+  const courses = toArray<CourseRow>(data1);
+  const categories = toArray<CategoryCard>(data2);
+  const instructors = toArray<InstructorRow>(data3);
 
-  const categoryName = new Map(categories.map((c) => [c.id, c.name] as const));
-  const courseCountFor = (categoryId: string) => courses.filter((c) => c.categoryId === categoryId).length;
+  // The list endpoint already sorts by studentCount DESC (sort=popular is its
+  // default), so this is the server's ranking, trimmed to the row width.
+  const bestSelling = courses.slice(0, 8);
+  const recentlyAdded = toArray<CourseRow>(data4).slice(0, 4);
 
-  const bestSelling = [...courses]
-    .sort((a, b) => (b.studentCount ?? 0) - (a.studentCount ?? 0))
-    .slice(0, 8);
-  const recentlyAdded = [...courses]
-    .sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())
-    .slice(0, 4);
-
-  const renderCourseCard = (course: Course, testId: string) => (
+  const renderCourseCard = (course: CourseRow, testId: string) => (
     <Link
       key={course.id}
       to={`/courses/${course.slug}`}
@@ -114,12 +125,12 @@ export default function HomePage() {
       className="group flex flex-col overflow-hidden rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)] transition hover:-translate-y-[2px] hover:shadow-[var(--shadow-hover)]"
     >
       <div className="h-[180px] w-full overflow-hidden bg-[var(--c-canvas)]">
-        <Media src={course.thumbnailUrl} alt={course.title} />
+        <Media src={course.thumbnailUrl ?? undefined} alt={course.title ?? ""} />
       </div>
       <div className="flex flex-col gap-[8px] p-[16px]">
         <div className="flex items-center justify-between gap-[8px]">
           <span className="inline-flex items-center rounded-full bg-[var(--c-primary-soft)] px-[8px] py-[2px] text-[12px] font-medium text-[var(--c-primary-text)]">
-            {categoryName.get(course.categoryId) ?? ''}
+            {course.category?.name ?? ''}
           </span>
           <span className="text-[16px] font-bold text-[var(--c-primary-text)]">
             ${course.price ?? 0}
@@ -178,7 +189,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="aspect-[4/3] w-full overflow-hidden rounded-[12px] bg-[var(--c-canvas)]">
-              <Media src={undefined} alt={t('app.tagline', 'Learn with experts, anytime, anywhere')} />
+              <Media src="/images/hero-learning.jpg" alt={t('app.tagline', 'Learn with experts, anytime, anywhere')} />
             </div>
           </div>
         </section>
@@ -207,11 +218,11 @@ export default function HomePage() {
             ) : (
               <div data-testid="s-01-home-ac-2-kpis" className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-4">
                 {categories.map((cat) => {
-                  const count = courseCountFor(cat.id);
+                  const count = cat.courseCount ?? 0;
                   return (
                     <Link
                       key={cat.id}
-                      to="/courses"
+                      to={`/courses?category=${encodeURIComponent(cat.slug)}`}
                       data-testid={`s-01-home-ac-2-kpi-${cat.id}`}
                       className="flex items-center gap-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[12px] transition hover:border-[var(--c-primary)] hover:shadow-[var(--shadow-1)]"
                     >
@@ -271,7 +282,15 @@ export default function HomePage() {
             <div className="mt-[8px] h-[3px] w-[48px] rounded-full bg-[var(--c-primary)]" />
           </div>
 
-          {!loading1 && !error1 && (
+          {loading4 && (
+            <div data-testid="s-01-home-ac-3-loading" className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-[300px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-canvas)]" />
+              ))}
+            </div>
+          )}
+          {error4 && <p data-testid="s-01-home-ac-3-error" className="text-[14px] text-[var(--c-error)]">{t('home.loadError', 'We could not load courses right now.')}</p>}
+          {!loading4 && !error4 && (
             recentlyAdded.length === 0 ? (
               <p className="text-[14px] text-[var(--c-muted)]">{t('empty.title', 'Nothing here yet')}</p>
             ) : (
@@ -306,16 +325,12 @@ export default function HomePage() {
                   <span className="text-[15px] text-[var(--c-ink)]">{label}</span>
                 </div>
               ))}
-              <Link
-                to="/signup"
-                data-testid="s-01-home-become-instructor"
-                className="mt-[8px] inline-flex min-h-[44px] w-fit items-center justify-center rounded-[6px] bg-[var(--c-primary)] px-[24px] text-[15px] font-semibold text-[var(--c-on-primary)] transition hover:bg-[var(--c-primary-active)]"
-              >
-                {t('home.becomeInstructor', 'Become an instructor')}
-              </Link>
+              {/* No "Become an instructor" call to action: instructors are chosen and
+                  onboarded by E-Tutor, not recruited from the open web, so the public
+                  site has nowhere for that button to lead. */}
             </div>
             <div className="aspect-[4/3] w-full overflow-hidden rounded-[8px] bg-[var(--c-canvas)]">
-              <Media src={undefined} alt={t('home.becomeInstructor', 'Become an instructor')} />
+              <Media src="/images/teach-instructor.jpg" alt={t('home.becomeInstructor', 'Become an instructor')} />
             </div>
           </div>
         </section>
@@ -351,11 +366,18 @@ export default function HomePage() {
                     className="flex flex-col items-start gap-[8px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)] transition hover:-translate-y-[2px] hover:shadow-[var(--shadow-hover)]"
                   >
                     <span className="inline-flex h-[64px] w-[64px] items-center justify-center overflow-hidden rounded-full bg-[var(--c-canvas)]">
-                      <Media src={inst.avatarUrl} alt={inst.fullName} />
+                      <Media src={inst.avatarUrl} alt={inst.name ?? ''} />
                     </span>
-                    <p className="text-[16px] font-semibold text-[var(--c-ink)]">{inst.fullName}</p>
+                    <p className="text-[16px] font-semibold text-[var(--c-ink)]">{inst.name ?? ''}</p>
                     <p className="text-[14px] text-[var(--c-muted)]">{inst.headline ?? ''}</p>
-                    {inst.country && <p className="text-[12px] font-medium text-[var(--c-muted)]">{inst.country}</p>}
+                    {/* `country` is not part of this projection — it rendered nothing.
+                        The two aggregates the endpoint DOES send are what a learner
+                        picking an instructor actually wants to compare. */}
+                    <p className="text-[12px] font-medium text-[var(--c-muted)]">
+                      {inst.courseCount ?? 0} {(inst.courseCount ?? 0) === 1 ? t('home.course', 'course') : t('home.courses', 'courses')}
+                      {' · '}
+                      {(inst.studentCount ?? 0).toLocaleString()} {t('home.students', 'students')}
+                    </p>
                   </Link>
                 ))}
               </div>

@@ -101,7 +101,7 @@
     "categoriesTitle": "Browse top categories",
     "categoriesSubtitle": "Pick a subject and start today",
     "loadError": "We could not load your cart. Please try again.",
-    "courses": "Courses",
+    "courses": "courses",
     "bestSellingTitle": "Best selling courses",
     "bestSellingSubtitle": "What learners are buying this month",
     "recentTitle": "Recently added",
@@ -114,7 +114,9 @@
     "step4": "Get paid every month",
     "becomeInstructor": "Become an instructor",
     "instructorsTitle": "Top instructors",
-    "instructorsSubtitle": "Learn from people who do the work"
+    "instructorsSubtitle": "Learn from people who do the work",
+    "course": "course",
+    "students": "students"
   },
   "courses": {
     "title": "Sign in",
@@ -304,5 +306,19 @@
     "paidOrders": "Paid orders",
     "signOut": "Sign out",
     "home": "Home"
+  },
+  "footer": {
+    "explore": "Explore",
+    "learning": "Learning",
+    "account": "Account",
+    "contact": "Questions?",
+    "rights": "All rights reserved.",
+    "console": "admin console",
+    "support": "Support"
+  },
+  "roles": {
+    "admin": "Admin",
+    "instructor": "Instructor",
+    "student": "Student"
   }
 }

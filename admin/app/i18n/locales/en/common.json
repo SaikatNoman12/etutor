@@ -134,6 +134,15 @@
       "field": {
         "status": "Status"
       }
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "courses": "Courses",
+      "categories": "Categories",
+      "users": "Users",
+      "orders": "Orders",
+      "enrollments": "Enrolments",
+      "coupons": "Coupons"
     }
   },
   "orders": {
@@ -216,5 +225,24 @@
       "submit": "Submit",
       "login_cta": "Login cta"
     }
+  },
+  "footer": {
+    "explore": "Explore",
+    "learning": "Learning",
+    "account": "Account",
+    "contact": "Questions?",
+    "rights": "All rights reserved.",
+    "console": "admin console",
+    "support": "Support"
+  },
+  "home": {
+    "course": "course",
+    "courses": "courses",
+    "students": "students"
+  },
+  "roles": {
+    "admin": "Admin",
+    "instructor": "Instructor",
+    "student": "Student"
   }
 }

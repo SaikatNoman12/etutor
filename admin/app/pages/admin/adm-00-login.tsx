@@ -9,25 +9,25 @@
 // Scope-locked parts preserved: all data-testids, the default export
 // (AdminLoginPage), and the data wiring + loading/error/empty branches.
 
-import { useEffect, useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { useTranslation } from 'react-i18next';
-import { useAppDispatch } from '~/hooks/useAppDispatch';
-import { loginThunk } from '~/services/httpServices/authService';
-import { getStats } from '~/services/httpServices/adminConsoleService';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
-import { toast } from '~/lib/toast';
-import { GraduationCap } from 'lucide-react';
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
+import { useAppDispatch } from "~/hooks/useAppDispatch";
+import { loginThunk } from "~/services/httpServices/authService";
+import { getStats } from "~/services/httpServices/adminConsoleService";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { toast } from "~/lib/toast";
+import { GraduationCap } from "lucide-react";
 
 export default function AdminLoginPage() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,11 +39,14 @@ export default function AdminLoginPage() {
     const result = await dispatch(loginThunk({ email, password }));
     setSubmitting(false);
     if (loginThunk.fulfilled.match(result)) {
-      toast.success(t('auth:login.success', 'Signed in'));
-      navigate('/');
+      toast.success(t("auth:login.success", "Signed in"));
+      // Not '/': that route redirects here-ward through the console front door,
+      // and before it existed it was a blank page — so a correct password landed
+      // on an empty white screen.
+      navigate("/admin");
     } else {
-      setError(t('auth:login.failure', 'Could not sign you in'));
-      toast.error(t('auth:login.failure', 'Could not sign you in'));
+      setError(t("auth:login.failure", "Could not sign you in"));
+      toast.error(t("auth:login.failure", "Could not sign you in"));
     }
   }
 
@@ -59,109 +62,171 @@ export default function AdminLoginPage() {
     setStatsError(null);
     dispatch(getStats())
       .unwrap()
-      .then((d) => { if (!cancelled) setStats(d); })
-      .catch((err) => { if (!cancelled) setStatsError(err instanceof Error ? err.message : 'Unable to load'); })
-      .finally(() => { if (!cancelled) setStatsLoading(false); });
-    return () => { cancelled = true; };
+      .then((d) => {
+        if (!cancelled) setStats(d);
+      })
+      .catch((err) => {
+        if (!cancelled)
+          setStatsError(err instanceof Error ? err.message : "Unable to load");
+      })
+      .finally(() => {
+        if (!cancelled) setStatsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [dispatch]);
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="flex w-full flex-col gap-[16px] rounded-[8px] border bg-card p-[24px] shadow-sm"
-      data-testid="adm-00-login-page"
-    >
-      <Link
-        to="/"
-        className="inline-flex items-center gap-[8px] text-foreground no-underline"
-        data-testid="adm-00-login-home-link"
+    // The page owns its own centring. It used to rely on the root shell's
+    // `container mx-auto`, and when the console chrome moved out of that shell
+    // the form had nothing constraining it: a 1440px-wide card pinned to the top
+    // left corner with the rest of the window empty below it.
+    <main className="flex min-h-screen items-center justify-center bg-muted/30 px-6 py-12">
+      <form
+        onSubmit={onSubmit}
+        className="flex w-full max-w-[420px] flex-col gap-[16px] rounded-[8px] border bg-card p-[24px] shadow-sm"
+        data-testid="adm-00-login-page"
       >
-        <span className="inline-flex h-8 w-8 items-center justify-center rounded-[6px] bg-primary text-primary-foreground">
-          <GraduationCap className="h-5 w-5" aria-hidden="true" />
-        </span>
-        <span className="text-[20px] font-bold tracking-[-0.2px]">{t('brand.name', 'E-Tutor')}</span>
-      </Link>
+        <Link
+          to="/"
+          className="inline-flex items-center gap-[8px] text-foreground no-underline"
+          data-testid="adm-00-login-home-link"
+        >
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-[6px] bg-primary text-primary-foreground">
+            <GraduationCap className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <span className="text-[20px] font-bold tracking-[-0.2px]">
+            {t("brand.name", "E-Tutor")}
+          </span>
+        </Link>
 
-      <h1
-        className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-foreground"
-        data-testid="adm-00-login-heading"
-      >
-        {t('auth:login.adminTitle', 'Admin sign in')}
-      </h1>
+        <h1
+          className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-foreground"
+          data-testid="adm-00-login-heading"
+        >
+          {t("auth:login.adminTitle", "Admin sign in")}
+        </h1>
 
-      <div className="flex flex-col gap-[16px]" data-testid="adm-00-login-main">
-        <div className="flex flex-col gap-[16px]" data-testid="adm-00-login-ac-1">
-          <div className="flex flex-col gap-[4px]">
-            <Label htmlFor="adm-login-email">{t('auth:login.emailLabel', 'Email')}</Label>
-            <Input
-              id="adm-login-email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder={t('auth:login.adminEmailPlaceholder', 'admin@etutor.com')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              data-testid="adm-00-login-ac-1-email"
-            />
-          </div>
-
-          <div className="flex flex-col gap-[4px]">
-            <Label htmlFor="adm-login-password">{t('auth:login.passwordLabel', 'Password')}</Label>
-            <Input
-              id="adm-login-password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder={t('auth:login.adminPasswordPlaceholder', 'Your password')}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              data-testid="adm-00-login-ac-1-password"
-            />
-          </div>
-
-          {error && (
-            <p className="text-[13px] text-destructive" data-testid="adm-00-login-error">
-              {error}
-            </p>
-          )}
-
-          <Button
-            type="submit"
-            size="lg"
-            disabled={submitting}
-            className="w-full"
-            data-testid="adm-00-login-ac-1-action"
+        <div
+          className="flex flex-col gap-[16px]"
+          data-testid="adm-00-login-main"
+        >
+          <div
+            className="flex flex-col gap-[16px]"
+            data-testid="adm-00-login-ac-1"
           >
-            {submitting ? t('actions.loading', 'Loading...') : t('auth:login.submitButton', 'Sign in')}
-          </Button>
-        </div>
-
-        {/* Console stats — data wiring preserved (scope-lock); hidden on the sign-in surface. */}
-        <div className="hidden" aria-hidden="true" data-testid="adm-00-login-ac-2">
-          {statsLoading && <p data-testid="adm-00-login-ac-2-loading">{t('actions.loading', 'Loading...')}</p>}
-          {statsError && (
-            <p className="text-destructive" data-testid="adm-00-login-ac-2-error">
-              {t('empty.error', 'Unable to load')}
-            </p>
-          )}
-          {!statsLoading && !statsError && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3" data-testid="adm-00-login-ac-2-kpis">
-              {Object.entries(stats && typeof stats === 'object' ? (stats as Record<string, unknown>) : {})
-                .slice(0, 6)
-                .map(([key, value]) => (
-                  <div key={key} data-testid={`adm-00-login-ac-2-kpi-${key}`} className="rounded bg-muted p-3">
-                    <p className="text-xs text-muted-foreground">{key}</p>
-                    <p className="text-2xl font-bold">
-                      {typeof value === 'number' || typeof value === 'string' ? String(value) : '-'}
-                    </p>
-                  </div>
-                ))}
+            <div className="flex flex-col gap-[4px]">
+              <Label htmlFor="adm-login-email">
+                {t("auth:login.emailLabel", "Email")}
+              </Label>
+              <Input
+                id="adm-login-email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder={t(
+                  "auth:login.adminEmailPlaceholder",
+                  "admin@etutor.test",
+                )}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                data-testid="adm-00-login-ac-1-email"
+              />
             </div>
-          )}
+
+            <div className="flex flex-col gap-[4px]">
+              <Label htmlFor="adm-login-password">
+                {t("auth:login.passwordLabel", "Password")}
+              </Label>
+              <Input
+                id="adm-login-password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                placeholder={t(
+                  "auth:login.adminPasswordPlaceholder",
+                  "Your password",
+                )}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                data-testid="adm-00-login-ac-1-password"
+              />
+            </div>
+
+            {error && (
+              <p
+                className="text-[13px] text-destructive"
+                data-testid="adm-00-login-error"
+              >
+                {error}
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              size="lg"
+              disabled={submitting}
+              className="w-full"
+              data-testid="adm-00-login-ac-1-action"
+            >
+              {submitting
+                ? t("actions.loading", "Loading...")
+                : t("auth:login.submitButton", "Sign in")}
+            </Button>
+          </div>
+
+          {/* Console stats — data wiring preserved (scope-lock); hidden on the sign-in surface. */}
+          <div
+            className="hidden"
+            aria-hidden="true"
+            data-testid="adm-00-login-ac-2"
+          >
+            {statsLoading && (
+              <p data-testid="adm-00-login-ac-2-loading">
+                {t("actions.loading", "Loading...")}
+              </p>
+            )}
+            {statsError && (
+              <p
+                className="text-destructive"
+                data-testid="adm-00-login-ac-2-error"
+              >
+                {t("empty.error", "Unable to load")}
+              </p>
+            )}
+            {!statsLoading && !statsError && (
+              <div
+                className="grid grid-cols-1 gap-4 sm:grid-cols-3"
+                data-testid="adm-00-login-ac-2-kpis"
+              >
+                {Object.entries(
+                  stats && typeof stats === "object"
+                    ? (stats as Record<string, unknown>)
+                    : {},
+                )
+                  .slice(0, 6)
+                  .map(([key, value]) => (
+                    <div
+                      key={key}
+                      data-testid={`adm-00-login-ac-2-kpi-${key}`}
+                      className="rounded bg-muted p-3"
+                    >
+                      <p className="text-xs text-muted-foreground">{key}</p>
+                      <p className="text-2xl font-bold">
+                        {typeof value === "number" || typeof value === "string"
+                          ? String(value)
+                          : "-"}
+                      </p>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </main>
   );
 }

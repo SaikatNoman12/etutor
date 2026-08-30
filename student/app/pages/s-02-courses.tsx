@@ -19,35 +19,62 @@
 // re-drawn on screen).
 
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
-import { listCourses } from '~/services/httpServices/catalogueService';
+import { listCourses, listCategories } from '~/services/httpServices/catalogueService';
 import { course_level } from '~/enums/course-level.enum';
-import type { Course } from '~/types/course';
-import type { CourseRow } from '~/types/view-models';
+import type { CourseRow, CategoryCard } from '~/types/view-models';
 import { ChevronLeft, ChevronRight, Search, Star } from 'lucide-react';
 
 const PAGE_SIZE = 8;
 
 /** Defensive extractor — the raw /api/courses body may be an array, a
  *  ResponsePayloadDto ({ data }), or a paginated envelope ({ items }). */
-function extractCourses(payload: unknown): Course[] {
-  if (Array.isArray(payload)) return payload as Course[];
+function extractCourses(payload: unknown): CourseRow[] {
+  if (Array.isArray(payload)) return payload as CourseRow[];
   if (payload && typeof payload === 'object') {
     const p = payload as Record<string, unknown>;
-    if (Array.isArray(p.items)) return p.items as Course[];
-    if (Array.isArray(p.data)) return p.data as Course[];
+    if (Array.isArray(p.items)) return p.items as CourseRow[];
+    if (Array.isArray(p.data)) return p.data as CourseRow[];
     if (p.data && typeof p.data === 'object') {
       const d = p.data as Record<string, unknown>;
-      if (Array.isArray(d.items)) return d.items as Course[];
+      if (Array.isArray(d.items)) return d.items as CourseRow[];
     }
   }
   return [];
 }
 
-/** Course rows may embed their category name; the generated type only
- *  guarantees categoryId, so widen locally without reaching for `any`. */
+/** GET /api/categories, same envelope tolerance. */
+function extractCategories(payload: unknown): CategoryCard[] {
+  if (Array.isArray(payload)) return payload as CategoryCard[];
+  if (payload && typeof payload === 'object') {
+    const p = payload as Record<string, unknown>;
+    if (Array.isArray(p.items)) return p.items as CategoryCard[];
+    if (Array.isArray(p.data)) return p.data as CategoryCard[];
+    if (p.data && typeof p.data === 'object') {
+      const d = p.data as Record<string, unknown>;
+      if (Array.isArray(d.items)) return d.items as CategoryCard[];
+    }
+  }
+  return [];
+}
+
+/** The pagination envelope the same body carries: { page, page_size, total }. */
+function extractMeta(payload: unknown): { page: number; pageSize: number; total: number } | null {
+  const bag =
+    payload && typeof payload === 'object'
+      ? ((payload as Record<string, unknown>).meta ??
+         ((payload as Record<string, unknown>).data as Record<string, unknown> | undefined)?.meta)
+      : undefined;
+  if (!bag || typeof bag !== 'object') return null;
+  const m = bag as Record<string, unknown>;
+  return {
+    page: Number(m.page ?? 1) || 1,
+    pageSize: Number(m.page_size ?? m.pageSize ?? PAGE_SIZE) || PAGE_SIZE,
+    total: Number(m.total ?? 0) || 0,
+  };
+}
 
 export default function CourseListPage() {
   const { t } = useTranslation('common');
@@ -66,23 +93,68 @@ export default function CourseListPage() {
   const [loading4, setLoading4] = useState<boolean>(true);
   const [error4, setError4] = useState<string | null>(null);
 
-  // Client-side catalogue controls (drive the visible grid built from data1).
+  // Catalogue controls. `category` holds a SLUG, which is what /api/courses
+  // narrows on and what the home page's category cards link with
+  // (/courses?category=design), so arriving from one lands already narrowed.
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
+  const [debouncedSearch, setDebouncedSearch] = useState<string>('');
+  const [category, setCategory] = useState<string>(() => searchParams.get('category') ?? '');
   const [level, setLevel] = useState<string>('');
   const [sort, setSort] = useState<string>('popular');
   const [page, setPage] = useState<number>(1);
+  const [categoryOptions, setCategoryOptions] = useState<CategoryCard[]>([]);
 
-  // Primary catalogue — GET /api/courses via the catalogue read thunk
-  // (httpService client → backend origin, withCredentials + 401→refresh retry).
+  // A request per keystroke is a request per keystroke.
+  useEffect(() => {
+    const id = setTimeout(() => { setDebouncedSearch(search.trim()); setPage(1); }, 300);
+    return () => clearTimeout(id);
+  }, [search]);
+
+  // Following a category card after this page has mounted changes the query
+  // string, not the route, so the control has to follow the URL.
+  useEffect(() => { setCategory(searchParams.get('category') ?? ''); setPage(1); }, [searchParams]);
+
+  const levelValue = useMemo<number | null>(() => (
+    level === 'Beginner' ? course_level.BEGINNER
+    : level === 'Intermediate' ? course_level.INTERMEDIATE
+    : level === 'Advanced' ? course_level.ADVANCED
+    : null
+  ), [level]);
+
+  // Primary catalogue — GET /api/courses with the controls as QUERY PARAMS.
+  //
+  // This used to fetch page 1 whole and then search / filter / sort / page
+  // the result in the browser, which is wrong in three compounding ways: the
+  // endpoint is paginated, so the client was filtering 12 of 17 courses and the
+  // other 5 could not be reached by any combination of controls; the category
+  // filter compared `c.category?.name` against the selected value on rows that
+  // carried the name as a plain string, so picking a category emptied the page;
+  // and "newest" sorted on a `createdAt` the projection never sends. The API
+  // answers all four questions (search, category by slug, level, sort) and
+  // reports the true total — ask it, and delete the second implementation.
   useEffect(() => {
     let cancelled = false;
     setLoading1(true);
     setError1(null);
-    dispatch(listCourses(undefined)).unwrap()
+    const query: Record<string, unknown> = { page, sort };
+    if (debouncedSearch) query.search = debouncedSearch;
+    if (category) query.category = category;
+    if (levelValue !== null) query.level = levelValue;
+    dispatch(listCourses(query)).unwrap()
       .then((d) => { if (!cancelled) setData1(d); })
       .catch((e: unknown) => { if (!cancelled) setError1(e instanceof Error ? e.message : 'Failed to load'); })
       .finally(() => { if (!cancelled) setLoading1(false); });
+    return () => { cancelled = true; };
+  }, [dispatch, debouncedSearch, category, levelValue, sort, page]);
+
+  // The filter bar's own options — the eight categories used to be hardcoded in
+  // the markup, so a category added in the admin console could never be chosen.
+  useEffect(() => {
+    let cancelled = false;
+    dispatch(listCategories(undefined)).unwrap()
+      .then((d) => { if (!cancelled) setCategoryOptions(extractCategories(d)); })
+      .catch(() => { if (!cancelled) setCategoryOptions([]); });
     return () => { cancelled = true; };
   }, [dispatch]);
   // Acceptance-criteria variant — server-side keyword search.
@@ -119,33 +191,15 @@ export default function CourseListPage() {
     return () => { cancelled = true; };
   }, [dispatch]);
 
-  const allCourses = useMemo<CourseRow[]>(() => extractCourses(data1) as CourseRow[], [data1]);
+  // What came back IS the page: already searched, narrowed, sorted and sliced by
+  // the API. There is no second implementation of any of that here — that is the
+  // whole point of asking the server.
+  const paged = useMemo<CourseRow[]>(() => extractCourses(data1), [data1]);
+  const meta = useMemo(() => extractMeta(data1), [data1]);
 
-  const filtered = useMemo<CourseRow[]>(() => {
-    const term = search.trim().toLowerCase();
-    const levelValue =
-      level === 'Beginner' ? course_level.BEGINNER
-      : level === 'Intermediate' ? course_level.INTERMEDIATE
-      : level === 'Advanced' ? course_level.ADVANCED
-      : null;
-    const result = allCourses.filter((c) => {
-      if (term && !(c.title ?? '').toLowerCase().includes(term)) return false;
-      if (category && (c.category?.name ?? '') !== category) return false;
-      if (levelValue !== null && c.level !== levelValue) return false;
-      return true;
-    });
-    result.sort((a, b) => {
-      if (sort === 'price_asc') return (a.price ?? 0) - (b.price ?? 0);
-      if (sort === 'price_desc') return (b.price ?? 0) - (a.price ?? 0);
-      if (sort === 'newest') return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
-      return (b.studentCount ?? 0) - (a.studentCount ?? 0);
-    });
-    return result;
-  }, [allCourses, search, category, level, sort]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const total = meta?.total ?? paged.length;
+  const totalPages = Math.max(1, Math.ceil(total / (meta?.pageSize ?? PAGE_SIZE)));
   const currentPage = Math.min(page, totalPages);
-  const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   return (
     <div className="mx-auto max-w-[1240px] px-[24px] py-[32px]" data-testid="s-02-courses-page">
@@ -159,7 +213,7 @@ export default function CourseListPage() {
             {t('courses.title', 'All courses')}
           </h1>
           <p className="m-0 text-[14px] font-normal leading-[1.5] text-[var(--c-muted)]">
-            {filtered.length} {t('courses.count', 'courses')}
+            {total} {t('courses.count', 'courses')}
           </p>
         </div>
       </div>
@@ -182,18 +236,13 @@ export default function CourseListPage() {
           className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)]"
           aria-label={t('courses.category', 'Category')}
           value={category}
-          onChange={(e) => { setCategory(e.target.value === 'All categories' ? '' : e.target.value); setPage(1); }}
+          onChange={(e) => { setCategory(e.target.value); setPage(1); }}
           data-testid="s-02-courses-filter-category"
         >
           <option value="">{t('courses.allCategories', 'All categories')}</option>
-          <option>Development</option>
-          <option>Business</option>
-          <option>Finance &amp; Accounting</option>
-          <option>IT &amp; Software</option>
-          <option>Design</option>
-          <option>Marketing</option>
-          <option>Photography</option>
-          <option>Music</option>
+          {categoryOptions.map((c) => (
+            <option key={c.id} value={c.slug}>{c.name}</option>
+          ))}
         </select>
         <select
           className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)]"
@@ -253,7 +302,7 @@ export default function CourseListPage() {
           </div>
         )}
 
-        {!loading1 && !error1 && filtered.length === 0 && (
+        {!loading1 && !error1 && paged.length === 0 && (
           <div
             className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-02-courses-ac-2-empty"
@@ -264,7 +313,7 @@ export default function CourseListPage() {
           </div>
         )}
 
-        {!loading1 && !error1 && filtered.length > 0 && (
+        {!loading1 && !error1 && paged.length > 0 && (
           <div className="grid grid-cols-4 gap-[16px]" data-testid="s-02-courses-ac-2-list">
             {paged.map((course, i) => (
               <Link
@@ -309,7 +358,7 @@ export default function CourseListPage() {
         )}
 
         {/* pagination */}
-        {!loading1 && !error1 && filtered.length > 0 && (
+        {!loading1 && !error1 && paged.length > 0 && (
           <nav className="mt-[24px] flex items-center gap-[8px]" aria-label={t('courses.pagination', 'Pagination')}>
             <button
               type="button"
@@ -366,7 +415,7 @@ export default function CourseListPage() {
         <section data-testid="s-02-courses-ac-1">
           {!loading1 && !error1 && (
             <ul data-testid="s-02-courses-ac-1-detail">
-              {allCourses.slice(0, 8).map((c, i) => (
+              {paged.slice(0, 8).map((c, i) => (
                 <li key={c.id ?? i}>{c.title ?? ''}</li>
               ))}
             </ul>

@@ -22,6 +22,7 @@ import { User } from '../user/user.entity';
 
 import { LoginDto } from './dtos/login.dto';
 import { SignupDto } from './dtos/signup.dto';
+import { user_role } from '../../common/enums/user-role.enum';
 
 const BCRYPT_ROUNDS = 10;
 
@@ -44,7 +45,14 @@ export class AuthService {
       email: dto.email,
       fullName: dto.fullName,
       passwordHash: passwordHash,
-      role: dto.role,
+      // The role is NOT read from the request. `role: dto.role` handed the
+      // caller their own privilege level: POST /api/auth/signup with
+      // {"role": 99} minted an administrator, from the public internet, with
+      // no session and no approval — and 99 is the same code the RolesGuard
+      // trusts on every admin endpoint. Signing up makes a student. Instructors
+      // and administrators are appointed in the console, which is the whole
+      // point of having one.
+      role: user_role.STUDENT,
     };
     const created = this.userRepo.create(payload);
     const user = await this.userRepo.save(created);

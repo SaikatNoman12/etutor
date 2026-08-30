@@ -3,6 +3,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, In } from 'typeorm';
 
 import { Category } from '../category/category.entity';
+import { categoryRef } from '../../core/utils/category-ref';
 import { Course } from '../course/course.entity';
 import { CourseSection } from '../course-section/course-section.entity';
 import { Lesson } from '../lesson/lesson.entity';
@@ -109,7 +110,7 @@ export class CatalogueService {
       id: c.id,
       title: c.title,
       slug: c.slug,
-      category: c.category?.name ?? null,
+      category: categoryRef(c.category),
       price: c.price,
       compareAtPrice: c.compareAtPrice ?? null,
       level: c.level,
@@ -159,9 +160,7 @@ export class CatalogueService {
       ratingCount: course.ratingCount,
       studentCount: course.studentCount,
       publishedAt: course.publishedAt ?? null,
-      category: course.category
-        ? { name: course.category.name, slug: course.category.slug }
-        : null,
+      category: categoryRef(course.category),
       instructor: course.instructor
         ? {
             id: course.instructor.id,
@@ -279,7 +278,7 @@ export class CatalogueService {
         id: c.id,
         title: c.title,
         slug: c.slug,
-        category: c.category?.name ?? null,
+        category: categoryRef(c.category),
         price: c.price,
         compareAtPrice: c.compareAtPrice ?? null,
         level: c.level,

@@ -1,10 +1,8 @@
 import type { RouteConfigEntry } from "@react-router/dev/routes";
+import { index } from "@react-router/dev/routes";
 
-// Public (unauthenticated) routes — define your project's public pages here.
-// Example:
-//   import { route, index } from "@react-router/dev/routes";
-//   export const publicRoutes: RouteConfigEntry[] = [
-//     index("pages/home.tsx"),
-//     route("about", "pages/public/about.tsx"),
-//   ];
-export const publicRoutes: RouteConfigEntry[] = [];
+// The console has no public pages beyond its front door: `/` redirects into
+// /admin, which the guard bounces to /admin/login when there is no session.
+export const publicRoutes: RouteConfigEntry[] = [
+  index("pages/adm-index.tsx"),
+];

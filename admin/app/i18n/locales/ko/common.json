@@ -127,6 +127,15 @@
       "field": {
         "status": "Status"
       }
+    },
+    "nav": {
+      "dashboard": "대시보드",
+      "courses": "강좌",
+      "categories": "카테고리",
+      "users": "사용자",
+      "orders": "주문",
+      "enrollments": "수강 등록",
+      "coupons": "쿠폰"
     }
   },
   "orders": {
@@ -201,5 +210,24 @@
       "submit": "Submit",
       "login_cta": "Login cta"
     }
+  },
+  "footer": {
+    "explore": "둘러보기",
+    "learning": "학습",
+    "account": "계정",
+    "contact": "문의가 있으신가요?",
+    "rights": "All rights reserved.",
+    "console": "관리자 콘솔",
+    "support": "고객지원"
+  },
+  "home": {
+    "course": "강좌",
+    "courses": "강좌",
+    "students": "수강생"
+  },
+  "roles": {
+    "admin": "관리자",
+    "instructor": "강사",
+    "student": "수강생"
   }
 }

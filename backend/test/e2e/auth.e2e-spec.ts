@@ -48,7 +48,6 @@ describe('Auth E2E', () => {
           fullName: 'spec-fullName',
           email: 'auth-spec@test.com',
           password: 'TestPass1!',
-          role: 0,
         })
         .expect((res) => {
           if (![200, 201].includes(res.status)) {
@@ -62,7 +61,6 @@ describe('Auth E2E', () => {
           fullName: 'spec-fullName',
           email: 'auth-spec@test.com',
           password: 'TestPass1!',
-          role: 0,
       };
       await supertest(ctx.app.getHttpServer()).post('/api/auth/signup').send(body);
       await supertest(ctx.app.getHttpServer())
@@ -96,7 +94,6 @@ describe('Auth E2E', () => {
           fullName: 'spec-fullName',
           email: 'auth-spec@test.com',
           password: 'TestPass1!',
-          role: 0,
         });
       const res = await supertest(ctx.app.getHttpServer())
         .post('/api/auth/login')
@@ -133,7 +130,6 @@ describe('Auth E2E', () => {
           fullName: 'spec-fullName',
           email: 'auth-spec@test.com',
           password: 'TestPass1!',
-          role: 0,
         });
       const loginRes = await supertest(ctx.app.getHttpServer())
         .post('/api/auth/login')

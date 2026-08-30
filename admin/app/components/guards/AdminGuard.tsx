@@ -1,40 +1,50 @@
 /**
  * AdminGuard.tsx — route-level guard for the admin console (manifest guard
- * `auth:admin`). Wraps the whole `/admin/*` tree in routes.ts:
+ * `auth:admin`). Wraps the whole `/admin/*` tree except the login page.
  *
- *   layout('components/guards/AdminGuard.tsx', [
- *     layout('components/layouts/AdminLayout.tsx', adminRoutes),
- *   ])
+ * DEFAULT export because React Router 7's `layout()` mounts a route module's
+ * default export.
  *
- * This is a DEFAULT export because React Router 7 `layout()` imports the
- * route module's default export as the component. The named AuthGuard /
- * RoleGuard primitives cannot be used as route modules directly (no default
- * export), so the auth + admin-role check is inlined here — the pattern the
- * auth-guards guide calls "inline RBAC in the protected layout".
+ * Two things here were wrong for as long as this file existed, and both were
+ * invisible because nothing had wired the guard into routes.ts:
  *
- * It waits for the session check to settle (authChecked / isLoading) before
- * redirecting, so a hard refresh does not flash a redirect while the auth
- * slice is still hydrating from GET /auth/me.
+ *  1. It gated on `isLoading || !authChecked`. `authChecked` is monotonic —
+ *     false until the first session check resolves, true forever after —
+ *     but `isLoading` flips back on every later refetch, so a page that
+ *     fetches on mount unmounts the guard's whole subtree, which remounts,
+ *     which fetches again. ProtectedLayout carries the same scar.
+ *  2. It compared `String(user.role) !== 'admin'`. The role travels as its
+ *     numeric JWT claim (admin is 99), so that comparison is true for the
+ *     admin too: wiring this guard up as written would have bounced every
+ *     administrator to the login page they had just used.
  */
-import { Navigate, Outlet, useLocation } from 'react-router';
+import { Navigate, Outlet } from 'react-router';
 import { useAppSelector } from '~/hooks/useAppSelector';
+import { user_role } from '~/enums/user-role.enum';
+import { PageSkeleton } from '~/components/shared/PageSkeleton';
+
+/** Accept the role as the number it is, or as the string a JSON round-trip may leave. */
+function isAdmin(role: unknown): boolean {
+  return String(role) === String(user_role.ADMIN) || String(role).toLowerCase() === 'admin';
+}
 
 export default function AdminGuard() {
-  const { user, isAuthenticated, isLoading, authChecked } = useAppSelector((s) => s.auth);
-  const location = useLocation();
+  const { user, authChecked } = useAppSelector((s) => s.auth);
 
-  // Session still hydrating — render nothing rather than redirect prematurely.
-  if (isLoading || !authChecked) return null;
+  // Same reason as the student site's ProtectedLayout: `null` here is a blank
+  // console for the length of the session check.
+  if (!authChecked) return <PageSkeleton />;
 
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
-  }
-
-  // Stringify both sides so a number-vs-string role contract can't silently
-  // pass a non-admin through (see auth-guards.md → "Role Contract").
-  if (String(user.role) !== 'admin') {
+  if (!user) {
+    // `state` deliberately omitted. Passing `state={{ from: location.pathname }}`
+    // builds a NEW object on every render, and <Navigate> re-runs its effect when
+    // that prop changes — so the guard re-navigated on each render and React shut
+    // it down with "Maximum update depth exceeded", leaving the console blank
+    // rather than redirected. Nothing read the value.
     return <Navigate to="/admin/login" replace />;
   }
-
+  if (!isAdmin(user.role)) {
+    return <Navigate to="/admin/login" replace />;
+  }
   return <Outlet />;
 }

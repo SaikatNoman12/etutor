@@ -20,6 +20,7 @@ import { CartItemRepository } from '../cart-item/cart-item.repository';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { CourseRepository } from '../course/course.repository';
 import { EnrollmentRepository } from '../enrollment/enrollment.repository';
+import { categoryRef, type CategoryRef } from '../../core/utils/category-ref';
 
 /** Shape returned for a single cart line. */
 export interface CartItemView {
@@ -28,7 +29,7 @@ export interface CartItemView {
   course: {
     title: string;
     slug: string;
-    category: string | null;
+    category: CategoryRef | null;
     thumbnailUrl: string | null;
   } | null;
   unitPrice: number;
@@ -239,7 +240,7 @@ export class CartManagementService {
         ? {
             title: course.title,
             slug: course.slug,
-            category: course.category?.name ?? null,
+            category: categoryRef(course.category),
             thumbnailUrl: course.thumbnailUrl ?? null,
           }
         : null,

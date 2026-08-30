@@ -178,6 +178,22 @@ export default function AdminCourseDetailPage() {
     data1 && typeof data1 === 'object'
       ? (((data1 as { data?: CourseDetail }).data ?? (data1 as CourseDetail)) ?? null)
       : null;
+  // Controlled, not `defaultValue`.
+  //
+  // `defaultValue` on a <select> is applied ONCE, at mount. Both option lists
+  // arrive from their own fetch afterwards, so at mount each select held nothing
+  // but its "Select category" placeholder and the default had no option to land
+  // on — every course, however it was classified, opened showing "Select
+  // category" and "Select instructor". Saving from that form then reassigned the
+  // course to nothing.
+  const [categoryId, setCategoryId] = useState<string>('');
+  const [instructorId, setInstructorId] = useState<string>('');
+  useEffect(() => {
+    if (!course) return;
+    setCategoryId(String(course.categoryId ?? ''));
+    setInstructorId(String(course.instructorId ?? ''));
+  }, [course?.id, course?.categoryId, course?.instructorId]);
+
   const lessons: LessonRow[] = Array.isArray(course?.lessons) ? (course!.lessons as LessonRow[]) : [];
   const q = lessonQuery.trim().toLowerCase();
   const filteredLessons = lessons.filter(
@@ -273,7 +289,7 @@ export default function AdminCourseDetailPage() {
                   </label>
                   <label className="flex flex-col gap-1">
                     <span className={LABEL}>{t('admin.courseDetail.category', { defaultValue: 'Category' })}</span>
-                    <select name="categoryId" defaultValue={String(course.categoryId ?? '')} className={INPUT} data-testid="course-detail-category">
+                    <select name="categoryId" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={INPUT} data-testid="course-detail-category">
                       <option value="">{t('admin.courseDetail.selectCategory', { defaultValue: 'Select category' })}</option>
                       {categories.map((c) => (
                         <option key={optId(c) || optName(c)} value={optId(c)}>{optName(c)}</option>
@@ -282,7 +298,7 @@ export default function AdminCourseDetailPage() {
                   </label>
                   <label className="flex flex-col gap-1">
                     <span className={LABEL}>{t('admin.courseDetail.instructor', { defaultValue: 'Instructor' })}</span>
-                    <select name="instructorId" defaultValue={String(course.instructorId ?? '')} className={INPUT} data-testid="course-detail-instructor">
+                    <select name="instructorId" value={instructorId} onChange={(e) => setInstructorId(e.target.value)} className={INPUT} data-testid="course-detail-instructor">
                       <option value="">{t('admin.courseDetail.selectInstructor', { defaultValue: 'Select instructor' })}</option>
                       {instructors.map((i) => (
                         <option key={optId(i) || optName(i)} value={optId(i)}>{optName(i)}</option>

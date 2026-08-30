@@ -9,8 +9,10 @@
 // Everything is optional on purpose: these describe an envelope the backend MAY embed,
 // so a screen reads them defensively rather than asserting a relation was loaded.
 import type { Cart } from '~/types/cart';
+import type { Category } from '~/types/category';
 import type { CartItem } from '~/types/cart-item';
 import type { Course } from '~/types/course';
+import type { course_level } from '~/enums/course-level.enum';
 import type { CourseSection } from '~/types/course-section';
 import type { Enrollment } from '~/types/enrollment';
 import type { Lesson } from '~/types/lesson';
@@ -19,8 +21,33 @@ import type { Order } from '~/types/order';
 import type { OrderItem } from '~/types/order-item';
 import type { User } from '~/types/user';
 
-/** A catalogue card: a course plus the category name the grid labels it with. */
-export type CourseRow = Course & { category?: { name?: string } };
+/** A catalogue card — GET /api/courses, and the course lists embedded in an
+ *  instructor's profile.
+ *
+ *  A PROJECTION, not the entity. It carries the category by name and slug, and
+ *  none of the entity's foreign keys or timestamps. Declaring it `Course & {…}`
+ *  promised a `categoryId` and a `createdAt` that endpoint has never sent, and
+ *  the screens believed the type: the home page counted a category's courses by
+ *  matching `categoryId`, so every category read "0 Courses" next to a catalogue
+ *  that plainly had them, and "recently added" sorted on `new Date(undefined)`,
+ *  which is the popular order under another heading. Both compiled. */
+export type CourseRow = {
+  id: string;
+  title?: string;
+  slug?: string;
+  category?: { name?: string; slug?: string } | null;
+  price?: number;
+  compareAtPrice?: number | null;
+  level?: course_level;
+  ratingAvg?: number;
+  studentCount?: number;
+  thumbnailUrl?: string | null;
+};
+
+/** GET /api/categories — a category with the published-course count the API
+ *  already computes. The count is the server's answer; no screen re-derives it
+ *  from a page of courses it happens to be holding. */
+export type CategoryCard = Category & { courseCount?: number };
 
 /** A course-detail syllabus section with its lessons embedded. */
 export type SyllabusSection = CourseSection & { lessons?: Lesson[] };
@@ -50,8 +77,16 @@ export type InstructorRow = {
   avatarUrl?: string;
 };
 
-/** GET /api/instructors/:id — the User plus aggregates and their course list. */
-export type InstructorDetail = User & {
+/** GET /api/instructors/:id — a public profile, NOT the User row. It names the
+ *  instructor with `name`; typing it as `User & {…}` promised `fullName`, which
+ *  the endpoint does not send, so the profile header rendered an empty heading
+ *  over a filled-in page. */
+export type InstructorDetail = {
+  id?: string;
+  name?: string;
+  headline?: string | null;
+  bio?: string | null;
+  avatarUrl?: string | null;
   courses?: CourseRow[];
   courseCount?: number;
   studentCount?: number;

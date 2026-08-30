@@ -101,7 +101,7 @@ export default function InstructorDetailPage() {
 
   const instructor = useMemo<InstructorDetail | null>(() => extractInstructor(data1), [data1]);
   const courses = useMemo<CourseRow[]>(() => extractCourses(data2), [data2]);
-  const instructorName = instructor?.fullName ?? '';
+  const instructorName = instructor?.name ?? '';
 
   const coursesCount = instructor?.courseCount ?? courses.length;
   const studentsCount =

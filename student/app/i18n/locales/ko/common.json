@@ -82,7 +82,7 @@
     "categoriesTitle": "Browse top categories",
     "categoriesSubtitle": "Pick a subject and start today",
     "loadError": "We could not load your cart. Please try again.",
-    "courses": "Courses",
+    "courses": "강좌",
     "bestSellingTitle": "Best selling courses",
     "bestSellingSubtitle": "What learners are buying this month",
     "recentTitle": "Recently added",
@@ -95,7 +95,9 @@
     "step4": "Get paid every month",
     "becomeInstructor": "Become an instructor",
     "instructorsTitle": "Top instructors",
-    "instructorsSubtitle": "Learn from people who do the work"
+    "instructorsSubtitle": "Learn from people who do the work",
+    "course": "강좌",
+    "students": "수강생"
   },
   "courses": {
     "title": "Sign in",
@@ -285,5 +287,19 @@
     "paidOrders": "Paid orders",
     "signOut": "Sign out",
     "home": "Home"
+  },
+  "footer": {
+    "explore": "둘러보기",
+    "learning": "학습",
+    "account": "계정",
+    "contact": "문의가 있으신가요?",
+    "rights": "All rights reserved.",
+    "console": "관리자 콘솔",
+    "support": "고객지원"
+  },
+  "roles": {
+    "admin": "관리자",
+    "instructor": "강사",
+    "student": "수강생"
   }
 }

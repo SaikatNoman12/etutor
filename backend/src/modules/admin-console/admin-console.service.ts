@@ -22,6 +22,7 @@ import { course_status } from '../../common/enums/course-status.enum';
 import { enrollment_status } from '../../common/enums/enrollment-status.enum';
 import { order_status } from '../../common/enums/order-status.enum';
 import { user_role } from '../../common/enums/user-role.enum';
+import { categoryRef } from '../../core/utils/category-ref';
 
 import {
   AdminCategoryQueryDto,
@@ -159,8 +160,10 @@ export class AdminConsoleService {
     const items = rows.map((c) => ({
       id: c.id,
       title: c.title,
-      category: c.category?.name ?? null,
-      instructor: c.instructor?.fullName ?? null,
+      category: categoryRef(c.category),
+      instructor: c.instructor
+        ? { id: c.instructor.id, name: c.instructor.fullName }
+        : null,
       price: c.price,
       studentCount: c.studentCount,
       status: c.status,
@@ -203,11 +206,11 @@ export class AdminConsoleService {
       durationMinutes: course.durationMinutes,
       status: course.status,
       publishedAt: course.publishedAt ?? null,
-      category: course.category
-        ? { id: course.category.id, name: course.category.name }
-        : null,
+      categoryId: course.categoryId,
+      instructorId: course.instructorId,
+      category: categoryRef(course.category),
       instructor: course.instructor
-        ? { id: course.instructor.id, fullName: course.instructor.fullName }
+        ? { id: course.instructor.id, name: course.instructor.fullName }
         : null,
       sections: sections.map((s) => ({
         id: s.id,

@@ -85,13 +85,26 @@ class EnvConfigService {
   // Example: getMailConfig(), getAwsConfig(), etc.
 }
 
-const envConfigService = new EnvConfigService(process.env).ensureValues([
-  // TODO: CUSTOMIZE — List required env vars for your project
+// What the process cannot start without.
+//
+// The five POSTGRES_* variables were required unconditionally, and this check runs at
+// module load — before anything can report a nicer error. That makes the app the fourth
+// place with an opinion about how the database is addressed, and the only one that had
+// never heard of DATABASE_URL: given a connection string, exactly as every hosted
+// Postgres hands it to you, the process exited with "missing env.POSTGRES_HOST" while
+// holding perfectly valid credentials.
+//
+// One connection string OR the five parts; both describe the same thing.
+const DB_KEYS = [
   "POSTGRES_HOST",
   "POSTGRES_PORT",
   "POSTGRES_USER",
   "POSTGRES_PASSWORD",
   "POSTGRES_DATABASE",
-]);
+];
+const hasConnectionString = !!(process.env.DATABASE_URL || process.env.DB_URL);
+const envConfigService = new EnvConfigService(process.env).ensureValues(
+  hasConnectionString ? [] : DB_KEYS,
+);
 
 export { envConfigService };

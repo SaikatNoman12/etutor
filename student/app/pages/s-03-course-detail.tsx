@@ -19,7 +19,7 @@
 // finds them, and the raw ac-1 detail dump lives in the sr-only wiring block.
 
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { getCourseBySlug } from '~/services/httpServices/catalogueService';
@@ -58,6 +58,7 @@ function extractCourse(payload: unknown): CourseDetail | null {
 export default function CourseDetailPage() {
   const { t } = useTranslation('common');
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [data1, setData1] = useState<unknown>(null);
   const [loading1, setLoading1] = useState<boolean>(true);
@@ -128,6 +129,34 @@ export default function CourseDetailPage() {
       toast.error(getApiErrorMessage(err, t('courseDetail.addFailure', 'Could not add this course to your cart')));
     } finally {
       setLoading3(false);
+    }
+  };
+
+  /**
+   * "Buy now" was a link to /checkout and nothing else — it never put the course
+   * anywhere, so a visitor who had not already added it arrived at an empty
+   * checkout that could not check anything out. Buying now means: this course,
+   * in the basket, then pay.
+   */
+  const [buying, setBuying] = useState<boolean>(false);
+  const buyNow = async () => {
+    if (course?.id == null) return;
+    setBuying(true);
+    try {
+      if (!inCart) await addItem({ courseId: course.id });
+      setInCart(true);
+      navigate('/checkout');
+    } catch (err) {
+      // Already in the cart is not a failure to buy it — carry on to checkout.
+      const message = getApiErrorMessage(err, '');
+      if (/already/i.test(message)) {
+        setInCart(true);
+        navigate('/checkout');
+        return;
+      }
+      toast.error(getApiErrorMessage(err, t('courseDetail.addFailure', 'Could not add this course to your cart')));
+    } finally {
+      setBuying(false);
     }
   };
 
@@ -396,13 +425,15 @@ export default function CourseDetailPage() {
                   )}
 
                   {!owned && (
-                  <Link
-                    to="/checkout"
-                    className="flex min-h-[44px] w-full cursor-pointer items-center justify-center et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-ink)] hover:bg-[var(--c-surface-soft)]"
+                  <button
+                    type="button"
+                    onClick={() => { void buyNow(); }}
+                    disabled={buying}
+                    className="flex min-h-[44px] w-full cursor-pointer items-center justify-center et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-ink)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-60"
                     data-testid="s-03-course-detail-buy-now"
                   >
-                    {t('courseDetail.buyNow', 'Buy now')}
-                  </Link>
+                    {buying ? t('courseDetail.adding', 'Adding…') : t('courseDetail.buyNow', 'Buy now')}
+                  </button>
                   )}
 
                   <div className="h-px w-full bg-[var(--c-hairline)]" />

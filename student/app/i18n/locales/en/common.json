@@ -243,7 +243,8 @@
     "itemCount": "{{count}} item",
     "itemCount_other": "{{count}} items",
     "subtotal": "Subtotal",
-    "reassurance": "Lifetime access. 30-day refund if the course is not for you."
+    "reassurance": "Lifetime access. 30-day refund if the course is not for you.",
+    "browse": "Browse courses"
   },
   "orders": {
     "title": "Your orders",

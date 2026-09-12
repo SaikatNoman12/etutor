@@ -362,10 +362,22 @@ export default function CheckoutPage() {
             </div>
           )}
 
+          {/* Nothing to buy is a dead end unless the page says where to go. The
+              place-order button lives in this card now, so with an empty cart
+              there is otherwise no control on the screen at all. */}
           {!loading1 && !error1 && items.length === 0 && (
-            <p className="text-[14px] text-[var(--c-body)]" data-testid="s-07-checkout-empty">
-              {t('checkout.empty', 'Your cart is empty.')}
-            </p>
+            <div className="flex flex-col items-start gap-[12px]" data-testid="s-07-checkout-empty">
+              <p className="text-[14px] text-[var(--c-body)]">
+                {t('checkout.empty', 'Your cart is empty.')}
+              </p>
+              <Link
+                to="/courses"
+                className="et-press inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-pill)] bg-[var(--c-primary)] px-[20px] text-[15px] font-semibold text-[var(--c-on-primary)] no-underline transition-colors hover:bg-[var(--c-primary-active)]"
+                data-testid="s-07-checkout-browse"
+              >
+                {t('checkout.browse', 'Browse courses')}
+              </Link>
+            </div>
           )}
 
           {!loading1 && !error1 && items.length > 0 && (

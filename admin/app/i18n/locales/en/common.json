@@ -78,7 +78,7 @@
     "courses": {
       "col": {
         "course": "Course",
-        "students": "Students",
+        "students": "Enrollments",
         "status": "Status"
       },
       "title": "Courses",

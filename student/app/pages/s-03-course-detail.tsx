@@ -256,19 +256,13 @@ export default function CourseDetailPage() {
                     {course.title ?? ''}
                   </h1>
                   <div className="flex flex-wrap items-center gap-[16px]">
-                    {/* No reviews, no rating; nobody enrolled, no student count.
-                        Silence beats a zero and beats an invented number. */}
-                    {Number(course.ratingAvg ?? 0) > 0 && (
-                      <span className="inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-medium text-[var(--c-ink)]">
-                        <Star className="h-4 w-4 text-[var(--c-primary-text)]" aria-hidden="true" />
-                        {Number(course.ratingAvg).toFixed(1)}
-                      </span>
-                    )}
-                    {Number(course.studentCount ?? 0) > 0 && (
-                      <span className="text-[14px] text-[var(--c-muted)]">
-                        {Number(course.studentCount).toLocaleString()} {t('courseDetail.students', 'students')}
-                      </span>
-                    )}
+                    <span className="inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-medium text-[var(--c-ink)]">
+                      <Star className="h-4 w-4 text-[var(--c-primary-text)]" aria-hidden="true" />
+                      {Number(course.ratingAvg ?? 0).toFixed(1)}
+                    </span>
+                    <span className="text-[14px] text-[var(--c-muted)]">
+                      {Number(course.studentCount ?? 0).toLocaleString()} {t('courseDetail.students', 'enrollments')}
+                    </span>
                     {hours != null && (
                       <span className="text-[14px] text-[var(--c-muted)]">
                         {hours} {t('courseDetail.hours', 'hours')}

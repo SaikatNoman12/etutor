@@ -91,7 +91,7 @@
     "instructorsTitle": "Top instructors",
     "instructorsSubtitle": "Learn from people who do the work",
     "course": "강좌",
-    "students": "수강생",
+    "students": "수강 등록",
     "learnTitle": "E-Tutor에서 배우기",
     "learnSubtitle": "둘러보기에서 첫 수업 완료까지, 네 단계",
     "learnStep1": "강좌 목록에서 원하는 강좌를 찾으세요",
@@ -126,7 +126,8 @@
     "loadErrorTitle": "강좌 목록을 불러오지 못했습니다",
     "loadErrorHint": "연결이 끊겼을 수 있습니다. 잠시 후 다시 시도해 주세요.",
     "prevPage": "이전 페이지",
-    "nextPage": "다음 페이지"
+    "nextPage": "다음 페이지",
+    "students": "수강 등록"
   },
   "courseDetail": {
     "addSuccess": "Added to your cart",
@@ -147,7 +148,8 @@
     "included": "What is included",
     "hoursOfVideo": "hours of video",
     "includedSheets": "Downloadable lecture sheets",
-    "includedAccess": "Six months of recording access"
+    "includedAccess": "Six months of recording access",
+    "students": "수강 등록"
   },
   "instructors": {
     "title": "강사",
@@ -158,11 +160,12 @@
     "empty": "검색 조건에 맞는 강사가 없습니다.",
     "courses": "Courses",
     "home": "Home",
-    "eyebrow": "강사진"
+    "eyebrow": "강사진",
+    "students": "수강 등록"
   },
   "instructorDetail": {
     "kpiCourses": "Courses",
-    "kpiStudents": "Students",
+    "kpiStudents": "수강 등록",
     "kpiRating": "Average rating",
     "back": "Back",
     "profileError": "We could not load this instructor.",

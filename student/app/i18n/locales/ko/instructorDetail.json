@@ -1,6 +1,6 @@
 {
   "kpiCourses": "Courses",
-  "kpiStudents": "Students",
+  "kpiStudents": "수강 등록",
   "kpiRating": "Average rating",
   "back": "Instructors",
   "profileError": "We could not load this instructor.",

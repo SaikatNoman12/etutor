@@ -25,7 +25,7 @@ export function CourseCard({
   course,
   testId,
   levelLabel,
-  studentsLabel = 'students',
+  studentsLabel = 'enrollments',
 }: {
   course: CourseRow;
   testId: string;
@@ -87,22 +87,19 @@ export function CourseCard({
         </p>
 
         <div className="mt-auto flex items-end justify-between gap-[8px] pt-[6px]">
-          {/* A rating with no ratings behind it, and a student count with nobody
-              enrolled, are claims this system cannot make — so it does not make
-              them. Nothing is printed rather than a zero. */}
+          {/* Both are always shown, zero included: a course with nothing yet says
+              "0.0" and "0 enrolments" rather than leaving a gap where a number
+              belongs. The figures are real — the count comes from enrolments and
+              the rating from ratings that do not exist yet. */}
           <span className="flex flex-col gap-[3px] text-[12px] text-[var(--c-muted)]">
-            {rating > 0 && (
-              <span className="inline-flex items-center gap-[4px] font-semibold text-[var(--c-ink)]">
-                <Star className="h-[13px] w-[13px] fill-[var(--c-primary)] text-[var(--c-primary)]" aria-hidden="true" />
-                {rating.toFixed(1)}
-              </span>
-            )}
-            {students > 0 && (
-              <span className="inline-flex items-center gap-[4px]">
-                <Users className="h-[12px] w-[12px]" aria-hidden="true" />
-                {students.toLocaleString()} {studentsLabel}
-              </span>
-            )}
+            <span className="inline-flex items-center gap-[4px] font-semibold text-[var(--c-ink)]">
+              <Star className="h-[13px] w-[13px] fill-[var(--c-primary)] text-[var(--c-primary)]" aria-hidden="true" />
+              {rating.toFixed(1)}
+            </span>
+            <span className="inline-flex items-center gap-[4px]">
+              <Users className="h-[12px] w-[12px]" aria-hidden="true" />
+              {students.toLocaleString()} {studentsLabel}
+            </span>
           </span>
           <span className="text-right leading-none">
             {was && was > price ? (

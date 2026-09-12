@@ -1,6 +1,6 @@
 {
   "kpiCourses": "Courses",
-  "kpiStudents": "Students",
+  "kpiStudents": "Enrollments",
   "kpiRating": "Average rating",
   "back": "Instructors",
   "profileError": "We could not load this instructor.",

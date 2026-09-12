@@ -109,7 +109,7 @@
     "instructorsTitle": "Top instructors",
     "instructorsSubtitle": "Learn from people who do the work",
     "course": "course",
-    "students": "students",
+    "students": "enrollments",
     "learnTitle": "Learn on E-Tutor",
     "learnSubtitle": "Four steps from browsing to your first finished lesson",
     "learnStep1": "Find a course in the catalogue",
@@ -144,7 +144,8 @@
     "loadErrorTitle": "We could not load the catalogue",
     "loadErrorHint": "The connection may have dropped. Try again in a moment.",
     "prevPage": "Previous page",
-    "nextPage": "Next page"
+    "nextPage": "Next page",
+    "students": "enrollments"
   },
   "courseDetail": {
     "addSuccess": "Added to your cart",
@@ -165,7 +166,8 @@
     "included": "What is included",
     "hoursOfVideo": "hours of video",
     "includedSheets": "Downloadable lecture sheets",
-    "includedAccess": "Six months of recording access"
+    "includedAccess": "Six months of recording access",
+    "students": "enrollments"
   },
   "instructors": {
     "title": "Instructors",
@@ -176,11 +178,12 @@
     "empty": "No instructors match that search.",
     "courses": "Courses",
     "home": "Home",
-    "eyebrow": "Teaching team"
+    "eyebrow": "Teaching team",
+    "students": "enrollments"
   },
   "instructorDetail": {
     "kpiCourses": "Courses",
-    "kpiStudents": "Students",
+    "kpiStudents": "Enrollments",
     "kpiRating": "Average rating",
     "back": "Back",
     "profileError": "We could not load this instructor.",

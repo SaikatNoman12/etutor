@@ -88,9 +88,7 @@ function priceDisplay(row: AdminCourseRow): string {
 function studentsDisplay(row: AdminCourseRow): string {
   if (row.studentCount === null || row.studentCount === undefined || row.studentCount === '') return '';
   const n = Number(row.studentCount);
-  // A console column of zeros is noise; the operator reads "nobody yet" faster
-  // from an empty cell.
-  return Number.isNaN(n) || n === 0 ? '' : new Intl.NumberFormat().format(n);
+  return Number.isNaN(n) ? '0' : new Intl.NumberFormat().format(n);
 }
 
 /** Reads the create/edit form back out of the DOM — mirrors the query the
@@ -276,7 +274,7 @@ export default function AdminCourseListPage() {
       { header: 'Category', value: (row) => categoryName(row) },
       { header: 'Instructor', value: (row) => instructorName(row) },
       { header: 'Price', value: (row) => row.price ?? '' },
-      { header: 'Students', value: (row) => row.studentCount ?? '' },
+      { header: 'Enrollments', value: (row) => row.studentCount ?? 0 },
       { header: 'Status', value: (row) => statusText(row) },
     ]);
   }
@@ -358,7 +356,7 @@ export default function AdminCourseListPage() {
     { key: 'category', label: t('admin.courses.col.category', { defaultValue: 'Category' }), sortable: true, render: (row) => categoryName(row) },
     { key: 'instructor', label: t('admin.courses.col.instructor', { defaultValue: 'Instructor' }), sortable: true, render: (row) => instructorName(row) },
     { key: 'price', label: t('admin.courses.col.price', { defaultValue: 'Price' }), sortable: true, render: (row) => priceDisplay(row) },
-    { key: 'students', label: t('admin.courses.col.students', { defaultValue: 'Students' }), sortable: true, render: (row) => studentsDisplay(row) },
+    { key: 'students', label: t('admin.courses.col.students', { defaultValue: 'Enrollments' }), sortable: true, render: (row) => studentsDisplay(row) },
     { key: 'status', label: t('admin.courses.col.status', { defaultValue: 'Status' }), sortable: true, render: (row) => renderStatus(row) },
   ];
 

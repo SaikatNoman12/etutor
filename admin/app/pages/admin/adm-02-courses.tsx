@@ -88,7 +88,9 @@ function priceDisplay(row: AdminCourseRow): string {
 function studentsDisplay(row: AdminCourseRow): string {
   if (row.studentCount === null || row.studentCount === undefined || row.studentCount === '') return '';
   const n = Number(row.studentCount);
-  return Number.isNaN(n) ? '' : new Intl.NumberFormat().format(n);
+  // A console column of zeros is noise; the operator reads "nobody yet" faster
+  // from an empty cell.
+  return Number.isNaN(n) || n === 0 ? '' : new Intl.NumberFormat().format(n);
 }
 
 /** Reads the create/edit form back out of the DOM — mirrors the query the

@@ -1709,6 +1709,28 @@ async function seedOrderItems(ds: DataSource, fixtures: RawFixtures): Promise<vo
 }
 
 /**
+ * `courses.student_count` is a running total the app maintains (payOrder
+ * increments it). The fixtures used to ship invented figures — 15,890 students
+ * on a catalogue with eight enrolments — so the number on a course card and the
+ * rows in the enrolments table were two different answers to "who is taking
+ * this?". Recompute it from the enrolments that actually exist.
+ */
+async function recountStudents(ds: DataSource): Promise<void> {
+  const courses = ds.entityMetadatas.find((m) => m.tableName === 'courses');
+  const enrolments = ds.entityMetadatas.find((m) => m.tableName === 'enrollments');
+  if (!courses || !enrolments) return;
+  const result = await ds.query(
+    `UPDATE courses c SET student_count = COALESCE(e.n, 0)
+       FROM (SELECT id FROM courses) AS ids
+       LEFT JOIN (SELECT course_id, COUNT(*)::int n FROM enrollments GROUP BY course_id) e
+         ON e.course_id = ids.id
+      WHERE c.id = ids.id AND c.student_count IS DISTINCT FROM COALESCE(e.n, 0)`,
+  );
+  const changed = Array.isArray(result) ? result[1] ?? 0 : 0;
+  console.log('seed: student counts — recomputed from enrolments (' + changed + ' course(s) corrected)');
+}
+
+/**
  * Clear the syllabus of every course the fixture describes, so re-seeding rebuilds it
  * instead of appending a second copy.
  *
@@ -1884,6 +1906,7 @@ async function seedAllWithUuidMap(ds: DataSource, fixtures: RawFixtures): Promis
   ]);
   await seedOrderItems(ds, fixtures);
   await seedLessonProgress(ds, fixtures);
+  await recountStudents(ds);
   await reassertFixtureUsers(ds, fixtures, uuidMap);
   console.log('seed: multi-entity done — ' + Object.keys(uuidMap).length + ' refs mapped');
 }

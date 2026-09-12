@@ -200,7 +200,10 @@ export default function InstructorListPage() {
                   {ins.headline ?? ''}
                 </p>
                 <p className="text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
-                  {ins.courseCount ?? 0} {t('instructors.courses', 'courses')} · {(ins.studentCount ?? 0).toLocaleString()} {t('instructors.students', 'students')}
+                  {ins.courseCount ?? 0} {t('instructors.courses', 'courses')}
+                  {Number(ins.studentCount ?? 0) > 0
+                    ? ` · ${Number(ins.studentCount).toLocaleString()} ${t('instructors.students', 'students')}`
+                    : ''}
                 </p>
               </Link>
             ))}

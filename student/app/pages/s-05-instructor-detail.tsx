@@ -111,11 +111,18 @@ export default function InstructorDetailPage() {
     instructor?.ratingAvg ??
     (courses.length ? courses.reduce((sum, c) => sum + (c.ratingAvg ?? 0), 0) / courses.length : 0);
 
+  // A KPI reading 0 students / 0.0 average says less than no KPI at all — and
+  // the product has no review feature, so a rating has nothing behind it until
+  // one exists. Drop the tiles that have nothing to report.
   const kpis = [
     { key: 'courses', label: t('instructorDetail.kpiCourses', 'Courses'), value: coursesCount.toLocaleString() },
-    { key: 'students', label: t('instructorDetail.kpiStudents', 'Students'), value: studentsCount.toLocaleString() },
-    { key: 'rating', label: t('instructorDetail.kpiRating', 'Average rating'), value: avgRating.toFixed(1) },
-  ];
+    Number(studentsCount) > 0
+      ? { key: 'students', label: t('instructorDetail.kpiStudents', 'Students'), value: Number(studentsCount).toLocaleString() }
+      : null,
+    Number(avgRating) > 0
+      ? { key: 'rating', label: t('instructorDetail.kpiRating', 'Average rating'), value: Number(avgRating).toFixed(1) }
+      : null,
+  ].filter(Boolean) as { key: string; label: string; value: string }[];
 
   return (
     <section

@@ -369,7 +369,9 @@ export default function HomePage() {
                     <p className="text-[12px] font-medium text-[var(--c-muted)]">
                       {inst.courseCount ?? 0} {(inst.courseCount ?? 0) === 1 ? t('home.course', 'course') : t('home.courses', 'courses')}
                       {' · '}
-                      {(inst.studentCount ?? 0).toLocaleString()} {t('home.students', 'students')}
+                      {Number(inst.studentCount ?? 0) > 0
+                        ? `${Number(inst.studentCount).toLocaleString()} ${t('home.students', 'students')}`
+                        : (inst.headline ?? '')}
                     </p>
                   </Link>
                 ))}

@@ -173,9 +173,9 @@ seed_data:
       status: 1
       published_at: '2024-11-06T09:00:00Z'
       duration_minutes: 2520
-      rating_avg: 4.8
-      rating_count: 1204
-      student_count: 12480
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Build and deploy real applications from the first week."
       description: "Build and deploy real applications from the first week. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80&auto=format&fit=crop'
@@ -189,9 +189,9 @@ seed_data:
       status: 1
       published_at: '2025-02-19T09:00:00Z'
       duration_minutes: 2760
-      rating_avg: 4.7
-      rating_count: 931
-      student_count: 9315
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Regression to deep learning, one worked dataset at a time."
       description: "Regression to deep learning, one worked dataset at a time. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&q=80&auto=format&fit=crop'
@@ -205,9 +205,9 @@ seed_data:
       status: 1
       published_at: '2025-04-08T09:00:00Z'
       duration_minutes: 1980
-      rating_avg: 4.6
-      rating_count: 842
-      student_count: 7640
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "From first script to packaging your own library."
       description: "From first script to packaging your own library. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1526379879527-8559ecfcaec0?w=800&q=80&auto=format&fit=crop'
@@ -221,9 +221,9 @@ seed_data:
       status: 1
       published_at: '2025-10-02T09:00:00Z'
       duration_minutes: 1440
-      rating_avg: 4.9
-      rating_count: 655
-      student_count: 5210
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Interface craft: grids, type, colour and the handoff."
       description: "Interface craft: grids, type, colour and the handoff. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80&auto=format&fit=crop'
@@ -237,9 +237,9 @@ seed_data:
       status: 1
       published_at: '2025-06-25T09:00:00Z'
       duration_minutes: 3120
-      rating_avg: 4.5
-      rating_count: 1478
-      student_count: 15890
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "SEO, ads, email and analytics as one working funnel."
       description: "SEO, ads, email and analytics as one working funnel. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=80&auto=format&fit=crop'
@@ -253,9 +253,9 @@ seed_data:
       status: 1
       published_at: '2025-08-14T09:00:00Z'
       duration_minutes: 1260
-      rating_avg: 4.4
-      rating_count: 398
-      student_count: 3120
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Read a chart, size a position, keep a trading journal."
       description: "Read a chart, size a position, keep a trading journal. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80&auto=format&fit=crop'
@@ -269,9 +269,9 @@ seed_data:
       status: 1
       published_at: '2026-07-28T09:00:00Z'
       duration_minutes: 1680
-      rating_avg: 4.7
-      rating_count: 512
-      student_count: 4380
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Routing, data loading and forms in a real application."
       description: "Routing, data loading and forms in a real application. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80&auto=format&fit=crop'
@@ -285,9 +285,9 @@ seed_data:
       status: 1
       published_at: '2026-08-12T09:00:00Z'
       duration_minutes: 1500
-      rating_avg: 4.6
-      rating_count: 433
-      student_count: 3910
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Types that describe your domain instead of fighting it."
       description: "Types that describe your domain instead of fighting it. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80&auto=format&fit=crop'
@@ -301,9 +301,9 @@ seed_data:
       status: 1
       published_at: '2026-05-22T09:00:00Z'
       duration_minutes: 1320
-      rating_avg: 4.5
-      rating_count: 376
-      student_count: 3480
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Answer real questions with joins, windows and CTEs."
       description: "Answer real questions with joins, windows and CTEs. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=800&q=80&auto=format&fit=crop'
@@ -317,9 +317,9 @@ seed_data:
       status: 1
       published_at: '2026-07-05T09:00:00Z'
       duration_minutes: 1860
-      rating_avg: 4.6
-      rating_count: 529
-      student_count: 4720
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Compute, storage, networking and what they cost."
       description: "Compute, storage, networking and what they cost. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800&q=80&auto=format&fit=crop'
@@ -333,9 +333,9 @@ seed_data:
       status: 1
       published_at: '2026-04-30T09:00:00Z'
       duration_minutes: 1380
-      rating_avg: 4.5
-      rating_count: 414
-      student_count: 3650
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Discovery, prioritisation and shipping something people use."
       description: "Discovery, prioritisation and shipping something people use. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80&auto=format&fit=crop'
@@ -349,9 +349,9 @@ seed_data:
       status: 1
       published_at: '2026-02-24T09:00:00Z'
       duration_minutes: 1200
-      rating_avg: 4.4
-      rating_count: 287
-      student_count: 2410
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Runway, unit economics and a model you can defend."
       description: "Runway, unit economics and a model you can defend. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=800&q=80&auto=format&fit=crop'
@@ -365,9 +365,9 @@ seed_data:
       status: 1
       published_at: '2026-04-09T09:00:00Z'
       duration_minutes: 1560
-      rating_avg: 4.8
-      rating_count: 468
-      student_count: 4120
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Marks, systems and the rationale you present to a client."
       description: "Marks, systems and the rationale you present to a client. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&q=80&auto=format&fit=crop'
@@ -381,9 +381,9 @@ seed_data:
       status: 1
       published_at: '2026-06-18T09:00:00Z'
       duration_minutes: 1740
-      rating_avg: 4.6
-      rating_count: 352
-      student_count: 2980
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Keyframes, easing and animation that carries meaning."
       description: "Keyframes, easing and animation that carries meaning. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80&auto=format&fit=crop'
@@ -397,9 +397,9 @@ seed_data:
       status: 1
       published_at: '2026-03-17T09:00:00Z'
       duration_minutes: 1140
-      rating_avg: 4.3
-      rating_count: 502
-      student_count: 5640
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Technical health, intent and content that earns links."
       description: "Technical health, intent and content that earns links. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80&auto=format&fit=crop'
@@ -413,9 +413,9 @@ seed_data:
       status: 1
       published_at: '2025-12-11T09:00:00Z'
       duration_minutes: 1620
-      rating_avg: 4.7
-      rating_count: 391
-      student_count: 3270
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Light, lens and direction — from window light to studio."
       description: "Light, lens and direction — from window light to studio. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80&auto=format&fit=crop'
@@ -429,9 +429,9 @@ seed_data:
       status: 1
       published_at: '2026-01-28T09:00:00Z'
       duration_minutes: 1920
-      rating_avg: 4.6
-      rating_count: 344
-      student_count: 2860
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Arrange, mix and finish a track you would release."
       description: "Arrange, mix and finish a track you would release. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80&auto=format&fit=crop'
@@ -445,9 +445,9 @@ seed_data:
       status: 0
       published_at: '2025-11-19T09:00:00Z'
       duration_minutes: 960
-      rating_avg: 4.2
-      rating_count: 163
-      student_count: 1290
+      rating_avg: 0
+      rating_count: 0
+      student_count: 0
       summary: "Power Query, pivots and models that do not break."
       description: "Power Query, pivots and models that do not break. Every section ends with a practical exercise, and the project files are yours to keep."
       thumbnail_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format&fit=crop'

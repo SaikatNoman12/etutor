@@ -34,6 +34,8 @@ export function CourseCard({
 }) {
   const price = course.price ?? 0;
   const was = course.compareAtPrice ?? null;
+  const rating = Number(course.ratingAvg ?? 0);
+  const students = Number(course.studentCount ?? 0);
   const off = was && was > price ? Math.round(((was - price) / was) * 100) : null;
 
   return (
@@ -85,15 +87,22 @@ export function CourseCard({
         </p>
 
         <div className="mt-auto flex items-end justify-between gap-[8px] pt-[6px]">
+          {/* A rating with no ratings behind it, and a student count with nobody
+              enrolled, are claims this system cannot make — so it does not make
+              them. Nothing is printed rather than a zero. */}
           <span className="flex flex-col gap-[3px] text-[12px] text-[var(--c-muted)]">
-            <span className="inline-flex items-center gap-[4px] font-semibold text-[var(--c-ink)]">
-              <Star className="h-[13px] w-[13px] fill-[var(--c-primary)] text-[var(--c-primary)]" aria-hidden="true" />
-              {(course.ratingAvg ?? 0).toFixed(1)}
-            </span>
-            <span className="inline-flex items-center gap-[4px]">
-              <Users className="h-[12px] w-[12px]" aria-hidden="true" />
-              {(course.studentCount ?? 0).toLocaleString()} {studentsLabel}
-            </span>
+            {rating > 0 && (
+              <span className="inline-flex items-center gap-[4px] font-semibold text-[var(--c-ink)]">
+                <Star className="h-[13px] w-[13px] fill-[var(--c-primary)] text-[var(--c-primary)]" aria-hidden="true" />
+                {rating.toFixed(1)}
+              </span>
+            )}
+            {students > 0 && (
+              <span className="inline-flex items-center gap-[4px]">
+                <Users className="h-[12px] w-[12px]" aria-hidden="true" />
+                {students.toLocaleString()} {studentsLabel}
+              </span>
+            )}
           </span>
           <span className="text-right leading-none">
             {was && was > price ? (

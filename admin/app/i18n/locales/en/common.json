@@ -83,7 +83,7 @@
       },
       "title": "Courses",
       "searchPlaceholder": "Search",
-      "empty": "No enrollments found",
+      "empty": "No courses found",
       "field": {
         "title": "Title",
         "status": "Status",
@@ -123,7 +123,7 @@
       },
       "title": "Categories",
       "searchPlaceholder": "Search",
-      "empty": "No enrollments found",
+      "empty": "No categories found",
       "field": {
         "order": "Order",
         "icon": "Image",
@@ -141,7 +141,7 @@
       },
       "title": "Users",
       "searchPlaceholder": "Search",
-      "empty": "No enrollments found",
+      "empty": "No users found",
       "field": {
         "email": "Email",
         "status": "Status",
@@ -156,7 +156,7 @@
       },
       "title": "Coupons",
       "searchPlaceholder": "Search",
-      "empty": "No enrollments found",
+      "empty": "No coupons found",
       "field": {
         "status": "Status"
       }
@@ -182,7 +182,7 @@
     "title": "Orders",
     "paidCount": "Paid count",
     "exportQueued": "Export queued",
-    "empty": "No enrollments found",
+    "empty": "No orders found",
     "order": "Order",
     "status": "Status"
   },
@@ -218,7 +218,7 @@
     "error": "Unable to load this order",
     "sorting": "Sorting…",
     "sortedBy": "Sorted by",
-    "empty": "No enrollments found",
+    "empty": "No enrolments found",
     "pagination": "Pagination",
     "prevPage": "Previous page",
     "nextPage": "Next page"

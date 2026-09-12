@@ -169,12 +169,12 @@ export default function CoursePlayerPage() {
   const hasPlayer = !loading1 && !error1 && !!detail && lessons.length > 0;
 
   const btnPrimary =
-    'inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50';
+    'inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50';
   const btnSecondary =
     'inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50';
 
   return (
-    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-11-course-player-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="s-11-course-player-page">
       <Link
         to="/my-learning"
         className="mb-[16px] inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-semibold text-[var(--c-body)] no-underline hover:text-[var(--c-primary-text)]"
@@ -195,7 +195,7 @@ export default function CoursePlayerPage() {
 
           {!loading1 && error1 && (
             <div
-              className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+              className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
               data-testid="s-11-course-player-ac-1-error"
             >
               <p className="m-0 text-[15px] text-[var(--c-error)]">
@@ -214,7 +214,7 @@ export default function CoursePlayerPage() {
 
           {!loading1 && !error1 && !hasPlayer && (
             <div
-              className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+              className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
               data-testid="s-11-course-player-ac-1-empty"
             >
               <p className="m-0 text-[15px] text-[var(--c-muted)]">
@@ -230,7 +230,7 @@ export default function CoursePlayerPage() {
             <div className="grid grid-cols-1 items-start gap-[24px] lg:grid-cols-[3fr_1fr]">
               {/* left — video stage + current lesson */}
               <div className="space-y-[16px]">
-                <div className="flex aspect-video items-center justify-center overflow-hidden rounded-[8px] text-[var(--c-muted)] [background:var(--media-fallback)]">
+                <div className="flex aspect-video items-center justify-center overflow-hidden rounded-[var(--radius-lg)] text-[var(--c-muted)] [background:var(--media-fallback)]">
                   <PlayCircle className="h-[24px] w-[24px]" aria-hidden="true" />
                 </div>
                 <h1
@@ -264,7 +264,7 @@ export default function CoursePlayerPage() {
               </div>
 
               {/* right — course content list */}
-              <aside className="space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)] lg:sticky lg:top-[88px]">
+              <aside className="space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)] lg:sticky lg:top-[88px]">
                 <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
                   {t('player.courseContent', 'Course content')}
                 </h2>

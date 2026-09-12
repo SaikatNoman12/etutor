@@ -326,7 +326,7 @@ export default function AdminCouponListPage() {
     : [];
 
   return (
-    <div className="mx-auto w-full max-w-[1240px] px-6 py-8" data-testid="adm-09-coupons-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="adm-09-coupons-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="text-sm text-muted-foreground">
@@ -346,7 +346,7 @@ export default function AdminCouponListPage() {
       </header>
 
       <main className="space-y-6" data-testid="adm-09-coupons-main">
-        <section className="rounded-[8px] border border-border bg-card shadow-sm" data-testid="adm-09-coupons-ac-1">
+        <section className="rounded-[var(--radius-lg)] border border-border bg-card shadow-sm" data-testid="adm-09-coupons-ac-1">
           {/* toolbar: search + new coupon */}
           <div className="flex flex-wrap items-center gap-3 border-b border-border p-4">
             <div className="min-w-[240px] flex-1" data-component="search-bar">
@@ -450,7 +450,7 @@ export default function AdminCouponListPage() {
             retire-by-code control, kept live so the story's create/update wiring
             (createCoupons2 / updateCoupons3) stays reachable. */}
         <div className="grid gap-6 sm:grid-cols-2">
-          <section className="rounded-[8px] border border-border bg-card p-5 shadow-sm" data-testid="adm-09-coupons-ac-2">
+          <section className="rounded-[var(--radius-lg)] border border-border bg-card p-5 shadow-sm" data-testid="adm-09-coupons-ac-2">
             <h2 className="text-sm font-semibold text-foreground">
               {t('admin.coupons.quickAdd', { defaultValue: 'Quick add coupon' })}
             </h2>
@@ -497,7 +497,7 @@ export default function AdminCouponListPage() {
             </button>
           </section>
 
-          <section className="rounded-[8px] border border-border bg-card p-5 shadow-sm" data-testid="adm-09-coupons-ac-3">
+          <section className="rounded-[var(--radius-lg)] border border-border bg-card p-5 shadow-sm" data-testid="adm-09-coupons-ac-3">
             <h2 className="text-sm font-semibold text-foreground">
               {t('admin.coupons.retire', { defaultValue: 'Deactivate a coupon' })}
             </h2>

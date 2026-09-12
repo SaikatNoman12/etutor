@@ -23,14 +23,14 @@ import { PageHeading } from '~/components/shared/Placeholder';
 const PAGE_SIZE = 10;
 
 const CARD =
-  'rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]';
+  'rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]';
 const TH =
   'px-[16px] py-[12px] text-left text-[12px] font-[500] uppercase tracking-[0.2px] text-[var(--c-muted)] border-b border-[var(--c-hairline-strong)]';
 const TD =
   'px-[16px] py-[12px] text-[14px] text-[var(--c-body)] border-b border-[var(--c-hairline)]';
 const NUM = 'text-right tabular-nums';
 const PAGE_BTN =
-  'inline-flex items-center justify-center min-h-[40px] min-w-[40px] px-[12px] rounded-[4px] text-[14px] font-[600] text-[var(--c-body)] bg-[var(--c-surface)] border border-[var(--c-hairline-strong)] hover:bg-[var(--c-surface-soft)] disabled:opacity-50 disabled:cursor-not-allowed';
+  'inline-flex items-center justify-center min-h-[40px] min-w-[40px] px-[12px] rounded-[var(--radius-md)] text-[14px] font-[600] text-[var(--c-body)] bg-[var(--c-surface)] border border-[var(--c-hairline-strong)] hover:bg-[var(--c-surface-soft)] disabled:opacity-50 disabled:cursor-not-allowed';
 const PAGE_BTN_ACTIVE =
   'bg-[var(--c-primary-soft)] text-[var(--c-primary)] border-[var(--c-primary)]';
 
@@ -112,8 +112,8 @@ export default function AdminEnrollmentListPage() {
     s != null && STATUS_META[s] ? STATUS_META[s] : null;
 
   return (
-    <div data-testid="adm-08-enrollments-page" className="min-h-full bg-[var(--c-canvas)]">
-      <div className="mx-auto max-w-[1240px] p-[24px]">
+    <div data-testid="adm-08-enrollments-page">
+      <div className="mx-auto w-full max-w-[1240px]">
         <Link
           to="/"
           data-testid="adm-08-enrollments-home-link"

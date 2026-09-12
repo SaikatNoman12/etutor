@@ -19,6 +19,7 @@ import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { email as emailRule, readForm, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 import { ArrowLeft } from 'lucide-react';
+import { AuthPanel } from '~/components/shared/AuthPanel';
 
 export default function SignInPage() {
   const { t } = useTranslation('common');
@@ -91,9 +92,20 @@ export default function SignInPage() {
       <main
         data-shell="content"
         data-testid="a-01-signin-main"
-        className="flex min-h-[70vh] items-center justify-center py-[64px] px-[24px]"
+        className="grid grid-cols-1 items-stretch gap-[24px] lg:grid-cols-[1.05fr_1fr] lg:gap-[40px]"
       >
-        <div className="w-full max-w-[420px] space-y-[16px]">
+        <AuthPanel
+          brand={t('brand.name')}
+          homeHref="/"
+          title={t('auth.panel.signinTitle', 'Pick up exactly where you left off.')}
+          points={[
+            t('auth.panel.point1', 'Every course you own, in one place'),
+            t('auth.panel.point2', 'Progress saved lesson by lesson'),
+            t('auth.panel.point3', 'Receipts and orders whenever you need them'),
+          ]}
+        />
+        <div className="flex items-center justify-center py-[8px] lg:py-[24px]">
+        <div className="w-full max-w-[440px] space-y-[16px]">
           {/* single back-link (page content, not shared chrome) */}
           <Link
             to="/"
@@ -105,7 +117,7 @@ export default function SignInPage() {
           </Link>
 
           <form
-            className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[0_1px_3px_rgb(29_32_38/0.08)] space-y-[16px]"
+            className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[0_1px_3px_rgb(29_32_38/0.08)] space-y-[16px]"
             data-testid="a-01-signin-ac-1"
             onSubmit={(e) => { e.preventDefault(); createLogin1(); }}
           >
@@ -124,7 +136,7 @@ export default function SignInPage() {
                 placeholder={t('auth.emailPlaceholder', 'you@example.com')}
                 data-testid="a-01-signin-ac-1-email"
                 {...fieldProps('email', errors)}
-                className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:-outline-offset-1 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
               />
               <FieldError id="email-error" message={errors.email} />
             </label>
@@ -137,7 +149,7 @@ export default function SignInPage() {
                 placeholder={t('auth.passwordPlaceholder', 'Your password')}
                 data-testid="a-01-signin-ac-1-password"
                 {...fieldProps('password', errors)}
-                className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:-outline-offset-1 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
               />
               <FieldError id="password-error" message={errors.password} />
             </label>
@@ -147,7 +159,7 @@ export default function SignInPage() {
               onClick={createLogin1}
               disabled={loading1}
               data-testid="a-01-signin-ac-1-action"
-              className="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold leading-[1] text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold leading-[1] text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading1 ? t('actions.loading', 'Loading...') : t('auth.signIn', 'Sign in')}
             </button>
@@ -185,7 +197,7 @@ export default function SignInPage() {
                   <div
                     key={key}
                     data-testid={`a-01-signin-ac-2-kpi-${key}`}
-                    className="rounded-[8px] bg-[var(--c-surface-soft)] p-[12px]"
+                    className="rounded-[var(--radius-lg)] bg-[var(--c-surface-soft)] p-[12px]"
                   >
                     <p className="text-[12px] text-[var(--c-muted)]">{key}</p>
                     <p className="text-[24px] font-bold text-[var(--c-ink)]">
@@ -196,6 +208,7 @@ export default function SignInPage() {
               </div>
             )}
           </div>
+        </div>
         </div>
       </main>
     </div>

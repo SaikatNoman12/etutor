@@ -214,7 +214,7 @@ export default function CourseListPage() {
   const currentPage = Math.min(page, totalPages);
 
   return (
-    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-02-courses-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="s-02-courses-page">
       <PageHeading
         eyebrow={t('courses.eyebrow', 'Catalogue')}
         title={t('courses.title', 'All courses')}
@@ -375,7 +375,7 @@ export default function CourseListPage() {
               type="button"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={currentPage <= 1}
-              className="inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[12px] text-[14px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[12px] text-[14px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
               data-testid="s-02-courses-page-prev"
             >
               <ChevronLeft className="h-4 w-4" aria-hidden="true" />
@@ -390,7 +390,7 @@ export default function CourseListPage() {
                   onClick={() => setPage(n)}
                   aria-current={active ? 'page' : undefined}
                   className={
-                    'inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[4px] border px-[12px] text-[14px] font-semibold ' +
+                    'inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border px-[12px] text-[14px] font-semibold ' +
                     (active
                       ? 'border-[var(--c-primary)] bg-[var(--c-primary-soft)] text-[var(--c-primary)]'
                       : 'border-[var(--c-hairline-strong)] bg-[var(--c-surface)] text-[var(--c-body)] hover:bg-[var(--c-surface-soft)]')
@@ -405,7 +405,7 @@ export default function CourseListPage() {
               type="button"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage >= totalPages}
-              className="inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[12px] text-[14px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[12px] text-[14px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
               data-testid="s-02-courses-page-next"
             >
               <ChevronRight className="h-4 w-4" aria-hidden="true" />

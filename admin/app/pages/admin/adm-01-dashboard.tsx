@@ -42,7 +42,7 @@ const STATUS_LABELS: Record<number, string> = {
   [order_status.REFUNDED]: 'Refunded',
 };
 
-const CARD = 'rounded-[12px] border border-border bg-card p-6 shadow-sm';
+const CARD = 'rounded-[var(--radius-xl)] border border-border bg-card p-6 shadow-sm';
 
 function formatCount(value?: number | null): string {
   return Number(value ?? 0).toLocaleString();
@@ -153,7 +153,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div
-      className="flex flex-col gap-8 p-6"
+      className="mx-auto flex w-full max-w-[1240px] flex-col gap-[32px]"
       data-testid="adm-01-dashboard-page"
       data-role={role}
       data-is-admin={isAdmin ? 'true' : 'false'}

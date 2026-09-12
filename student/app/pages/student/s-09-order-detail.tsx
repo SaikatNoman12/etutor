@@ -133,7 +133,7 @@ export default function OrderDetailPage() {
   }, [order1, t]);
 
   return (
-    <section className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-09-order-detail-page">
+    <section className="mx-auto w-full max-w-[1240px]" data-testid="s-09-order-detail-page">
       {/* back-link (page content — the top nav is shared chrome) */}
       <Link
         to="/orders"
@@ -164,7 +164,7 @@ export default function OrderDetailPage() {
       >
         {/* Items card — ac-1 */}
         <div
-          className="space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
+          className="space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
           data-testid="s-09-order-detail-ac-1"
         >
           <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
@@ -175,8 +175,8 @@ export default function OrderDetailPage() {
             <div data-testid="s-09-order-detail-ac-1-loading" className="space-y-[12px]">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="flex items-center justify-between border-b border-[var(--c-hairline)] pb-[12px]">
-                  <div className="h-[16px] w-2/3 et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
-                  <div className="h-[16px] w-[48px] et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+                  <div className="h-[16px] w-2/3 et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
+                  <div className="h-[16px] w-[48px] et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
                 </div>
               ))}
             </div>
@@ -190,7 +190,7 @@ export default function OrderDetailPage() {
               <button
                 type="button"
                 onClick={reload}
-                className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
+                className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
                 data-testid="s-09-order-detail-retry-1"
               >
                 {t('orderDetail.retry', 'Try again')}
@@ -247,7 +247,7 @@ export default function OrderDetailPage() {
               {role != null && (
                 <Link
                   to="/my-learning"
-                  className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-[1] text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
+                  className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-[1] text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
                   data-testid="s-09-order-detail-ac-3"
                 >
                   {t('orderDetail.goToLearning', 'Go to my learning')}
@@ -259,7 +259,7 @@ export default function OrderDetailPage() {
 
         {/* Details card — ac-2 */}
         <div
-          className="sticky top-[88px] space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
+          className="sticky top-[88px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
           data-testid="s-09-order-detail-ac-2"
         >
           <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
@@ -269,7 +269,7 @@ export default function OrderDetailPage() {
           {loading2 && (
             <div data-testid="s-09-order-detail-ac-2-loading" className="space-y-[8px]">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-[16px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+                <div key={i} className="h-[16px] w-full et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
               ))}
             </div>
           )}
@@ -282,7 +282,7 @@ export default function OrderDetailPage() {
               <button
                 type="button"
                 onClick={reload}
-                className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
+                className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
                 data-testid="s-09-order-detail-retry-2"
               >
                 {t('orderDetail.retry', 'Try again')}

@@ -104,7 +104,7 @@ export default function InstructorListPage() {
   }, [allInstructors, search]);
 
   return (
-    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-04-instructors-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="s-04-instructors-page">
       {/* page-head */}
       <div className="mb-[24px] flex items-end justify-between gap-[16px]">
         <div>
@@ -124,7 +124,7 @@ export default function InstructorListPage() {
         <span className="relative inline-flex w-full max-w-[320px] items-center">
           <Search className="pointer-events-none absolute left-[12px] h-5 w-5 text-[var(--c-muted)]" aria-hidden="true" />
           <input
-            className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] py-[8px] pl-[36px] pr-[12px] text-[15px] text-[var(--c-ink)]"
+            className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] py-[8px] pl-[36px] pr-[12px] text-[15px] text-[var(--c-ink)]"
             type="search"
             placeholder={t('instructors.searchPlaceholder', 'Search instructors')}
             aria-label={t('instructors.searchPlaceholder', 'Search instructors')}
@@ -150,7 +150,7 @@ export default function InstructorListPage() {
 
         {!loading1 && error1 && (
           <div
-            className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+            className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-04-instructors-ac-1-error"
           >
             <p className="m-0 text-[15px] text-[var(--c-error)]">
@@ -159,7 +159,7 @@ export default function InstructorListPage() {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)]"
+              className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)]"
               data-testid="s-04-instructors-retry"
             >
               {t('instructors.retry', 'Try again')}
@@ -169,7 +169,7 @@ export default function InstructorListPage() {
 
         {!loading1 && !error1 && filtered.length === 0 && (
           <div
-            className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+            className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-04-instructors-empty"
           >
             <p className="m-0 text-[15px] text-[var(--c-muted)]">
@@ -184,7 +184,7 @@ export default function InstructorListPage() {
               <Link
                 key={ins.id ?? i}
                 to={`/instructors/${ins.id ?? ''}`}
-                className="block cursor-pointer space-y-[8px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)] transition-all duration-150 hover:-translate-y-[2px] hover:border-[var(--c-hairline-strong)] hover:shadow-[var(--shadow-hover)]"
+                className="block cursor-pointer space-y-[8px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)] transition-all duration-150 hover:-translate-y-[2px] hover:border-[var(--c-hairline-strong)] hover:shadow-[var(--shadow-hover)]"
                 data-testid={`s-04-instructors-card-${i}`}
               >
                 <span className="inline-flex h-[64px] w-[64px] flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--c-surface-soft)] text-[15px] font-medium text-[var(--c-muted)]">

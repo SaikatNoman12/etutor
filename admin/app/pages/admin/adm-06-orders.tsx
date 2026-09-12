@@ -308,7 +308,7 @@ export default function AdminOrderListPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--c-canvas)] text-foreground" data-testid="adm-06-orders-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="adm-06-orders-page">
       <header className="mb-6 flex flex-col gap-1">
         <Link to="/" className="text-sm text-muted-foreground hover:underline" data-testid="adm-06-orders-home-link">
           {t('nav.home', { defaultValue: 'Home' })}
@@ -323,7 +323,7 @@ export default function AdminOrderListPage() {
 
       <main className="space-y-4" data-testid="adm-06-orders-main">
         {/* AC-1 — the listing */}
-        <section className="rounded-[8px] border border-border bg-card p-4 shadow-sm" data-testid="adm-06-orders-ac-1">
+        <section className="rounded-[var(--radius-lg)] border border-border bg-card p-4 shadow-sm" data-testid="adm-06-orders-ac-1">
           {/* toolbar: search + status filter (AC-2) */}
           <div className="mb-4 flex flex-wrap items-center gap-3">
             <SearchInput
@@ -442,7 +442,7 @@ export default function AdminOrderListPage() {
         </section>
 
         {/* AC-3 — quick status update */}
-        <section className="rounded-[8px] border border-border bg-card p-4 shadow-sm" data-testid="adm-06-orders-ac-3">
+        <section className="rounded-[var(--radius-lg)] border border-border bg-card p-4 shadow-sm" data-testid="adm-06-orders-ac-3">
           <h2 className="mb-3 text-lg font-semibold">{t('orders.quickUpdate', { defaultValue: 'Update order status' })}</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
             <label className="text-sm">

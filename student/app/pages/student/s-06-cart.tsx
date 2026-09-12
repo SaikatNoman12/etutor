@@ -206,7 +206,7 @@ export default function CartPage() {
   const canCheckout = role != null && !busy;
 
   return (
-    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-06-cart-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="s-06-cart-page">
       {/* page-head */}
       <div className="mb-[24px] flex items-end justify-between gap-[16px]">
         <PageHeading
@@ -218,7 +218,7 @@ export default function CartPage() {
           type="button"
           onClick={clearCart}
           disabled={busy || items.length === 0}
-          className="inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-transparent px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-transparent px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
           data-testid="s-06-cart-clear"
         >
           {t('cart.clearAll', 'Clear all')}
@@ -231,30 +231,30 @@ export default function CartPage() {
             className="grid grid-cols-1 items-start gap-[24px] [@media(min-width:900px)]:grid-cols-[2fr_1fr]"
             data-testid="s-06-cart-ac-1-loading"
           >
-            <div className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
+            <div className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="flex gap-[16px] border-b border-[var(--c-hairline)] py-[16px]">
                   <div className="aspect-video w-[112px] shrink-0 et-shimmer rounded-[var(--radius-lg)] " />
                   <div className="flex-1 space-y-[8px]">
-                    <div className="h-[16px] w-3/4 et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+                    <div className="h-[16px] w-3/4 et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
                     <div className="h-[20px] w-[90px] et-shimmer rounded-[9999px] bg-[var(--c-surface-soft)]" />
                     <div className="h-[28px] w-[180px] et-shimmer rounded-[9999px] bg-[var(--c-surface-soft)]" />
                   </div>
                 </div>
               ))}
             </div>
-            <div className="space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
-              <div className="h-[24px] w-1/2 et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[16px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[44px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[48px] w-full et-shimmer rounded-[6px] bg-[var(--c-surface-soft)]" />
+            <div className="space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
+              <div className="h-[24px] w-1/2 et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
+              <div className="h-[16px] w-full et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
+              <div className="h-[44px] w-full et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
+              <div className="h-[48px] w-full et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
             </div>
           </div>
         )}
 
         {!loading1 && error1 && (
           <div
-            className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+            className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-06-cart-ac-1-error"
           >
             <p className="m-0 text-[15px] text-[var(--c-error)]">
@@ -263,7 +263,7 @@ export default function CartPage() {
             <button
               type="button"
               onClick={reload}
-              className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
+              className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
               data-testid="s-06-cart-retry"
             >
               {t('cart.retry', 'Try again')}
@@ -273,7 +273,7 @@ export default function CartPage() {
 
         {!loading1 && !error1 && items.length === 0 && (
           <div
-            className="flex flex-col items-center gap-[16px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+            className="flex flex-col items-center gap-[16px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-06-cart-empty"
           >
             <span className="inline-flex h-[64px] w-[64px] items-center justify-center rounded-[9999px] bg-[var(--c-surface-soft)] text-[var(--c-muted)]">
@@ -294,7 +294,7 @@ export default function CartPage() {
           <div className="grid grid-cols-1 items-start gap-[24px] [@media(min-width:900px)]:grid-cols-[2fr_1fr]">
             {/* cart lines */}
             <div
-              className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
+              className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
               data-testid="s-06-cart-items"
             >
               {items.map((line) => {
@@ -310,7 +310,7 @@ export default function CartPage() {
                     className="flex gap-[16px] border-b border-[var(--c-hairline)] py-[16px]"
                     data-testid={`s-06-cart-item-${line.id}`}
                   >
-                    <span className="aspect-video w-[112px] shrink-0 overflow-hidden rounded-[8px] [background:var(--media-fallback)]">
+                    <span className="aspect-video w-[112px] shrink-0 overflow-hidden rounded-[var(--radius-lg)] [background:var(--media-fallback)]">
                       {thumb ? (
                         <img className="block h-full w-full object-cover" src={thumb} alt={title} />
                       ) : null}
@@ -356,7 +356,7 @@ export default function CartPage() {
                           type="button"
                           onClick={() => removeLine(line.id)}
                           disabled={busy}
-                          className="inline-flex min-h-[40px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-transparent px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
+                          className="inline-flex min-h-[40px] cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-transparent px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
                           data-testid={`s-06-cart-remove-${line.id}`}
                         >
                           <Trash2 className="h-4 w-4" aria-hidden="true" /> {t('cart.remove', 'Remove')}
@@ -372,7 +372,7 @@ export default function CartPage() {
             </div>
 
             {/* order summary */}
-            <div className="sticky top-[88px] space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
+            <div className="sticky top-[88px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
               <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
                 {t('cart.orderSummary', 'Order summary')}
               </h2>
@@ -393,7 +393,7 @@ export default function CartPage() {
                   onChange={(e) => setCoupon(e.target.value)}
                   placeholder={t('cart.couponPlaceholder', 'Coupon code')}
                   aria-label={t('cart.couponLabel', 'Coupon code')}
-                  className="min-h-[44px] flex-1 rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)]"
+                  className="min-h-[44px] flex-1 rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)]"
                   data-testid="s-06-cart-coupon-input"
                 />
                 <button
@@ -413,7 +413,7 @@ export default function CartPage() {
               {canCheckout ? (
                 <Link
                   to="/checkout"
-                  className="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
+                  className="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
                   data-testid="s-06-cart-checkout"
                 >
                   {t('cart.checkout', 'Proceed to checkout')}
@@ -422,7 +422,7 @@ export default function CartPage() {
                 <button
                   type="button"
                   disabled
-                  className="inline-flex min-h-[48px] w-full cursor-not-allowed items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold text-[var(--c-on-primary)] opacity-50"
+                  className="inline-flex min-h-[48px] w-full cursor-not-allowed items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold text-[var(--c-on-primary)] opacity-50"
                   data-testid="s-06-cart-checkout"
                 >
                   {t('cart.checkout', 'Proceed to checkout')}

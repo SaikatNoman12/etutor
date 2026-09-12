@@ -106,7 +106,7 @@ export default function MyLearningPage() {
   }, [allEnrollments, search]);
 
   return (
-    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-10-my-learning-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="s-10-my-learning-page">
       <PageHeading
         eyebrow={t('learning.eyebrow', '')}
         title={t('learning.title', '')}
@@ -118,7 +118,7 @@ export default function MyLearningPage() {
         <span className="relative inline-flex w-full max-w-[320px] items-center">
           <Search className="pointer-events-none absolute left-[12px] h-5 w-5 text-[var(--c-muted)]" aria-hidden="true" />
           <input
-            className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] py-[8px] pl-[36px] pr-[12px] text-[15px] text-[var(--c-ink)]"
+            className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] py-[8px] pl-[36px] pr-[12px] text-[15px] text-[var(--c-ink)]"
             type="search"
             placeholder={t('learning.searchPlaceholder', 'Search my courses')}
             aria-label={t('learning.searchPlaceholder', 'Search my courses')}
@@ -144,7 +144,7 @@ export default function MyLearningPage() {
 
           {!loading1 && error1 && (
             <div
-              className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+              className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
               data-testid="s-10-my-learning-ac-1-error"
             >
               <p className="m-0 text-[15px] text-[var(--c-error)]">
@@ -153,7 +153,7 @@ export default function MyLearningPage() {
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
+                className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
                 data-testid="s-10-my-learning-retry"
               >
                 {t('learning.retry', 'Try again')}
@@ -163,7 +163,7 @@ export default function MyLearningPage() {
 
           {!loading1 && !error1 && (!canView || filtered.length === 0) && (
             <div
-              className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+              className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
               data-testid="s-10-my-learning-empty"
             >
               <p className="m-0 text-[15px] text-[var(--c-muted)]">
@@ -171,7 +171,7 @@ export default function MyLearningPage() {
               </p>
               <Link
                 to="/courses"
-                className="mt-[16px] inline-flex min-h-[44px] items-center justify-center rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
+                className="mt-[16px] inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
                 data-testid="s-10-my-learning-browse"
               >
                 {t('learning.browse', 'Browse courses')}
@@ -205,7 +205,7 @@ export default function MyLearningPage() {
                       </p>
                       <Link
                         to={`/learn/${e.course?.slug ?? ''}`}
-                        className="inline-flex min-h-[44px] items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
+                        className="inline-flex min-h-[44px] items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
                         data-testid={`s-10-my-learning-continue-${i + 1}`}
                       >
                         {done ? t('learning.review', 'Review') : t('learning.continue', 'Continue')}

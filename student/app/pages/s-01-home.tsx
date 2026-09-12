@@ -133,11 +133,11 @@ export default function HomePage() {
     <div data-testid="s-01-home-page">
       <Link to="/" className="sr-only" data-testid="s-01-home-home-link">{t('nav.home')}</Link>
 
-      <div data-testid="s-01-home-main">
+      <div data-testid="s-01-home-main" className="flex flex-col gap-[48px] sm:gap-[64px]">
         {/* Hero — carries AC-4 (Browse courses CTA) */}
         <section
           data-testid="s-01-home-ac-4"
-          className="et-aurora rounded-[var(--radius-xl)] border border-[var(--c-hairline)] bg-[var(--c-canvas)]"
+          className="et-aurora overflow-hidden rounded-[var(--radius-xl)] border border-[var(--c-hairline)] bg-[var(--c-canvas)]"
         >
           <div className="grid grid-cols-1 items-center gap-[32px] px-[20px] py-[48px] sm:px-[32px] lg:grid-cols-2 lg:py-[72px]">
             <div className="flex flex-col gap-[16px]">
@@ -171,7 +171,7 @@ export default function HomePage() {
         </section>
 
         {/* Browse top categories — AC-2 (category strip) */}
-        <section data-testid="s-01-home-ac-2" className="py-[32px]">
+        <section data-testid="s-01-home-ac-2" className="">
           <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.categoriesTitle', 'Browse top categories')}
@@ -202,7 +202,7 @@ export default function HomePage() {
                       data-testid={`s-01-home-ac-2-kpi-${cat.id}`}
                       className="et-lift flex items-center gap-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[14px] shadow-[var(--shadow-0)]"
                     >
-                      <span className="inline-flex h-[56px] w-[56px] flex-shrink-0 items-center justify-center overflow-hidden rounded-[6px] bg-[var(--c-primary-soft)]">
+                      <span className="inline-flex h-[56px] w-[56px] flex-shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-md)] bg-[var(--c-primary-soft)]">
                         <Media src={cat.iconUrl} alt="" className="h-[32px] w-[32px] object-contain" />
                       </span>
                       <span className="flex flex-col">
@@ -220,7 +220,7 @@ export default function HomePage() {
         </section>
 
         {/* Best selling courses — AC-1 (opens home, sees the live catalogue) */}
-        <section data-testid="s-01-home-ac-1" className="py-[32px]">
+        <section data-testid="s-01-home-ac-1" className="">
           <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.bestSellingTitle', 'Best selling courses')}
@@ -249,7 +249,7 @@ export default function HomePage() {
         </section>
 
         {/* Recently added — AC-3 (click a course card → /courses/:slug) */}
-        <section data-testid="s-01-home-ac-3" className="py-[32px]">
+        <section data-testid="s-01-home-ac-3" className="">
           <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.recentTitle', 'Recently added')}
@@ -283,7 +283,7 @@ export default function HomePage() {
             Instructors are appointed by E-Tutor, so that button had nowhere to
             lead; the section is the same shape, addressed to the person the site
             is for. */}
-        <section data-testid="s-01-home-learn" className="py-[32px]">
+        <section data-testid="s-01-home-learn" className="">
           <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.learnTitle', 'Learn on E-Tutor')}
@@ -294,7 +294,7 @@ export default function HomePage() {
             <div className="mt-[8px] h-[3px] w-[48px] rounded-full bg-[var(--c-primary)]" />
           </Reveal>
           <div className="grid grid-cols-1 items-start gap-[24px] lg:grid-cols-[2fr_1fr]">
-            <div className="flex flex-col gap-[16px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
+            <div className="flex flex-col gap-[16px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
               {[
                 t('home.learnStep1', 'Find a course in the catalogue'),
                 t('home.learnStep2', 'Add it to your cart and check out'),
@@ -322,14 +322,14 @@ export default function HomePage() {
                   : t('home.learnCtaGuest', 'Browse courses')}
               </Link>
             </div>
-            <div className="aspect-[4/3] w-full overflow-hidden rounded-[8px] bg-[var(--c-canvas)]">
+            <div className="aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-lg)] bg-[var(--c-canvas)]">
               <Media src="/images/learn-journey.jpg" alt={t('home.learnTitle', 'Learn on E-Tutor')} />
             </div>
           </div>
         </section>
 
         {/* Top instructors */}
-        <section className="py-[32px]">
+        <section>
           <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.instructorsTitle', 'Top instructors')}

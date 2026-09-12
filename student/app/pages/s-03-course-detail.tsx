@@ -119,7 +119,7 @@ export default function CourseDetailPage() {
   const instructorId = instructor?.id ?? course?.instructorId ?? '';
 
   return (
-    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-03-course-detail-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="s-03-course-detail-page">
       {/* breadcrumb — page content nav (RULE-F13 allows breadcrumbs) */}
       <nav
         className="mb-[24px] flex items-center gap-[8px] text-[14px] text-[var(--c-muted)]"
@@ -148,7 +148,7 @@ export default function CourseDetailPage() {
 
         {!loading1 && error1 && (
           <div
-            className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+            className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-03-course-detail-ac-1-error"
           >
             <p className="m-0 text-[15px] text-[var(--c-error)]">
@@ -157,7 +157,7 @@ export default function CourseDetailPage() {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
+              className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
               data-testid="s-03-course-detail-retry"
             >
               {t('courseDetail.retry', 'Try again')}
@@ -167,7 +167,7 @@ export default function CourseDetailPage() {
 
         {!loading1 && !error1 && !course && (
           <div
-            className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
+            className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-03-course-detail-empty"
           >
             <p className="m-0 text-[15px] text-[var(--c-muted)]">
@@ -216,7 +216,7 @@ export default function CourseDetailPage() {
                 </div>
 
                 {/* media */}
-                <div className="overflow-hidden rounded-[8px] [aspect-ratio:16/9] [background:var(--media-fallback)]">
+                <div className="overflow-hidden rounded-[var(--radius-lg)] [aspect-ratio:16/9] [background:var(--media-fallback)]">
                   {course.thumbnailUrl && (
                     <img className="block h-full w-full object-cover" src={course.thumbnailUrl} alt={course.title ?? ''} />
                   )}
@@ -227,7 +227,7 @@ export default function CourseDetailPage() {
                   <h2 className="mb-[12px] text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
                     {t('courseDetail.instructor', 'Your instructor')}
                   </h2>
-                  <div className="flex items-center gap-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
+                  <div className="flex items-center gap-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
                     <span className="block h-[64px] w-[64px] flex-none overflow-hidden rounded-full [background:var(--c-surface-soft)]">
                       {instructor?.avatarUrl && (
                         <img className="block h-full w-full object-cover" src={instructor.avatarUrl} alt={instructor?.name ?? ''} />
@@ -257,11 +257,11 @@ export default function CourseDetailPage() {
                     {t('courseDetail.syllabus', 'Course syllabus')}
                   </h2>
                   {sections.length === 0 ? (
-                    <div className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[16px] text-[14px] text-[var(--c-muted)]">
+                    <div className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[16px] text-[14px] text-[var(--c-muted)]">
                       {t('courseDetail.syllabusEmpty', 'The syllabus for this course is coming soon.')}
                     </div>
                   ) : (
-                    <div className="divide-y divide-[var(--c-hairline)] overflow-hidden rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)]">
+                    <div className="divide-y divide-[var(--c-hairline)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)]">
                       {sections.map((section, i) => {
                         const open = openIdx === i;
                         return (
@@ -317,7 +317,7 @@ export default function CourseDetailPage() {
               {/* buybox — ac-3 (signed-in student clicks Add to cart) */}
               <aside className="lg:sticky lg:top-[24px]">
                 <div
-                  className="space-y-[16px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-2)]"
+                  className="space-y-[16px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-2)]"
                   data-testid="s-03-course-detail-ac-3"
                 >
                   {/* carried-over story inputs — no home in the design, kept hidden so createItems3 still resolves them */}
@@ -336,7 +336,7 @@ export default function CourseDetailPage() {
                   </div>
 
                   <button
-                    className="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:opacity-50"
+                    className="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:opacity-50"
                     type="button"
                     onClick={createItems3}
                     disabled={loading3}

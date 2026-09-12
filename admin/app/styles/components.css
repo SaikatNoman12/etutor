@@ -91,7 +91,13 @@ a:hover :where(img, svg, [class*="rounded-full"]) { text-decoration: none; }
 .t-bold { font-weight: var(--t-weight-bold, 700); }
 
 /* ---------- layout ---------- */
-.container { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-xl); }
+/* `padding-inline`, not the `padding: 0 X` shorthand. The shorthand also sets
+   padding-top and padding-bottom to ZERO, and this sheet is unlayered, so it
+   beat every Tailwind `py-*` on any element carrying `container` — the site's
+   <main> among them. The layout's `py-[32px]` computed to 0px on every page,
+   and the home hero sat flush against the header. A gutter rule has no
+   business deciding the vertical rhythm. */
+.container { max-width: var(--container-max); margin: 0 auto; padding-inline: var(--space-xl); }
 .section { padding: var(--space-section) 0; }
 .stack-sm > * + * { margin-top: var(--space-sm); }
 .stack-md > * + * { margin-top: var(--space-md); }

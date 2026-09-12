@@ -20,6 +20,7 @@ import { toast } from '~/lib/toast';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { email as emailRule, password as passwordRule, readForm, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
+import { AuthPanel } from '~/components/shared/AuthPanel';
 
 export default function SignUpPage() {
   const { t } = useTranslation('common');
@@ -76,8 +77,19 @@ export default function SignUpPage() {
   const submitting = loading1;
 
   return (
-    <div className="flex min-h-[70vh] w-full items-center justify-center px-[24px] py-[64px]" data-testid="a-02-signup-page">
-      <div className="w-full max-w-[420px]" data-testid="a-02-signup-main">
+    <div className="grid w-full grid-cols-1 items-stretch gap-[24px] lg:grid-cols-[1.05fr_1fr] lg:gap-[40px]" data-testid="a-02-signup-page">
+      <AuthPanel
+        brand={t('brand.name')}
+        homeHref="/"
+        title={t('auth.panel.signupTitle', 'Start learning something new today.')}
+        points={[
+          t('auth.panel.point4', 'Seventeen expert-led courses, one account'),
+          t('auth.panel.point5', 'Pay once, keep access for six months'),
+          t('auth.panel.point6', 'Downloadable notes with every lesson'),
+        ]}
+      />
+      <div className="flex items-center justify-center py-[8px] lg:py-[24px]">
+      <div className="w-full max-w-[440px]" data-testid="a-02-signup-main">
         <Link
           to="/"
           data-testid="a-02-signup-home-link"
@@ -97,7 +109,7 @@ export default function SignUpPage() {
               e.preventDefault();
               createRegister1();
             }}
-            className="space-y-[16px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[0_1px_3px_rgb(29_32_38_/_0.08)]"
+            className="space-y-[16px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[0_1px_3px_rgb(29_32_38_/_0.08)]"
           >
             <h1
               data-testid="a-02-signup-heading"
@@ -116,7 +128,7 @@ export default function SignUpPage() {
                 data-testid="a-02-signup-ac-1-title"
                 placeholder={t('auth.signup.fullNamePlaceholder', { defaultValue: 'Your name' })}
                 {...fieldProps('fullName', errors)}
-                className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--c-primary)]"
+                className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
               />
               <FieldError id="fullName-error" message={errors.fullName} />
             </label>
@@ -131,7 +143,7 @@ export default function SignUpPage() {
                 data-testid="a-02-signup-ac-1-content"
                 placeholder={t('auth.signup.emailPlaceholder', { defaultValue: 'you@example.com' })}
                 {...fieldProps('email', errors)}
-                className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--c-primary)]"
+                className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
               />
               <FieldError id="email-error" message={errors.email} />
             </label>
@@ -146,7 +158,7 @@ export default function SignUpPage() {
                 data-testid="a-02-signup-ac-2-title"
                 placeholder={t('auth.signup.passwordPlaceholder', { defaultValue: 'At least 8 characters' })}
                 {...fieldProps('password', errors)}
-                className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--c-primary)]"
+                className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
               />
               <FieldError id="password-error" message={errors.password} />
             </label>
@@ -161,7 +173,7 @@ export default function SignUpPage() {
               type="submit"
               disabled={submitting}
               data-testid="a-02-signup-ac-1-action"
-              className="inline-flex min-h-[48px] items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold leading-none text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex min-h-[48px] items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold leading-none text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:pointer-events-none disabled:opacity-50"
             >
               <span data-testid="a-02-signup-ac-2-action">
                 {submitting
@@ -182,6 +194,7 @@ export default function SignUpPage() {
             </p>
           </form>
         </div>
+      </div>
       </div>
     </div>
   );

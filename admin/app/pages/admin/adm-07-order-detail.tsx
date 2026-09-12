@@ -21,9 +21,9 @@ import type { OrderDetailData } from '~/types/view-models';
 import { ArrowLeft } from 'lucide-react';
 
 const CARD =
-  'rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]';
+  'rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]';
 const BTN =
-  'inline-flex items-center justify-center gap-[8px] min-h-[44px] rounded-[6px] px-[24px] py-[8px] text-[15px] font-[600] border border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+  'inline-flex items-center justify-center gap-[8px] min-h-[44px] rounded-[var(--radius-md)] px-[24px] py-[8px] text-[15px] font-[600] border border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
 const TH =
   'px-[16px] py-[12px] text-left text-[12px] font-[500] uppercase tracking-[0.2px] text-[var(--c-muted)] border-b border-[var(--c-hairline-strong)]';
 const TD =
@@ -122,8 +122,8 @@ export default function AdminOrderDetailPage() {
   const status = STATUS_META[order?.status ?? order_status.PENDING] ?? STATUS_META[order_status.PENDING];
 
   return (
-    <div data-testid="adm-07-order-detail-page" className="min-h-full bg-[var(--c-canvas)]">
-      <div className="mx-auto max-w-[1240px] p-[24px]">
+    <div data-testid="adm-07-order-detail-page">
+      <div className="mx-auto w-full max-w-[1240px]">
         <Link
           to="/admin/orders"
           data-testid="adm-07-order-detail-home-link"

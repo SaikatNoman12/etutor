@@ -226,7 +226,7 @@ export default function CheckoutPage() {
 
   return (
     <div
-      className="mx-auto max-w-[1240px] py-[32px]"
+      className="mx-auto w-full max-w-[1240px]"
       data-testid="s-07-checkout-page"
     >
       <Link
@@ -249,7 +249,7 @@ export default function CheckoutPage() {
       >
         {/* Billing details */}
         <form
-          className="space-y-[16px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
+          className="space-y-[16px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
           onSubmit={(e) => { e.preventDefault(); void placeOrder(); }}
         >
           <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-07-checkout-name"
                 {...fieldProps('billingName', errors)}
               />
@@ -274,7 +274,7 @@ export default function CheckoutPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-07-checkout-email"
                 {...fieldProps('billingEmail', errors)}
               />
@@ -285,7 +285,7 @@ export default function CheckoutPage() {
               <select
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-07-checkout-country"
               >
                 <option>Bangladesh</option>
@@ -298,7 +298,7 @@ export default function CheckoutPage() {
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-                className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-07-checkout-payment-method"
               >
                 <option>Card</option>
@@ -309,7 +309,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={!canPlace}
-            className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50"
             data-testid="s-07-checkout-place-order"
           >
             {placing ? t('checkout.placing', 'Placing order…') : t('checkout.placeOrder', 'Place order')}
@@ -317,7 +317,7 @@ export default function CheckoutPage() {
         </form>
 
         {/* Order summary */}
-        <div className="sticky top-[88px] space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
+        <div className="sticky top-[88px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
           <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
             {t('checkout.orderSummary', 'Order summary')}
           </h2>
@@ -325,9 +325,9 @@ export default function CheckoutPage() {
           {loading1 && (
             <div className="space-y-[12px]" data-testid="s-07-checkout-ac-1-loading">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-[16px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+                <div key={i} className="h-[16px] w-full et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
               ))}
-              <div className="h-[24px] w-1/2 et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+              <div className="h-[24px] w-1/2 et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
             </div>
           )}
 

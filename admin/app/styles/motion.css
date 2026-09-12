@@ -94,6 +94,13 @@
   pointer-events: none;
 }
 
+/* On the dark footer the light-ground aurora is invisible; lift it. */
+footer .et-aurora::before {
+  background:
+    radial-gradient(60% 90% at 84% 10%, rgb(242 84 27 / 0.42) 0%, transparent 62%),
+    radial-gradient(50% 80% at 8% 100%, rgb(15 95 86 / 0.40) 0%, transparent 60%);
+}
+
 /* A sheen that crosses a primary button on hover. */
 .et-sheen { position: relative; overflow: hidden; }
 .et-sheen::after {

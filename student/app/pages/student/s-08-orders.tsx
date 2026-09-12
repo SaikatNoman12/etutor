@@ -169,7 +169,7 @@ export default function OrderListPage() {
   );
 
   return (
-    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-08-orders-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="s-08-orders-page">
       <PageHeading
         eyebrow={t('orders.eyebrow', '')}
         title={t('orders.title', '')}
@@ -177,14 +177,14 @@ export default function OrderListPage() {
       />
 
       <div
-        className="mt-[24px] space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
+        className="mt-[24px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
         data-testid="s-08-orders-main"
       >
         {/* search */}
         <span className="relative inline-flex w-full max-w-[300px] items-center">
           <Search className="pointer-events-none absolute left-[12px] h-5 w-5 text-[var(--c-muted)]" aria-hidden="true" />
           <input
-            className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] py-[8px] pl-[36px] pr-[12px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)]"
+            className="min-h-[44px] w-full rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] py-[8px] pl-[36px] pr-[12px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)]"
             type="search"
             placeholder={t('orders.searchPlaceholder', 'Search orders')}
             aria-label={t('orders.searchPlaceholder', 'Search orders')}
@@ -213,7 +213,7 @@ export default function OrderListPage() {
                   <td colSpan={6} className="px-[16px] py-[12px]">
                     <div className="space-y-[8px]">
                       {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="h-[20px] et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+                        <div key={i} className="h-[20px] et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
                       ))}
                     </div>
                   </td>
@@ -229,7 +229,7 @@ export default function OrderListPage() {
                     <button
                       type="button"
                       onClick={() => window.location.reload()}
-                      className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
+                      className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)]"
                       data-testid="s-08-orders-retry"
                     >
                       {t('orders.retry', 'Try again')}

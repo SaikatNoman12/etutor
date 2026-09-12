@@ -14,7 +14,7 @@
 export function PageSkeleton() {
   return (
     <div
-      className="mx-auto w-full max-w-[1240px] py-[32px]"
+      className="mx-auto w-full max-w-[1240px]"
       data-testid="page-skeleton"
       aria-busy="true"
       aria-live="polite"

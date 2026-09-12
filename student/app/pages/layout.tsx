@@ -16,7 +16,13 @@ export default function BaseLayout() {
           became a narrow grey stripe pinned left of centre. `flex-1` still keeps
           the footer at the bottom — that is main's role as a CHILD of the column
           above; it does not have to be a column itself. */}
-      <main className="container mx-auto w-full flex-1">
+      {/* The page's distance from the header and the footer is the LAYOUT's
+          decision, not each page's. Twelve pages each carried their own
+          `py-[32px]`, and the two that did not — the home page's full-bleed hero
+          and the console's orders screen — sat flush against the bar above them
+          while every other page had 32px. A rhythm that every screen has to
+          remember is a rhythm that some screen will forget. */}
+      <main className="container mx-auto w-full flex-1 py-[24px] sm:py-[32px]">
         <Outlet />
       </main>
       <Footer />

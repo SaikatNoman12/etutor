@@ -182,7 +182,11 @@ export default function AdminLayout() {
           </div>
         )}
 
-        <main className="min-w-0 flex-1 overflow-y-auto" data-testid="admin-main">
+        {/* The gutter and the distance from the top bar are the LAYOUT's decision.
+            Seven screens each declared their own — `px-6 py-8`, `p-[24px]`,
+            `py-6`, and two with none at all, so the orders screen sat flush
+            against the top bar while every other screen had 32px. */}
+        <main className="min-w-0 flex-1 overflow-y-auto px-[16px] py-[24px] sm:px-[32px] sm:py-[32px]" data-testid="admin-main">
           <Outlet />
         </main>
 

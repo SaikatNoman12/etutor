@@ -166,7 +166,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-12-profile-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="s-12-profile-page">
       <PageHeading
         eyebrow={t('profile.eyebrow', '')}
         title={t('profile.title', '')}
@@ -179,7 +179,7 @@ export default function ProfilePage() {
       >
         {/* Editable profile form */}
         <form
-          className="space-y-[16px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
+          className="space-y-[16px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
           onSubmit={(e) => { e.preventDefault(); void saveProfile(); }}
         >
           <div className="flex items-center gap-[12px]">
@@ -208,7 +208,7 @@ export default function ProfilePage() {
                 name="fullName"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-12-profile-name"
                 {...fieldProps('fullName', errors)}
               />
@@ -221,7 +221,7 @@ export default function ProfilePage() {
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-12-profile-email"
               />
             </label>
@@ -232,7 +232,7 @@ export default function ProfilePage() {
                 name="headline"
                 value={headline}
                 onChange={(e) => setHeadline(e.target.value)}
-                className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-12-profile-headline"
               />
             </label>
@@ -242,7 +242,7 @@ export default function ProfilePage() {
                 name="country"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+                className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-12-profile-country"
               >
                 <option>Bangladesh</option>
@@ -258,7 +258,7 @@ export default function ProfilePage() {
               rows={4}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
+              className="rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
               data-testid="s-12-profile-bio"
             />
           </label>
@@ -266,7 +266,7 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={!canSave}
-            className="inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50"
             data-testid="s-12-profile-save"
           >
             {saving ? t('profile.saving', 'Saving…') : t('profile.save', 'Save changes')}
@@ -275,7 +275,7 @@ export default function ProfilePage() {
 
         {/* Account sidebar */}
         <div
-          className="sticky top-[88px] space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
+          className="sticky top-[88px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
           data-testid="s-12-profile-ac-1"
         >
           <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
@@ -285,7 +285,7 @@ export default function ProfilePage() {
           {loading1 && (
             <div className="space-y-[12px]" data-testid="s-12-profile-ac-1-loading">
               {Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="h-[40px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+                <div key={i} className="h-[40px] w-full et-shimmer rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
               ))}
             </div>
           )}
@@ -326,7 +326,7 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => { void signOut(); }}
-            className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-transparent px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)]"
+            className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-transparent px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)]"
             data-testid="s-12-profile-signout"
           >
             {t('profile.signOut', 'Sign out')}

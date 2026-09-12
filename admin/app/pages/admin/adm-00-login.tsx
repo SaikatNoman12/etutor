@@ -22,6 +22,7 @@ import { toast } from "~/lib/toast";
 import { GraduationCap } from "lucide-react";
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { email as emailRule, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
+import { AuthPanel } from '~/components/shared/AuthPanel';
 
 export default function AdminLoginPage() {
   const { t } = useTranslation();
@@ -97,10 +98,20 @@ export default function AdminLoginPage() {
     // `container mx-auto`, and when the console chrome moved out of that shell
     // the form had nothing constraining it: a 1440px-wide card pinned to the top
     // left corner with the rest of the window empty below it.
-    <main className="flex min-h-screen items-center justify-center bg-muted/30 px-6 py-12">
+    <main className="grid min-h-screen grid-cols-1 items-center gap-[24px] bg-muted/30 px-[16px] py-[32px] sm:px-[32px] lg:grid-cols-[1.05fr_1fr] lg:gap-[40px] lg:px-[64px]">
+      <AuthPanel
+        brand={t('brand.name', 'E-Tutor')}
+        homeHref="/admin/login"
+        title={t('auth:login.panelTitle', 'Run the catalogue from one place.')}
+        points={[
+          t('auth:login.panelPoint1', 'Courses, categories and instructors'),
+          t('auth:login.panelPoint2', 'Orders, coupons and revenue at a glance'),
+          t('auth:login.panelPoint3', 'Every enrolment and how far it has come'),
+        ]}
+      />
       <form
         onSubmit={onSubmit}
-        className="flex w-full max-w-[420px] flex-col gap-[16px] rounded-[8px] border bg-card p-[24px] shadow-sm"
+        className="mx-auto flex w-full max-w-[440px] flex-col gap-[16px] rounded-[var(--radius-xl)] border bg-card p-[28px] shadow-[var(--shadow-2)]"
         data-testid="adm-00-login-page"
       >
         <Link
@@ -108,7 +119,7 @@ export default function AdminLoginPage() {
           className="inline-flex items-center gap-[8px] text-foreground no-underline"
           data-testid="adm-00-login-home-link"
         >
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-[6px] bg-primary text-primary-foreground">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] bg-primary text-primary-foreground">
             <GraduationCap className="h-5 w-5" aria-hidden="true" />
           </span>
           <span className="text-[20px] font-bold tracking-[-0.2px]">

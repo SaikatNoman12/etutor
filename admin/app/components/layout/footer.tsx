@@ -1,13 +1,15 @@
 import { useTranslation } from "react-i18next";
+import { GraduationCap, LifeBuoy } from "lucide-react";
 
 /**
  * The console's footer.
  *
- * Deliberately thinner than the student site's: an operator working a table all
- * day does not need a link farm under it, and the console's navigation lives in
- * the sidebar. What it does need is to say WHICH system and WHICH environment
- * they are looking at — this bar sat under the production console reading
- * "© React Starter Kit", which names neither.
+ * Deliberately thinner than the student site's: an operator working a table
+ * all day does not need a link farm under it, and the console's navigation
+ * lives in the sidebar. What it needs is to say WHICH system and WHICH
+ * environment they are looking at, and where to go when something is wrong —
+ * in the same register as the rest of the product rather than a grey line that
+ * looks like it came with the framework.
  */
 export default function Footer() {
   const { t } = useTranslation("common");
@@ -18,25 +20,33 @@ export default function Footer() {
       className="border-t border-[var(--c-hairline)] bg-[var(--c-surface)]"
       data-testid="admin-footer"
     >
-      <div className="container mx-auto flex flex-col items-center justify-between gap-[8px] px-4 py-[20px] text-[13px] text-[var(--c-muted)] sm:flex-row">
-        <p>
-          © {new Date().getFullYear()} {t("brand.name")}{" "}
-          {t("footer.console", "admin console")}.{" "}
-          {t("footer.rights", "All rights reserved.")}
-        </p>
-        <p className="flex items-center gap-[12px]">
-          {env && (
-            <span className="rounded-full bg-[var(--c-primary-soft)] px-[10px] py-[2px] font-medium text-[var(--c-primary-text)]">
+      <div className="mx-auto flex w-full max-w-[1240px] flex-col items-start justify-between gap-[12px] px-[16px] py-[18px] text-[13px] text-[var(--c-muted)] sm:flex-row sm:items-center sm:px-[32px]">
+        <p className="m-0 inline-flex items-center gap-[10px]">
+          <span
+            className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-[var(--radius-lg)]"
+            style={{ background: "var(--grad-brand)" }}
+          >
+            <GraduationCap className="h-[14px] w-[14px] text-white" aria-hidden="true" />
+          </span>
+          <span>
+            <span className="font-semibold text-[var(--c-ink)]" style={{ fontFamily: "var(--font-display)" }}>
+              {t("brand.name")}
+            </span>{" "}
+            {t("footer.console", "admin console")} · © {new Date().getFullYear()}
+          </span>
+          {env ? (
+            <span className="rounded-[var(--radius-pill)] bg-[var(--c-primary-soft)] px-[10px] py-[2px] text-[11px] font-bold uppercase tracking-[0.6px] text-[var(--c-primary-text)]">
               {env}
             </span>
-          )}
-          <a
-            href="mailto:support@etutor.test"
-            className="text-[var(--c-link)] hover:underline"
-          >
-            {t("footer.support", "Support")}
-          </a>
+          ) : null}
         </p>
+        <a
+          href="mailto:support@etutor.test"
+          className="et-press inline-flex items-center gap-[8px] rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] px-[14px] py-[7px] text-[13px] font-medium text-[var(--c-body)] transition-colors hover:border-[var(--c-primary)] hover:text-[var(--c-primary-text)]"
+        >
+          <LifeBuoy className="h-[14px] w-[14px]" aria-hidden="true" />
+          {t("footer.support", "Support")}
+        </a>
       </div>
     </footer>
   );

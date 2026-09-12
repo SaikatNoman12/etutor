@@ -231,7 +231,7 @@ export default function AdminCourseDetailPage() {
   const handleAddLesson = async () => { await createLessons3(); setAddOpen(false); };
 
   return (
-    <div data-testid="adm-03-course-detail-page" className="mx-auto w-full max-w-[1240px] px-6 py-6">
+    <div data-testid="adm-03-course-detail-page" className="mx-auto w-full max-w-[1240px]">
       <Link
         to="/admin/courses"
         data-testid="adm-03-course-detail-home-link"

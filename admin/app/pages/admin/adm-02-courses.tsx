@@ -338,7 +338,7 @@ export default function AdminCourseListPage() {
     : [];
 
   return (
-    <div className="mx-auto w-full max-w-[1240px] px-6 py-8" data-testid="adm-02-courses-page">
+    <div className="mx-auto w-full max-w-[1240px]" data-testid="adm-02-courses-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="text-sm text-muted-foreground">
@@ -358,7 +358,7 @@ export default function AdminCourseListPage() {
       </header>
 
       <main className="space-y-6" data-testid="adm-02-courses-main">
-        <section className="rounded-[8px] border border-border bg-card shadow-sm" data-testid="adm-02-courses-ac-1">
+        <section className="rounded-[var(--radius-lg)] border border-border bg-card shadow-sm" data-testid="adm-02-courses-ac-1">
           {/* toolbar: search + new course */}
           <div className="flex flex-wrap items-center gap-3 border-b border-border p-4">
             <div className="min-w-[240px] flex-1" data-component="search-bar">
@@ -506,7 +506,7 @@ export default function AdminCourseListPage() {
             always-visible inline form so the story's create fields stay reachable. */}
         <section
           ref={formRef}
-          className="rounded-[8px] border border-border bg-card shadow-sm"
+          className="rounded-[var(--radius-lg)] border border-border bg-card shadow-sm"
           data-testid="adm-02-courses-ac-4"
         >
           <div className="flex items-center justify-between border-b border-border px-5 py-4">

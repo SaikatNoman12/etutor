@@ -39,6 +39,7 @@ import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { email as emailRule, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
+import { countryList, withStored } from '~/utils/countries';
 
 /** Cart lines may embed their course; the generated CartItem type only
  *  guarantees courseId/unitPrice/quantity, so widen locally without `any`. */
@@ -76,7 +77,7 @@ function extractOrderId(payload: unknown): string | null {
 }
 
 export default function CheckoutPage() {
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
   const navigate = useNavigate();
   const __routeParams = useParams() as Record<string, string | undefined>;
 
@@ -169,6 +170,8 @@ export default function CheckoutPage() {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [country, setCountry] = useState<string>('Bangladesh');
+  // Three countries was the whole world, on a product sold to learners anywhere.
+  const countries = useMemo(() => withStored(countryList(i18n.language), country), [i18n.language, country]);
   const [paymentMethod, setPaymentMethod] = useState<string>('Card');
   const [errors, setErrors] = useState<FieldErrors>({});
   useEffect(() => {
@@ -299,9 +302,9 @@ export default function CheckoutPage() {
                 className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-07-checkout-country"
               >
-                <option>Bangladesh</option>
-                <option>United States</option>
-                <option>United Kingdom</option>
+                {countries.map((c) => (
+                  <option key={c.code} value={c.name}>{c.name}</option>
+                ))}
               </select>
             </label>
             <label className="flex flex-col gap-[4px]">

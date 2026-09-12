@@ -35,9 +35,10 @@ import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { maxLength, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 import { fileToAvatarDataUrl, ImageFileError, MAX_SOURCE_BYTES } from '~/utils/imageFile';
+import { countryList, withStored } from '~/utils/countries';
 
 export default function ProfilePage() {
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
   const navigate = useNavigate();
 
   // auth:student page — the layout guard admits only signed-in students. Read
@@ -112,6 +113,8 @@ export default function ProfilePage() {
   const [email, setEmail] = useState<string>('');
   const [headline, setHeadline] = useState<string>('');
   const [country, setCountry] = useState<string>('Bangladesh');
+  // Two countries was the whole world, on a product sold to learners anywhere.
+  const countries = useMemo(() => withStored(countryList(i18n.language), country), [i18n.language, country]);
   const [bio, setBio] = useState<string>('');
   useEffect(() => {
     setFullName(str('fullName'));
@@ -301,8 +304,9 @@ export default function ProfilePage() {
                 className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[14px] py-[10px] transition-[border-color,box-shadow] duration-150 focus:border-[var(--c-primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-primary)_18%,transparent)] text-[15px] text-[var(--c-ink)] focus:border-[var(--c-primary)] focus:outline-none"
                 data-testid="s-12-profile-country"
               >
-                <option>Bangladesh</option>
-                <option>United States</option>
+                {countries.map((c) => (
+                  <option key={c.code} value={c.name}>{c.name}</option>
+                ))}
               </select>
             </label>
           </div>

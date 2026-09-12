@@ -20,6 +20,8 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { toast } from "~/lib/toast";
 import { GraduationCap } from "lucide-react";
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { email as emailRule, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 
 export default function AdminLoginPage() {
   const { t } = useTranslation();
@@ -30,10 +32,23 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
 
   // POST /api/auth/login → session (design write; feedback: toast).
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    // `required` on the inputs gets the browser's own bubble, which is not
+    // styled like anything else here and says "Please fill out this field".
+    // Same rules as the API, shown the same way as every other form.
+    const found = validate({ email, password }, {
+      email: [required(t('auth:login.emailLabel', 'Email')), emailRule()],
+      password: [required(t('auth:login.passwordLabel', 'Password'))],
+    });
+    setErrors(found);
+    if (Object.keys(found).length) {
+      document.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
+      return;
+    }
     setSubmitting(true);
     setError(null);
     const result = await dispatch(loginThunk({ email, password }));
@@ -131,9 +146,10 @@ export default function AdminLoginPage() {
                 )}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
+                {...fieldProps('email', errors)}
                 data-testid="adm-00-login-ac-1-email"
               />
+              <FieldError id="email-error" message={errors.email} />
             </div>
 
             <div className="flex flex-col gap-[4px]">
@@ -151,9 +167,10 @@ export default function AdminLoginPage() {
                 )}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
+                {...fieldProps('password', errors)}
                 data-testid="adm-00-login-ac-1-password"
               />
+              <FieldError id="password-error" message={errors.password} />
             </div>
 
             {error && (

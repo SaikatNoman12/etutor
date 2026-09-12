@@ -22,8 +22,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
         const exceptionResponse = exception.getResponse();
 
-        // Handle validation errors (class-validator returns { message: string[] })
         let message: string | string[];
+        // Per-field detail, when the thrower supplied it. The validation pipe
+        // answers `{ message, errors: { email: '…' } }` so a form can mark the
+        // input the person has to go back to; this filter used to read
+        // `message` and drop everything else, which left the client with one
+        // sentence and no idea which box it was about.
+        let errors: Record<string, string> | undefined;
         if (typeof exceptionResponse === 'string') {
             message = exceptionResponse;
         } else if (
@@ -31,8 +36,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
             'message' in exceptionResponse
         ) {
             message = (exceptionResponse as any).message;
+            const maybe = (exceptionResponse as any).errors;
+            // Only when there is something in it. An empty `errors: {}` tells a
+            // client there is per-field detail and then gives none.
+            if (maybe && typeof maybe === 'object' && !Array.isArray(maybe) && Object.keys(maybe).length) {
+                errors = maybe as Record<string, string>;
+            }
         } else {
             message = exception.message;
+        }
+
+        // A 404 from the router itself reads "Cannot GET /api/x" — the method
+        // and the path, to someone who typed neither.
+        if (status === 404 && typeof message === 'string' && /^Cannot (GET|POST|PUT|PATCH|DELETE) /.test(message)) {
+            message = 'That page could not be found.';
         }
 
         this.logger.warn(
@@ -43,6 +60,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             success: false,
             statusCode: status,
             message,
+            ...(errors ? { errors } : {}),
             data: null,
             timestamp: new Date().toISOString(),
             path: request.url,

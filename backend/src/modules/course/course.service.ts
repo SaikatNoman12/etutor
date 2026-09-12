@@ -52,7 +52,7 @@ export class CourseService extends BaseService<Course> {
 
     const section = await this.sections.findById(dto.sectionId);
     if (!section) {
-      throw new NotFoundException(`Section ${dto.sectionId} not found`);
+      throw new NotFoundException('Section not found');
     }
     if (section.courseId !== courseId) {
       throw new BadRequestException('Section does not belong to this course');

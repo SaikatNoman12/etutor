@@ -177,7 +177,7 @@ export class AdminConsoleService {
       relations: { category: true, instructor: true },
     });
     if (!course) {
-      throw new NotFoundException(`Course with ID ${id} not found!`);
+      throw new NotFoundException('Course not found');
     }
 
     const sections = await this.dataSource.getRepository(CourseSection).find({
@@ -258,7 +258,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(Course);
     const course = await repo.findOne({ where: { id } });
     if (!course) {
-      throw new NotFoundException(`Course with ID ${id} not found!`);
+      throw new NotFoundException('Course not found');
     }
 
     if (dto.title !== undefined) course.title = dto.title;
@@ -290,7 +290,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(Course);
     const course = await repo.findOne({ where: { id } });
     if (!course) {
-      throw new NotFoundException(`Course with ID ${id} not found!`);
+      throw new NotFoundException('Course not found');
     }
 
     const enrolled = await this.dataSource.getRepository(Enrollment).count({
@@ -312,7 +312,7 @@ export class AdminConsoleService {
       .getRepository(Course)
       .findOne({ where: { id: courseId } });
     if (!course) {
-      throw new NotFoundException(`Course with ID ${courseId} not found!`);
+      throw new NotFoundException('Course not found');
     }
 
     const section = await this.dataSource
@@ -344,7 +344,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(Lesson);
     const lesson = await repo.findOne({ where: { id } });
     if (!lesson) {
-      throw new NotFoundException(`Lesson with ID ${id} not found!`);
+      throw new NotFoundException('Lesson not found');
     }
 
     const section = await this.dataSource
@@ -418,7 +418,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(Category);
     const category = await repo.findOne({ where: { id } });
     if (!category) {
-      throw new NotFoundException(`Category with ID ${id} not found!`);
+      throw new NotFoundException('Category not found');
     }
 
     if (dto.name !== undefined) category.name = dto.name;
@@ -437,7 +437,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(Category);
     const category = await repo.findOne({ where: { id } });
     if (!category) {
-      throw new NotFoundException(`Category with ID ${id} not found!`);
+      throw new NotFoundException('Category not found');
     }
 
     const courseCount = await this.dataSource
@@ -511,7 +511,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(User);
     const user = await repo.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found!`);
+      throw new NotFoundException('User not found');
     }
 
     if (dto.email !== undefined && dto.email !== user.email) {
@@ -576,7 +576,7 @@ export class AdminConsoleService {
       relations: { user: true, coupon: true },
     });
     if (!order) {
-      throw new NotFoundException(`Order with ID ${id} not found!`);
+      throw new NotFoundException('Order not found');
     }
 
     const items = await this.dataSource.getRepository(OrderItem).find({
@@ -622,7 +622,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(Order);
     const order = await repo.findOne({ where: { id } });
     if (!order) {
-      throw new NotFoundException(`Order with ID ${id} not found!`);
+      throw new NotFoundException('Order not found');
     }
 
     const becomingPaid =
@@ -646,7 +646,7 @@ export class AdminConsoleService {
       const orderRepo = manager.getRepository(Order);
       const order = await orderRepo.findOne({ where: { id } });
       if (!order) {
-        throw new NotFoundException(`Order with ID ${id} not found!`);
+        throw new NotFoundException('Order not found');
       }
       order.status = order_status.REFUNDED;
       await orderRepo.save(order);
@@ -732,7 +732,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(Coupon);
     const coupon = await repo.findOne({ where: { id } });
     if (!coupon) {
-      throw new NotFoundException(`Coupon with ID ${id} not found!`);
+      throw new NotFoundException('Coupon not found');
     }
 
     if (dto.code !== undefined) coupon.code = dto.code;
@@ -754,7 +754,7 @@ export class AdminConsoleService {
     const repo = this.dataSource.getRepository(Coupon);
     const coupon = await repo.findOne({ where: { id } });
     if (!coupon) {
-      throw new NotFoundException(`Coupon with ID ${id} not found!`);
+      throw new NotFoundException('Coupon not found');
     }
 
     const usedByOrder = await this.dataSource

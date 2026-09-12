@@ -31,6 +31,9 @@ import { toast } from '~/lib/toast';
 import type { DataTableColumn } from '~/components/data-table/DataTable';
 import { Plus } from 'lucide-react';
 import type { AdminCouponRow } from '~/types/view-models';
+import { getApiErrorMessage } from '~/utils/apiError';
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { number, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 
 /** A coupon row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -195,6 +198,20 @@ export default function AdminCouponListPage() {
     setModalOpen(true);
   }
   async function handleModalSubmit(form: FormData) {
+    const found = validate(
+      { code: form.get('code'), discountValue: form.get('discountValue') },
+      {
+        code: [required(t('admin.coupons.field.code', { defaultValue: 'Code' }))],
+        discountValue: [
+          required(t('admin.coupons.field.value', { defaultValue: 'Discount' })),
+          number(t('admin.coupons.field.value', { defaultValue: 'Discount' }), { min: 0 }),
+        ],
+      },
+    );
+    if (Object.keys(found).length) {
+      toast.error(Object.values(found)[0]);
+      return;
+    }
     const body: Record<string, unknown> = {};
     const code = String(form.get('code') ?? '').trim();
     const type = form.get('discountType');
@@ -226,8 +243,8 @@ export default function AdminCouponListPage() {
           ? t('admin.coupons.activated', { defaultValue: 'Coupon activated' })
           : t('admin.coupons.deactivated', { defaultValue: 'Coupon deactivated' }),
       );
-    } catch {
-      toast.error(t('admin.coupons.updateFailed', { defaultValue: 'Could not update the coupon' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.coupons.updateFailed', { defaultValue: 'Could not update the coupon' })));
     }
   }
   async function handleDelete(row: AdminCouponRow) {
@@ -235,8 +252,8 @@ export default function AdminCouponListPage() {
       await deleteCoupon(row.id);
       setRemovedIds((prev) => [...prev, row.id]);
       toast.success(t('admin.coupons.deleted', { defaultValue: 'Coupon deleted' }));
-    } catch {
-      toast.error(t('admin.coupons.deleteFailed', { defaultValue: 'Could not delete the coupon' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.coupons.deleteFailed', { defaultValue: 'Could not delete the coupon' })));
     }
   }
   function handleBulkExport() {
@@ -249,8 +266,8 @@ export default function AdminCouponListPage() {
       setRemovedIds((prev) => [...prev, ...ids]);
       toast.success(t('admin.coupons.bulkDeleted', { defaultValue: 'Selected coupons deleted' }));
       sel.clear();
-    } catch {
-      toast.error(t('admin.coupons.bulkDeleteFailed', { defaultValue: 'Could not delete the selected coupons' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.coupons.bulkDeleteFailed', { defaultValue: 'Could not delete the selected coupons' })));
     }
   }
 

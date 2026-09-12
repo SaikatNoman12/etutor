@@ -153,8 +153,8 @@ export default function CartPage() {
       await updateItem(id, { quantity: next });
       toast.success(t('cart.qtyUpdated', 'Quantity updated'));
       reload();
-    } catch {
-      toast.error(t('cart.qtyError', 'Could not update the quantity'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('cart.qtyError', 'Could not update the quantity')));
     } finally {
       setBusy(false);
     }
@@ -166,8 +166,8 @@ export default function CartPage() {
       await removeItem(id);
       toast.success(t('cart.removed', 'Removed from your cart'));
       reload();
-    } catch {
-      toast.error(t('cart.removeError', 'Could not remove this course'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('cart.removeError', 'Could not remove this course')));
     } finally {
       setBusy(false);
     }
@@ -179,8 +179,8 @@ export default function CartPage() {
       await clear();
       toast.success(t('cart.cleared', 'Cart cleared'));
       reload();
-    } catch {
-      toast.error(t('cart.clearError', 'Could not clear the cart'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('cart.clearError', 'Could not clear the cart')));
     } finally {
       setBusy(false);
     }
@@ -195,8 +195,8 @@ export default function CartPage() {
       toast.success(t('cart.couponApplied', 'Coupon applied'));
       setCoupon('');
       reload();
-    } catch {
-      toast.error(t('cart.couponError', 'That coupon is not valid'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('cart.couponError', 'That coupon is not valid')));
     } finally {
       setBusy(false);
     }

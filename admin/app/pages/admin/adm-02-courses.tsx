@@ -35,6 +35,9 @@ import { toast } from '~/lib/toast';
 import type { DataTableColumn, PaginationState } from '~/components/data-table/DataTable';
 import { Plus, X } from 'lucide-react';
 import type { AdminCourseRow } from '~/types/view-models';
+import { getApiErrorMessage } from '~/utils/apiError';
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { maxLength, number, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 
 /** A course row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -185,6 +188,7 @@ export default function AdminCourseListPage() {
   // --- Presentation state (added by convert-pages) -------------------------
   const [editing, setEditing] = useState<AdminCourseRow | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [removedIds, setRemovedIds] = useState<string[]>([]);
   const formRef = useRef<HTMLDivElement>(null);
@@ -214,6 +218,19 @@ export default function AdminCourseListPage() {
     focusForm();
   }
   async function handleSubmit() {
+    // Checked before the request, with the same rules the DTO enforces.
+    const values = readForm(document.querySelector('[data-testid="adm-02-courses-ac-4"]'));
+    const found = validate(values, {
+      title: [required(t('admin.courses.field.title', { defaultValue: 'Title' })), maxLength(t('admin.courses.field.title', { defaultValue: 'Title' }), 200)],
+      categoryId: [required(t('admin.courses.field.category', { defaultValue: 'Category' }))],
+      instructorId: [required(t('admin.courses.field.instructor', { defaultValue: 'Instructor' }))],
+      price: [number(t('admin.courses.field.price', { defaultValue: 'Price' }), { min: 0 })],
+    });
+    setErrors(found);
+    if (Object.keys(found).length) {
+      document.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
+      return;
+    }
     if (editing) {
       setSaving(true);
       try {
@@ -221,8 +238,8 @@ export default function AdminCourseListPage() {
         toast.success(t('admin.courses.updated', { defaultValue: 'Course updated' }));
         setEditing(null);
         reload();
-      } catch {
-        toast.error(t('admin.courses.updateFailed', { defaultValue: 'Could not update the course' }));
+      } catch (err) {
+        toast.error(getApiErrorMessage(err, t('admin.courses.updateFailed', { defaultValue: 'Could not update the course' })));
       } finally {
         setSaving(false);
       }
@@ -236,8 +253,8 @@ export default function AdminCourseListPage() {
       await deleteCourse(row.id);
       setRemovedIds((prev) => [...prev, row.id]);
       toast.success(t('admin.courses.deleted', { defaultValue: 'Course deleted' }));
-    } catch {
-      toast.error(t('admin.courses.deleteFailed', { defaultValue: 'Could not delete the course' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.courses.deleteFailed', { defaultValue: 'Could not delete the course' })));
     }
   }
   function handleBulkExport() {
@@ -250,8 +267,8 @@ export default function AdminCourseListPage() {
       setRemovedIds((prev) => [...prev, ...ids]);
       toast.success(t('admin.courses.bulkDeleted', { defaultValue: 'Selected courses deleted' }));
       sel.clear();
-    } catch {
-      toast.error(t('admin.courses.bulkDeleteFailed', { defaultValue: 'Could not delete the selected courses' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.courses.bulkDeleteFailed', { defaultValue: 'Could not delete the selected courses' })));
     }
   }
 
@@ -513,43 +530,51 @@ export default function AdminCourseListPage() {
               <input
                 ref={titleRef}
                 name="title"
+                {...fieldProps('title', errors)}
                 type="text"
                 defaultValue={editing?.title ? String(editing.title) : ''}
                 data-testid="adm-02-courses-ac-4-title"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
+              <FieldError id="title-error" message={errors.title} />
             </label>
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.category', { defaultValue: 'Category' })}</span>
               <input
                 name="categoryId"
+                {...fieldProps('categoryId', errors)}
                 type="text"
                 defaultValue={editing?.categoryId ?? ''}
                 placeholder={t('admin.courses.field.categoryHint', { defaultValue: 'Category ID' })}
                 data-testid="adm-02-courses-field-category"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
+              <FieldError id="categoryId-error" message={errors.categoryId} />
             </label>
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.instructor', { defaultValue: 'Instructor' })}</span>
               <input
                 name="instructorId"
+                {...fieldProps('instructorId', errors)}
                 type="text"
                 defaultValue={editing?.instructorId ?? ''}
                 placeholder={t('admin.courses.field.instructorHint', { defaultValue: 'Instructor ID' })}
                 data-testid="adm-02-courses-field-instructor"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
+              <FieldError id="instructorId-error" message={errors.instructorId} />
             </label>
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.price', { defaultValue: 'Price' })}</span>
               <input
                 name="price"
+                {...fieldProps('price', errors)}
                 type="number"
                 defaultValue={editing?.price != null ? String(editing.price) : ''}
                 data-testid="adm-02-courses-field-price"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
+              <FieldError id="price-error" message={errors.price} />
             </label>
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.level', { defaultValue: 'Level' })}</span>

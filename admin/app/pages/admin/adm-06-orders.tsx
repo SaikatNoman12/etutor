@@ -27,6 +27,7 @@ import { EntityFormModal } from '~/components/listing/EntityFormModal';
 import { toast } from '~/lib/toast';
 import { Receipt } from 'lucide-react';
 import type { OrderRow } from '~/types/view-models';
+import { getApiErrorMessage } from '~/utils/apiError';
 
 // A plain row shape with an index signature so it satisfies DataTable's
 // `T extends Record<string, unknown>` constraint (the generated OrderResponse
@@ -235,8 +236,8 @@ export default function AdminOrderListPage() {
       await persistStatus(id, quickStatus);
       toast.success(t('orders.updated', { defaultValue: 'Order updated' }));
       reload();
-    } catch {
-      toast.error(t('orders.updateFailed', { defaultValue: 'Could not update the order' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('orders.updateFailed', { defaultValue: 'Could not update the order' })));
     } finally {
       setSaving(false);
     }

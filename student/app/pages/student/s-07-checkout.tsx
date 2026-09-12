@@ -36,6 +36,8 @@ import type { Cart } from '~/types/cart';
 import type { CartItem } from '~/types/cart-item';
 import type { CartLine, CartView } from '~/types/view-models';
 import { ArrowLeft } from 'lucide-react';
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { email as emailRule, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 
 /** Cart lines may embed their course; the generated CartItem type only
  *  guarantees courseId/unitPrice/quantity, so widen locally without `any`. */
@@ -167,6 +169,7 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState<string>('');
   const [country, setCountry] = useState<string>('Bangladesh');
   const [paymentMethod, setPaymentMethod] = useState<string>('Card');
+  const [errors, setErrors] = useState<FieldErrors>({});
   useEffect(() => {
     setName(user?.name ?? '');
     setEmail(user?.email ?? '');
@@ -175,10 +178,22 @@ export default function CheckoutPage() {
   // Place order — runs the two design writes in sequence through the shared
   // orderService: POST /api/orders, then POST /api/orders/:id/pay.
   const [placing, setPlacing] = useState<boolean>(false);
-  const canPlace = role != null && !placing && name.trim() !== '' && email.trim() !== '' && items.length > 0;
+  // Only the things the visitor CANNOT fix by typing keep the button disabled:
+  // an empty cart, or no session. A blank name used to disable it too, which
+  // left someone looking at a dead "Place order" with nothing telling them why.
+  const canPlace = role != null && !placing && items.length > 0;
 
   const placeOrder = async () => {
     if (!canPlace) return;
+    const found = validate({ billingName: name, billingEmail: email }, {
+      billingName: [required(t('checkout.fullName', 'Full name'))],
+      billingEmail: [required(t('checkout.email', 'Email')), emailRule()],
+    });
+    setErrors(found);
+    if (Object.keys(found).length) {
+      document.querySelector<HTMLElement>(`[data-testid="s-07-checkout-${Object.keys(found)[0] === 'billingName' ? 'name' : 'email'}"]`)?.focus();
+      return;
+    }
     setPlacing(true);
     try {
       const created = await create({
@@ -200,8 +215,9 @@ export default function CheckoutPage() {
       } else {
         navigate('/orders');
       }
-    } catch {
-      toast.error(t('checkout.orderFailed', 'Could not place the order'));
+    } catch (err) {
+      setErrors(serverFieldErrors(err));
+      toast.error(getApiErrorMessage(err, t('checkout.orderFailed', 'Could not place the order')));
     } finally {
       setPlacing(false);
     }
@@ -248,7 +264,9 @@ export default function CheckoutPage() {
                 onChange={(e) => setName(e.target.value)}
                 className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
                 data-testid="s-07-checkout-name"
+                {...fieldProps('billingName', errors)}
               />
+              <FieldError id="billingName-error" message={errors.billingName} />
             </label>
             <label className="flex flex-col gap-[4px]">
               <span className="text-[14px] font-medium text-[var(--c-ink)]">{t('checkout.email', 'Email')}</span>
@@ -258,7 +276,9 @@ export default function CheckoutPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
                 data-testid="s-07-checkout-email"
+                {...fieldProps('billingEmail', errors)}
               />
+              <FieldError id="billingEmail-error" message={errors.billingEmail} />
             </label>
             <label className="flex flex-col gap-[4px]">
               <span className="text-[14px] font-medium text-[var(--c-ink)]">{t('checkout.country', 'Country')}</span>

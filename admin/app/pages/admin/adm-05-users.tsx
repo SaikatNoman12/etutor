@@ -36,6 +36,9 @@ import { toast } from '~/lib/toast';
 import type { DataTableColumn, PaginationState } from '~/components/data-table/DataTable';
 import { Plus, X } from 'lucide-react';
 import type { AdminUserRow } from '~/types/view-models';
+import { getApiErrorMessage } from '~/utils/apiError';
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { email as emailRule, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 
 /** A user row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -154,6 +157,7 @@ export default function AdminUserListPage() {
   // --- Presentation state (added by convert-pages) -------------------------
   const [editing, setEditing] = useState<AdminUserRow | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [removedIds, setRemovedIds] = useState<string[]>([]);
   const [statusOverrides, setStatusOverrides] = useState<Record<string, number | string>>({});
@@ -192,6 +196,16 @@ export default function AdminUserListPage() {
     focusForm();
   }
   async function handleSave() {
+    const values = readForm(document.querySelector('[data-testid="adm-05-users-ac-3"]'));
+    const found = validate(values, {
+      fullName: [required(t('admin.users.field.fullName', { defaultValue: 'Full name' }))],
+      email: [required(t('admin.users.field.email', { defaultValue: 'Email' })), emailRule()],
+    });
+    setErrors(found);
+    if (Object.keys(found).length) {
+      document.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
+      return;
+    }
     setSaving(true);
     const body = readAc3Form();
     try {
@@ -224,8 +238,8 @@ export default function AdminUserListPage() {
       await updateUser(row.id, { status: next });
       setStatusOverrides((prev) => ({ ...prev, [row.id]: next }));
       toast.success(t('admin.users.updated', { defaultValue: 'User updated' }));
-    } catch {
-      toast.error(t('admin.users.updateFailed', { defaultValue: 'Could not update the user' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.users.updateFailed', { defaultValue: 'Could not update the user' })));
     }
   }
   function handleBulkExport() {
@@ -242,8 +256,8 @@ export default function AdminUserListPage() {
       });
       toast.success(t('admin.users.bulkSuspended', { defaultValue: 'Selected users suspended' }));
       sel.clear();
-    } catch {
-      toast.error(t('admin.users.bulkSuspendFailed', { defaultValue: 'Could not suspend the selected users' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.users.bulkSuspendFailed', { defaultValue: 'Could not suspend the selected users' })));
     }
   }
 
@@ -480,21 +494,25 @@ export default function AdminUserListPage() {
               <input
                 ref={nameRef}
                 name="fullName"
+                {...fieldProps('fullName', errors)}
                 type="text"
                 defaultValue={editing?.fullName ? String(editing.fullName) : ''}
                 data-testid="adm-05-users-ac-3-title"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
+              <FieldError id="fullName-error" message={errors.fullName} />
             </label>
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.users.field.email', { defaultValue: 'Email' })}</span>
               <input
                 name="email"
+                {...fieldProps('email', errors)}
                 type="email"
                 defaultValue={editing?.email ? String(editing.email) : ''}
                 data-testid="adm-05-users-ac-3-content"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
+              <FieldError id="email-error" message={errors.email} />
             </label>
             {!editing && (
               <label className="flex flex-col gap-1">

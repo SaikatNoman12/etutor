@@ -35,7 +35,23 @@
 @layer base {
   a { color: var(--c-link); text-decoration: none; }
 }
+/* An underline on hover belongs to a link INSIDE A SENTENCE, where it is the
+   affordance that says "this word is a link". This project builds cards, course
+   tiles, category tiles, nav items and buttons out of <a>, so the blanket rule
+   underlined every word in them on hover — a whole product card sprouting
+   underlines under its title, price and student count as the cursor crossed it.
+   The rule is kept for prose and switched off for anything carrying layout
+   classes (`flex`, `grid`, `rounded`, `block`) or one of this app's own
+   behaviour classes, which is what every card and button has.
+   `:where()` contributes no specificity, so this stays a plain `a:hover`
+   override rather than an escalation nothing can undo. */
 a:hover { text-decoration: underline; }
+a:hover:where(
+  [class*="flex"], [class*="grid"], [class*="rounded"], [class*="block"],
+  [class*="et-"], [class*="btn"], [role="button"], .nav-link, .back-link
+) { text-decoration: none; }
+/* Media and badges never take a text underline from a hovering ancestor. */
+a:hover :where(img, svg, [class*="rounded-full"]) { text-decoration: none; }
 @layer base {
   img { max-width: 100%; display: block; }
 }
@@ -981,4 +997,17 @@ a:focus-visible, .chip:focus-visible, .chip-remove:focus-visible,
     align-items: center;
     justify-content: center;
   }
+}
+
+/* An invalid field has to LOOK invalid, not only announce itself. One rule,
+   so every form in the app marks errors the same way. */
+[data-invalid='true'],
+[aria-invalid='true'] {
+  border-color: var(--c-error) !important;
+  background-color: color-mix(in srgb, var(--c-error) 4%, transparent);
+}
+[data-invalid='true']:focus,
+[aria-invalid='true']:focus {
+  outline: 2px solid var(--c-error);
+  outline-offset: -1px;
 }

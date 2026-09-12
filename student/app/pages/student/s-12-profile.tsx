@@ -31,6 +31,8 @@ import { logout, fetchMeThunk } from '~/services/httpServices/authService';
 import { toast } from '~/lib/toast';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { User } from 'lucide-react';
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { maxLength, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 
 export default function ProfilePage() {
   const { t } = useTranslation('common');
@@ -102,6 +104,7 @@ export default function ProfilePage() {
 
   // Editable form state — prefilled from the fetched profile (never a fake value).
   const [fullName, setFullName] = useState<string>('');
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [email, setEmail] = useState<string>('');
   const [headline, setHeadline] = useState<string>('');
   const [country, setCountry] = useState<string>('Bangladesh');
@@ -120,6 +123,19 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState<boolean>(false);
   const canSave = role != null && !saving;
   const saveProfile = async () => {
+    // The API accepts `fullName: ""` through PartialType unless the DTO says
+    // otherwise — it now does, and so does this, so clearing the field is
+    // refused here rather than silently saving a nameless account.
+    const found = validate({ fullName, headline, country }, {
+      fullName: [required(t('profile.fullName', 'Full name')), maxLength(t('profile.fullName', 'Full name'), 120)],
+      headline: [maxLength(t('profile.headline', 'Headline'), 160)],
+      country: [maxLength(t('profile.country', 'Country'), 60)],
+    });
+    setErrors(found);
+    if (Object.keys(found).length) {
+      document.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
+      return;
+    }
     if (!canSave) return;
     if (!userId) { toast.error(t('profile.saveError', 'Could not save your profile')); return; }
     setSaving(true);
@@ -132,8 +148,8 @@ export default function ProfilePage() {
         country,
       });
       toast.success(t('profile.saved', 'Profile saved'));
-    } catch {
-      toast.error(t('profile.saveError', 'Could not save your profile'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('profile.saveError', 'Could not save your profile')));
     } finally {
       setSaving(false);
     }
@@ -194,7 +210,9 @@ export default function ProfilePage() {
                 onChange={(e) => setFullName(e.target.value)}
                 className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:outline-[var(--c-primary)]"
                 data-testid="s-12-profile-name"
+                {...fieldProps('fullName', errors)}
               />
+              <FieldError id="fullName-error" message={errors.fullName} />
             </label>
             <label className="flex flex-col gap-[4px]">
               <span className="text-[14px] font-medium text-[var(--c-ink)]">{t('profile.email', 'Email')}</span>

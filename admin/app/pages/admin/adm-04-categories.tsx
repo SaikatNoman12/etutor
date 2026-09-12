@@ -35,6 +35,9 @@ import { toast } from '~/lib/toast';
 import type { DataTableColumn } from '~/components/data-table/DataTable';
 import { Plus } from 'lucide-react';
 import type { AdminCategoryRow } from '~/types/view-models';
+import { getApiErrorMessage } from '~/utils/apiError';
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { number, readForm, required, slug as slugRule, validate, type FieldErrors } from '~/utils/validation';
 
 /** A category row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -174,6 +177,21 @@ export default function AdminCategoryListPage() {
     setModalOpen(true);
   }
   async function handleModalSubmit(form: FormData) {
+    // A blank name used to create a category with no name in it — the field is
+    // only added to the body `if (name)`, so an empty one was simply omitted
+    // and the API had nothing to reject.
+    const found = validate(
+      { name: form.get('name'), slug: form.get('slug'), displayOrder: form.get('displayOrder') },
+      {
+        name: [required(t('admin.categories.field.name', { defaultValue: 'Name' }))],
+        slug: [slugRule(t('admin.categories.field.slug', { defaultValue: 'Slug' }))],
+        displayOrder: [number(t('admin.categories.field.displayOrder', { defaultValue: 'Display order' }), { min: 0 })],
+      },
+    );
+    if (Object.keys(found).length) {
+      toast.error(Object.values(found)[0]);
+      return;
+    }
     const body: Record<string, unknown> = {};
     const name = String(form.get('name') ?? '').trim();
     const slug = String(form.get('slug') ?? '').trim();
@@ -197,8 +215,8 @@ export default function AdminCategoryListPage() {
       await deleteCategory(row.id);
       setRemovedIds((prev) => [...prev, row.id]);
       toast.success(t('admin.categories.deleted', { defaultValue: 'Category deleted' }));
-    } catch {
-      toast.error(t('admin.categories.deleteFailed', { defaultValue: 'Could not delete the category' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.categories.deleteFailed', { defaultValue: 'Could not delete the category' })));
     }
   }
   function handleBulkExport() {
@@ -211,8 +229,8 @@ export default function AdminCategoryListPage() {
       setRemovedIds((prev) => [...prev, ...ids]);
       toast.success(t('admin.categories.bulkDeleted', { defaultValue: 'Selected categories deleted' }));
       sel.clear();
-    } catch {
-      toast.error(t('admin.categories.bulkDeleteFailed', { defaultValue: 'Could not delete the selected categories' }));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t('admin.categories.bulkDeleteFailed', { defaultValue: 'Could not delete the selected categories' })));
     }
   }
 

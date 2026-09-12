@@ -11,6 +11,7 @@ import {
   IsUUID,
   MaxLength,
   Min,
+  IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { order_status } from '../../../common/enums/order-status.enum';
@@ -58,6 +59,10 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @IsString()
+  // Without this, `billingName: ""` passed validation and an order was placed
+  // with a blank name on it — @MaxLength alone only says how long it may be,
+  // never that it has to be anything.
+  @IsNotEmpty()
   @MaxLength(120)
   billingName!: string;
 

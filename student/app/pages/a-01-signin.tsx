@@ -16,6 +16,8 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { loginThunk, fetchMeThunk } from '~/services/httpServices/authService';
 import { toast } from '~/lib/toast';
 import { getApiErrorMessage } from '~/utils/apiError';
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { email as emailRule, readForm, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 import { ArrowLeft } from 'lucide-react';
 
 export default function SignInPage() {
@@ -41,7 +43,23 @@ export default function SignInPage() {
   }, [dispatch]);
 
   const [loading1, setLoading1] = useState<boolean>(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
+
   const createLogin1 = async () => {
+    // Check here first: a blank form does not need a round trip to be told it
+    // is blank, and the person gets the answer next to the field instead of in
+    // a toast that names one of them.
+    const values = readForm(document.querySelector('[data-testid="a-01-signin-ac-1"]'));
+    const found = validate(values, {
+      email: [required(t('auth.email', 'Email')), emailRule()],
+      password: [required(t('auth.password', 'Password'))],
+    });
+    setErrors(found);
+    if (Object.keys(found).length) {
+      const first = document.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`);
+      first?.focus();
+      return;
+    }
     setLoading1(true);
     const __body: Record<string, unknown> = {};
     if (typeof document !== 'undefined') {
@@ -58,6 +76,8 @@ export default function SignInPage() {
       toast.success(t('auth.signedIn', 'Signed in'));
       navigate('/');
     } catch (err) {
+      // The server marks fields too, when it can say which.
+      setErrors(serverFieldErrors(err));
       toast.error(getApiErrorMessage(err, t('auth.signInFailed', 'Could not sign in')));
     } finally {
       setLoading1(false);
@@ -103,8 +123,10 @@ export default function SignInPage() {
                 type="email"
                 placeholder={t('auth.emailPlaceholder', 'you@example.com')}
                 data-testid="a-01-signin-ac-1-email"
+                {...fieldProps('email', errors)}
                 className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:-outline-offset-1 focus:outline-[var(--c-primary)]"
               />
+              <FieldError id="email-error" message={errors.email} />
             </label>
 
             <label className="flex flex-col gap-[4px]">
@@ -114,8 +136,10 @@ export default function SignInPage() {
                 type="password"
                 placeholder={t('auth.passwordPlaceholder', 'Your password')}
                 data-testid="a-01-signin-ac-1-password"
+                {...fieldProps('password', errors)}
                 className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline focus:outline-2 focus:-outline-offset-1 focus:outline-[var(--c-primary)]"
               />
+              <FieldError id="password-error" message={errors.password} />
             </label>
 
             <button

@@ -18,6 +18,8 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { signupThunk } from '~/services/httpServices/authService';
 import { toast } from '~/lib/toast';
 import { getApiErrorMessage } from '~/utils/apiError';
+import { FieldError, fieldProps } from '~/components/shared/FieldError';
+import { email as emailRule, password as passwordRule, readForm, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 
 export default function SignUpPage() {
   const { t } = useTranslation('common');
@@ -25,9 +27,24 @@ export default function SignUpPage() {
   const dispatch = useAppDispatch();
 
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
 
   const [loading1, setLoading1] = useState<boolean>(false);
   const createRegister1 = async () => {
+    // The password rule here is the one the API enforces, word for word — a
+    // form that accepts a password the server rejects just moves the rejection
+    // one round trip later.
+    const values = readForm(document.querySelector('[data-testid="a-02-signup-ac-1"]'));
+    const found = validate(values, {
+      fullName: [required(t('auth.signup.fullName', { defaultValue: 'Full name' }))],
+      email: [required(t('auth.email', { defaultValue: 'Email' })), emailRule()],
+      password: [required(t('auth.password', { defaultValue: 'Password' })), passwordRule()],
+    });
+    setErrors(found);
+    if (Object.keys(found).length) {
+      document.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
+      return;
+    }
     setLoading1(true);
     setError(null);
     const __body: Record<string, unknown> = {};
@@ -48,6 +65,7 @@ export default function SignUpPage() {
       toast.success(t('auth.signup.success', { defaultValue: 'Account created' }));
       navigate('/');
     } catch (err) {
+      setErrors(serverFieldErrors(err));
       const message = getApiErrorMessage(err, t('auth.signup.failure', { defaultValue: 'Could not create the account' }));
       setError(message);
       toast.error(message);
@@ -97,8 +115,10 @@ export default function SignUpPage() {
                 type="text"
                 data-testid="a-02-signup-ac-1-title"
                 placeholder={t('auth.signup.fullNamePlaceholder', { defaultValue: 'Your name' })}
+                {...fieldProps('fullName', errors)}
                 className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--c-primary)]"
               />
+              <FieldError id="fullName-error" message={errors.fullName} />
             </label>
 
             <label className="flex flex-col gap-[4px]">
@@ -110,8 +130,10 @@ export default function SignUpPage() {
                 type="email"
                 data-testid="a-02-signup-ac-1-content"
                 placeholder={t('auth.signup.emailPlaceholder', { defaultValue: 'you@example.com' })}
+                {...fieldProps('email', errors)}
                 className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--c-primary)]"
               />
+              <FieldError id="email-error" message={errors.email} />
             </label>
 
             <label className="flex flex-col gap-[4px]">
@@ -123,8 +145,10 @@ export default function SignUpPage() {
                 type="password"
                 data-testid="a-02-signup-ac-2-title"
                 placeholder={t('auth.signup.passwordPlaceholder', { defaultValue: 'At least 8 characters' })}
+                {...fieldProps('password', errors)}
                 className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)] placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--c-primary)]"
               />
+              <FieldError id="password-error" message={errors.password} />
             </label>
 
             {error && (

@@ -267,7 +267,7 @@ export class EnrollmentService extends BaseService<Enrollment> {
     // The lesson must exist and belong to the enrolled course.
     const lesson = await this.lessons.findWithSection(lessonId);
     if (!lesson || lesson.section?.courseId !== enrollment.courseId) {
-      throw new NotFoundException(`Lesson with ID ${lessonId} not found!`);
+      throw new NotFoundException('Lesson not found');
     }
 
     // Upsert lesson_progress → completed (idempotent on a repeated complete).

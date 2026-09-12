@@ -670,26 +670,30 @@ seed_data:
     - { code: STUDENT15, discount_type: 1, discount_value: 15, max_uses: 1000, used_count: 407, valid_until: '2026-11-30T23:59:59Z', is_active: true }
     - { code: EXPIRED20, discount_type: 1, discount_value: 20, max_uses: 200, used_count: 200, valid_until: '2026-01-31T23:59:59Z', is_active: false }
 
-  enrollments:
-    # status 1 = ACTIVE, 2 = COMPLETED. Spread across progress values so My Learning
-    # shows a started course, a half-finished one and a completed one.
-    - { user: student, course: complete-web-development-bootcamp, status: 1, progress_percent: 40 }
-    - { user: student, course: machine-learning-a-z, status: 1, progress_percent: 0 }
-    - { user: student, course: react-router-in-practice, status: 1, progress_percent: 72 }
-    - { user: student, course: data-analysis-with-sql, status: 2, progress_percent: 100 }
-    - { user: student, course: portrait-photography-masterclass, status: 1, progress_percent: 15 }
-    - { user: student_alt, course: ui-ux-design-fundamentals, status: 2, progress_percent: 100 }
-    - { user: student_alt, course: brand-identity-design, status: 1, progress_percent: 55 }
-    - { user: student_alt, course: seo-that-actually-ranks, status: 1, progress_percent: 25 }
+  # Orders and enrolments are deliberately EMPTY in the demo dataset: the site is
+  # shown as a fresh shop, with nothing bought and nobody part-way through a
+  # course. The fixtures are kept, commented, so they can be restored by
+  # uncommenting this block and re-seeding.
+  # enrollments:
+  # # status 1 = ACTIVE, 2 = COMPLETED. Spread across progress values so My Learning
+  # # shows a started course, a half-finished one and a completed one.
+  # - { user: student, course: complete-web-development-bootcamp, status: 1, progress_percent: 40 }
+  # - { user: student, course: machine-learning-a-z, status: 1, progress_percent: 0 }
+  # - { user: student, course: react-router-in-practice, status: 1, progress_percent: 72 }
+  # - { user: student, course: data-analysis-with-sql, status: 2, progress_percent: 100 }
+  # - { user: student, course: portrait-photography-masterclass, status: 1, progress_percent: 15 }
+  # - { user: student_alt, course: ui-ux-design-fundamentals, status: 2, progress_percent: 100 }
+  # - { user: student_alt, course: brand-identity-design, status: 1, progress_percent: 55 }
+  # - { user: student_alt, course: seo-that-actually-ranks, status: 1, progress_percent: 25 }
 
-  orders:
-    # status 0 = PENDING, 1 = PAID. Order numbers are sequential so the admin list
-    # sorts the way an operator expects.
-    - { order_number: ET-1031, user: student, status: 0, items: [python-programming-masterclass] }
-    - { order_number: ET-1032, user: student_alt, status: 1, items: [seo-that-actually-ranks], coupon: STUDENT15 }
-    - { order_number: ET-1035, user: student, status: 1, items: [react-router-in-practice] }
-    - { order_number: ET-1036, user: student_alt, status: 1, items: [brand-identity-design] }
-    - { order_number: ET-1038, user: student_alt, status: 1, items: [ui-ux-design-fundamentals] }
-    - { order_number: ET-1040, user: student, status: 1, items: [data-analysis-with-sql, portrait-photography-masterclass], coupon: WELCOME25 }
-    - { order_number: ET-1042, user: student, status: 1, items: [complete-web-development-bootcamp, machine-learning-a-z], coupon: LEARN10 }
-    - { order_number: ET-1044, user: student_alt, status: 0, items: [cloud-fundamentals-aws] }
+  # orders:
+  # # status 0 = PENDING, 1 = PAID. Order numbers are sequential so the admin list
+  # # sorts the way an operator expects.
+  # - { order_number: ET-1031, user: student, status: 0, items: [python-programming-masterclass] }
+  # - { order_number: ET-1032, user: student_alt, status: 1, items: [seo-that-actually-ranks], coupon: STUDENT15 }
+  # - { order_number: ET-1035, user: student, status: 1, items: [react-router-in-practice] }
+  # - { order_number: ET-1036, user: student_alt, status: 1, items: [brand-identity-design] }
+  # - { order_number: ET-1038, user: student_alt, status: 1, items: [ui-ux-design-fundamentals] }
+  # - { order_number: ET-1040, user: student, status: 1, items: [data-analysis-with-sql, portrait-photography-masterclass], coupon: WELCOME25 }
+  # - { order_number: ET-1042, user: student, status: 1, items: [complete-web-development-bootcamp, machine-learning-a-z], coupon: LEARN10 }
+  # - { order_number: ET-1044, user: student_alt, status: 0, items: [cloud-fundamentals-aws] }

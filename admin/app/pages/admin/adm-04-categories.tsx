@@ -39,6 +39,7 @@ import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { number, readForm, required, slug as slugRule, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading } from '~/components/shared/Placeholder';
 import { useSlugField } from '~/hooks/useSlugField';
+import { ImagePickerField } from '~/components/shared/ImagePickerField';
 import { datedFilename, downloadCsv } from '~/utils/csv';
 
 /** A category row as rendered by the listing. The index signature keeps it
@@ -119,15 +120,18 @@ export default function AdminCategoryListPage() {
 
   // The slug writes itself from the name until the operator edits it.
   const slugField = useSlugField();
+  const [icon, setIcon] = useState<string>('');
 
   function openCreate() {
     setEditing(null);
     slugField.reset();
+    setIcon('');
     setModalOpen(true);
   }
   function openEdit(row: AdminCategoryRow) {
     setEditing(row);
     slugField.reset(row.slug ? String(row.slug) : '');
+    setIcon(row.iconUrl ? String(row.iconUrl) : '');
     setModalOpen(true);
   }
   async function handleModalSubmit(form: FormData) {
@@ -155,6 +159,8 @@ export default function AdminCategoryListPage() {
     if (slug) body.slug = slug;
     if (order !== null && String(order) !== '') body.displayOrder = Number(order);
     if (active !== null) body.isActive = String(active) === 'Active';
+    // Sent even when empty, so clearing the image actually clears it.
+    if (editing || icon) body.iconUrl = icon;
     if (editing) {
       await updateCategory(editing.id, body);
       toast.success(t('admin.categories.updated', { defaultValue: 'Category updated' }));
@@ -392,6 +398,21 @@ export default function AdminCategoryListPage() {
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
             </label>
+            <ImagePickerField
+              name="iconUrl"
+              label={t('admin.categories.field.icon', { defaultValue: 'Image' })}
+              value={icon}
+              onChange={setIcon}
+              hint={t('admin.categories.field.iconHint', { defaultValue: 'Shown on the category tile. Cropped to a square.' })}
+              labels={{
+                choose: t('admin.categories.field.iconChoose', { defaultValue: 'Choose image' }),
+                working: t('actions.saving', { defaultValue: 'Saving…' }),
+                remove: t('actions.remove', { defaultValue: 'Remove' }),
+              }}
+              className="sm:col-span-2"
+              labelClassName="text-sm font-medium text-foreground"
+              testId="adm-04-categories-field-icon"
+            />
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.categories.field.active', { defaultValue: 'Active' })}</span>
               <select

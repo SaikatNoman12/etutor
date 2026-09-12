@@ -436,6 +436,9 @@ export class AdminConsoleService {
         courseCount: await courseRepo.count({ where: { categoryId: cat.id } }),
         displayOrder: cat.displayOrder,
         isActive: cat.isActive,
+        // The edit dialog binds an image field to this; without it the dialog
+        // opened blank and saving replaced the category's picture with nothing.
+        iconUrl: cat.iconUrl ?? null,
       })),
     );
     return { items, meta: this.meta(page, total) };
@@ -537,6 +540,7 @@ export class AdminConsoleService {
             ? await courseRepo.count({ where: { instructorId: u.id } })
             : 0,
         status: u.status,
+        avatarUrl: u.avatarUrl ?? null,
       })),
     );
     return { items, meta: this.meta(page, total) };
@@ -556,6 +560,7 @@ export class AdminConsoleService {
       passwordHash,
       role: dto.role,
       status: dto.status,
+      avatarUrl: dto.avatarUrl,
     });
     const saved = await repo.save(user);
     return this.mapUser(saved);
@@ -578,6 +583,7 @@ export class AdminConsoleService {
     if (dto.fullName !== undefined) user.fullName = dto.fullName;
     if (dto.role !== undefined) user.role = dto.role;
     if (dto.status !== undefined) user.status = dto.status;
+    if (dto.avatarUrl !== undefined) user.avatarUrl = dto.avatarUrl;
 
     const saved = await repo.save(user);
     return this.mapUser(saved);
@@ -934,6 +940,7 @@ export class AdminConsoleService {
       status: user.status,
       headline: user.headline ?? null,
       country: user.country ?? null,
+      avatarUrl: user.avatarUrl ?? null,
       createdAt: user.createdAt,
     };
   }

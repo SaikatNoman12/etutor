@@ -103,6 +103,7 @@ export type AdminCategoryRow = {
   courseCount?: number | string;
   displayOrder?: number | string;
   isActive?: boolean;
+  iconUrl?: string | null;
   [key: string]: unknown;
 };
 
@@ -115,6 +116,7 @@ export type AdminUserRow = {
   status?: string | number;
   courses?: number | string;
   courseCount?: number | string;
+  avatarUrl?: string | null;
   [key: string]: unknown;
 };
 

@@ -42,10 +42,14 @@ export class CreateAdminCategoryDto {
   @MaxLength(80)
   slug!: string;
 
+  /**
+   * A link, or the data URL the console produces from a picked file — which is
+   * why there is no 500-character cap here any more. The column is `text`.
+   */
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(2_000_000)
   iconUrl?: string;
 
   @ApiPropertyOptional()
@@ -81,10 +85,14 @@ export class UpdateAdminCategoryDto {
   @MaxLength(80)
   slug?: string;
 
+  /**
+   * A link, or the data URL the console produces from a picked file — which is
+   * why there is no 500-character cap here any more. The column is `text`.
+   */
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(2_000_000)
   iconUrl?: string;
 
   @ApiPropertyOptional()

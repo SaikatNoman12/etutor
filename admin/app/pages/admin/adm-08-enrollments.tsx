@@ -18,6 +18,7 @@ import { SearchInput } from '~/components/atoms/SearchInput';
 import { ChevronDown } from 'lucide-react';
 import type { EnrollmentListResponse, EnrollmentRow } from '~/types/view-models';
 import { PageHeading } from '~/components/shared/Placeholder';
+import { formatDate } from '~/utils/date';
 
 
 const CARD =
@@ -97,7 +98,7 @@ export default function AdminEnrollmentListPage() {
   const onSort = (key: string) => setSort((prev) => (prev === key ? '' : key));
 
   const fmtProgress = (v: number | null | undefined) => (typeof v === 'number' ? `${v}%` : '');
-  const fmtDate = (v: string | null | undefined) => (v ? String(v).slice(0, 10) : '');
+  const fmtDate = (v: string | null | undefined) => formatDate(v);
   const statusMeta = (s: enrollment_status | null | undefined) =>
     s != null && STATUS_META[s] ? STATUS_META[s] : null;
 

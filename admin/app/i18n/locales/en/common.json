@@ -26,7 +26,8 @@
     "actions": "Actions",
     "selectedCount": "{{count}} selected",
     "editEntity": "Edit {{entity}}",
-    "createEntity": "New {{entity}}"
+    "createEntity": "New {{entity}}",
+    "remove": "Remove"
   },
   "notFound": {
     "title": "Page not found",
@@ -124,7 +125,10 @@
       "searchPlaceholder": "Search",
       "empty": "No enrollments found",
       "field": {
-        "order": "Order"
+        "order": "Order",
+        "icon": "Image",
+        "iconHint": "Shown on the category tile. Cropped to a square.",
+        "iconChoose": "Choose image"
       }
     },
     "users": {
@@ -140,7 +144,10 @@
       "empty": "No enrollments found",
       "field": {
         "email": "Email",
-        "status": "Status"
+        "status": "Status",
+        "photo": "Photo",
+        "photoHint": "Shown wherever this person appears. Cropped to a square.",
+        "photoChoose": "Choose photo"
       }
     },
     "coupons": {

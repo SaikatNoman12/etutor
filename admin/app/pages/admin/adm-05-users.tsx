@@ -41,6 +41,7 @@ import { email as emailRule, minLength, readForm, required, validate, type Field
 import { PageHeading } from '~/components/shared/Placeholder';
 import { EntityFormModal } from '~/components/listing/EntityFormModal';
 import { datedFilename, downloadCsv } from '~/utils/csv';
+import { ImagePickerField } from '~/components/shared/ImagePickerField';
 
 /** A user row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -149,6 +150,7 @@ export default function AdminUserListPage() {
   // --- Presentation state (added by convert-pages) -------------------------
   const [formOpen, setFormOpen] = useState<boolean>(false);
   const [editing, setEditing] = useState<AdminUserRow | null>(null);
+  const [avatar, setAvatar] = useState<string>('');
   const [saving, setSaving] = useState<boolean>(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -175,10 +177,12 @@ export default function AdminUserListPage() {
 
   function openCreate() {
     setEditing(null);
+    setAvatar('');
     setFormOpen(true);
   }
   function openEdit(row: AdminUserRow) {
     setEditing(row);
+    setAvatar(row.avatarUrl ? String(row.avatarUrl) : '');
     setFormOpen(true);
   }
   async function handleSave(): Promise<boolean> {
@@ -202,6 +206,9 @@ export default function AdminUserListPage() {
     }
     setSaving(true);
     const body = readAc3Form();
+    // The form reader drops empty fields, so removing a photo would otherwise
+    // send nothing and the old one would stay.
+    body.avatarUrl = avatar;
     try {
       if (editing?.id) {
         // UpdateAdminUserDto = { fullName?, email?, role?, status? } and rejects
@@ -484,6 +491,22 @@ export default function AdminUserListPage() {
         >
           <div data-testid="adm-05-users-ac-3">
           <div key={editing?.id ?? 'new'} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <ImagePickerField
+              name="avatarUrl"
+              label={t('admin.users.field.photo', { defaultValue: 'Photo' })}
+              value={avatar}
+              onChange={setAvatar}
+              hint={t('admin.users.field.photoHint', { defaultValue: 'Shown wherever this person appears. Cropped to a square.' })}
+              labels={{
+                choose: t('admin.users.field.photoChoose', { defaultValue: 'Choose photo' }),
+                working: t('actions.saving', { defaultValue: 'Saving…' }),
+                remove: t('actions.remove', { defaultValue: 'Remove' }),
+              }}
+              round
+              className="sm:col-span-2"
+              labelClassName="text-sm font-medium text-foreground"
+              testId="adm-05-users-field-photo"
+            />
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.users.field.name', { defaultValue: 'Full name' })}</span>
               <input

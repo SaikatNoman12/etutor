@@ -76,6 +76,12 @@ export class CreateAdminUserDto {
   @Type(() => Number)
   @IsEnum(user_status)
   status!: user_status;
+
+  /** A link, or the data URL the console produces from a picked file. */
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
 }
 
 /** PATCH /api/admin/users/:id — every field optional. */
@@ -103,4 +109,9 @@ export class UpdateAdminUserDto {
   @Type(() => Number)
   @IsEnum(user_status)
   status?: user_status;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
 }

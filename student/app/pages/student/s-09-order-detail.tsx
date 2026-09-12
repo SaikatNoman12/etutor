@@ -30,6 +30,7 @@ import type { Order } from '~/types/order';
 import type { OrderItem } from '~/types/order-item';
 import type { OrderLine, OrderView } from '~/types/view-models';
 import { ArrowLeft, Package } from 'lucide-react';
+import { formatDate } from '~/utils/date';
 
 /** Order lines may embed their course; the generated OrderItem type only
  *  guarantees courseId/titleSnapshot/unitPrice, so widen locally without `any`. */
@@ -108,7 +109,7 @@ export default function OrderDetailPage() {
   const items = useMemo<OrderLine[]>(() => extractItems(order1), [order1]);
 
   const money = (n: number) => `$${n.toLocaleString()}`;
-  const fmtDate = (s?: string) => (s ? s.slice(0, 10) : '');
+  const fmtDate = (s?: string) => formatDate(s);
   const dash = (v?: string) => (v && v.length ? v : '—');
 
   const orderNumber = order1?.orderNumber ?? '';

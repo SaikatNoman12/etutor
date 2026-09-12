@@ -35,6 +35,7 @@ import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { number, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading } from '~/components/shared/Placeholder';
 import { datedFilename, downloadCsv } from '~/utils/csv';
+import { formatDate, toDateInputValue } from '~/utils/date';
 
 /** A coupon row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -73,7 +74,7 @@ function usedDisplay(row: AdminCouponRow): string {
 
 /** Date portion of validUntil, e.g. "2026-12-31" — matches the prototype cell. */
 function validUntilDisplay(row: AdminCouponRow): string {
-  return row.validUntil ? String(row.validUntil).slice(0, 10) : '';
+  return formatDate(row.validUntil);
 }
 
 function isExpired(row: AdminCouponRow): boolean {
@@ -209,7 +210,8 @@ export default function AdminCouponListPage() {
       { header: 'Discount', value: (row) => discountDisplay(row) },
       { header: 'Used', value: (row) => row.usedCount ?? '' },
       { header: 'Max uses', value: (row) => row.maxUses ?? '' },
-      { header: 'Valid until', value: (row) => String(row.validUntil ?? '').slice(0, 10) },
+      // ISO in the file: a spreadsheet sorts YYYY-MM-DD and cannot read '12 Sep 2026'.
+      { header: 'Valid until', value: (row) => toDateInputValue(row.validUntil) },
       { header: 'Active', value: (row) => (row.isActive === false ? 'Inactive' : 'Active') },
     ]);
   }
@@ -452,7 +454,7 @@ export default function AdminCouponListPage() {
               <input
                 name="validUntil"
                 type="date"
-                defaultValue={editing?.validUntil ? String(editing.validUntil).slice(0, 10) : ''}
+                defaultValue={toDateInputValue(editing?.validUntil)}
                 data-testid="adm-09-coupons-field-validUntil"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />

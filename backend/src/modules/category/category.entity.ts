@@ -14,7 +14,9 @@ export class Category extends BaseEntity {
   @Column({ type: 'varchar', length: 80, unique: true })
   slug!: string;
 
-  @Column({ name: 'icon_url', type: 'varchar', length: 500, nullable: true })
+  // text, not varchar(500): the console stores a picked image as a downscaled
+  // data URL (see WidenCategoryIcon migration).
+  @Column({ name: 'icon_url', type: 'text', nullable: true })
   iconUrl?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })

@@ -25,7 +25,8 @@
     "loading": "로딩 중...",
     "createEntity": "{{entity}} 추가",
     "editEntity": "{{entity}} 수정",
-    "selectedCount": "{{count}}개 선택됨"
+    "selectedCount": "{{count}}개 선택됨",
+    "remove": "제거"
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",
@@ -120,7 +121,10 @@
       "searchPlaceholder": "Search",
       "empty": "No enrollments found",
       "field": {
-        "order": "Order"
+        "order": "Order",
+        "icon": "이미지",
+        "iconHint": "카테고리 타일에 표시됩니다. 정사각형으로 잘립니다.",
+        "iconChoose": "이미지 선택"
       }
     },
     "users": {
@@ -136,7 +140,10 @@
       "empty": "No enrollments found",
       "field": {
         "email": "Email",
-        "status": "Status"
+        "status": "Status",
+        "photo": "사진",
+        "photoHint": "이 사용자가 표시되는 모든 곳에 사용됩니다. 정사각형으로 잘립니다.",
+        "photoChoose": "사진 선택"
       }
     },
     "coupons": {

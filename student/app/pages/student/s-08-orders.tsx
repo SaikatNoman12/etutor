@@ -32,7 +32,7 @@ import type { OrderRow } from '~/types/view-models';
 import { ChevronDown, Search } from 'lucide-react';
 import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 import { Pager } from '~/components/shared/Pager';
-import { formatDate } from '~/utils/date';
+import { formatDateTime } from '~/utils/date';
 
 /** Order rows may embed their line items; the generated Order type only
  *  guarantees the header fields, so widen locally without reaching for `any`. */
@@ -271,7 +271,7 @@ export default function OrderListPage() {
                     data-testid={`s-08-orders-row-${row.id ?? i}`}
                   >
                     <td className={cn(tdBase, 'font-medium text-[var(--c-ink)]')}>{row.orderNumber ?? ''}</td>
-                    <td className={tdBase}>{formatDate(row.placedAt)}</td>
+                    <td className={tdBase}>{formatDateTime(row.placedAt)}</td>
                     <td className={tdBase}>{count ?? '—'}</td>
                     <td className={cn(tdBase, 'text-right [font-variant-numeric:tabular-nums]')}>
                       {row.total != null ? `$${row.total}` : ''}

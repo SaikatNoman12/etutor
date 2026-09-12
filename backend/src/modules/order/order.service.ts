@@ -43,6 +43,13 @@ export interface OrderDetailView {
   paidAt: Date | null;
   paymentMethod: string | null;
   couponId: string | null;
+  /**
+   * The code, not just the id. The admin's projection of the same order returns
+   * `coupon: { code }` and this one returned `couponId`, so the two screens
+   * showing one order disagreed about what to call the coupon — and the page
+   * reading a code from this payload found none and hid the row.
+   */
+  coupon: { code: string } | null;
   items: { titleSnapshot: string; unitPrice: number }[];
   subtotal: number;
   discountTotal: number;
@@ -92,6 +99,7 @@ export class OrderService extends BaseService<Order> {
       paidAt: order.paidAt ?? null,
       paymentMethod: order.paymentMethod ?? null,
       couponId: order.couponId ?? null,
+      coupon: order.coupon ? { code: order.coupon.code } : null,
       items: lines.map((l) => ({
         titleSnapshot: l.titleSnapshot,
         unitPrice: l.unitPrice,
@@ -210,7 +218,7 @@ export class OrderService extends BaseService<Order> {
     userId: string,
     role: unknown,
   ): Promise<OrderDetailView> {
-    const order = await this.findByIdOrFail(id);
+    const order = await this.findByIdOrFail(id, { coupon: true });
     this.assertOwner(order, userId, role);
     const lines = await this.orderItems.findByOrder(id);
     return this.toDetailView(order, lines);

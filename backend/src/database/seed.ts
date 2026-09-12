@@ -1697,6 +1697,11 @@ async function seedOrderItems(ds: DataSource, fixtures: RawFixtures): Promise<vo
     order.total = Math.round((subtotal - discount) * 100) / 100;
     // A paid order that never recorded WHEN it was paid reads as a data bug on screen.
     if (Number(order.status) === 1 && !order.paidAt) order.paidAt = order.placedAt ?? new Date();
+    // ...and one that never recorded HOW reads the same way: the console's order
+    // page draws a "Method" row, and every seeded order left it as a dash.
+    if (!order.paymentMethod) {
+      order.paymentMethod = Number(order.status) === 1 ? 'Card' : 'Bank transfer';
+    }
     await orderRepo.save(order as object);
     priced++;
   }

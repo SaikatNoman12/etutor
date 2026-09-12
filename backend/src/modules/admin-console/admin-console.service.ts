@@ -653,6 +653,9 @@ export class AdminConsoleService {
       total: order.total,
       placedAt: order.placedAt,
       paidAt: order.paidAt ?? null,
+      // The console's Details card renders this; it was not in the projection,
+      // so "Method" read "—" on every order ever placed.
+      paymentMethod: order.paymentMethod ?? null,
       buyer: order.user
         ? {
             id: order.user.id,

@@ -29,6 +29,7 @@ import { Receipt } from 'lucide-react';
 import type { OrderRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { PageHeading } from '~/components/shared/Placeholder';
+import { formatDateTime } from '~/utils/date';
 
 // A plain row shape with an index signature so it satisfies DataTable's
 // `T extends Record<string, unknown>` constraint (the generated OrderResponse
@@ -272,7 +273,16 @@ export default function AdminOrderListPage() {
       sortable: true,
       render: (row) => <StatusBadge status={row.status} />,
     },
-    { key: 'placedAt', label: t('orders.columns.placed', { defaultValue: 'Placed' }), sortable: true },
+    {
+      key: 'placedAt',
+      label: t('orders.columns.placed', { defaultValue: 'Placed' }),
+      sortable: true,
+      // The row carries the raw ISO string so the column can still SORT on it;
+      // without a render it was printed as stored — "2026-09-12T14:01:38.272Z"
+      // in a table an operator reads all day. An order needs the time as well as
+      // the day: several land within the same afternoon.
+      render: (row) => formatDateTime(row.placedAt),
+    },
   ];
 
   return (

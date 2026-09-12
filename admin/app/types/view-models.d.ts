@@ -135,6 +135,9 @@ export interface OrderRow {
 /** GET /api/admin/orders/:id — the order with its purchased lines. */
 export interface OrderDetailData extends OrderResponse {
   items?: OrderItemResponse[];
+  /** The console's projection names the coupon by its code, not its id. */
+  coupon?: { code?: string } | null;
+  paymentMethod?: string | null;
 }
 
 /** A row in the admin enrollment table. */

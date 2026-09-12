@@ -19,7 +19,7 @@ import { toast } from '~/lib/toast';
 import type { OrderItemResponse } from '~/types/order-item';
 import type { OrderDetailData } from '~/types/view-models';
 import { ArrowLeft } from 'lucide-react';
-import { formatDate } from '~/utils/date';
+import { formatDateTime } from '~/utils/date';
 
 const CARD =
   'rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]';
@@ -259,9 +259,16 @@ export default function AdminOrderDetailPage() {
               <dt className="text-[14px] text-[var(--c-muted)]">{t('adm07.email', 'Email')}</dt>
               <dd className="text-[14px] text-[var(--c-ink)]">{order?.billingEmail ?? ''}</dd>
               <dt className="text-[14px] text-[var(--c-muted)]">{t('adm07.placed', 'Placed')}</dt>
-              <dd className="text-[14px] text-[var(--c-ink)]">{formatDate(order?.placedAt)}</dd>
-              <dt className="text-[14px] text-[var(--c-muted)]">{t('adm07.coupon', 'Coupon')}</dt>
-              <dd className="text-[14px] text-[var(--c-ink)]">{dash(order?.couponId)}</dd>
+              <dd className="text-[14px] text-[var(--c-ink)]">{formatDateTime(order?.placedAt)}</dd>
+              {/* The code, and only when there is one: this read `couponId`, a
+                  field the projection does not return, so the row showed "—" on
+                  every order — and would have shown a UUID if it had worked. */}
+              {order?.coupon?.code ? (
+                <>
+                  <dt className="text-[14px] text-[var(--c-muted)]">{t('adm07.coupon', 'Coupon')}</dt>
+                  <dd className="text-[14px] text-[var(--c-ink)]">{order.coupon.code}</dd>
+                </>
+              ) : null}
               <dt className="text-[14px] text-[var(--c-muted)]">{t('adm07.method', 'Method')}</dt>
               <dd className="text-[14px] text-[var(--c-ink)]">{dash(order?.paymentMethod)}</dd>
             </dl>

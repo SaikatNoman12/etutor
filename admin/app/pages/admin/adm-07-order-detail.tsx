@@ -123,7 +123,7 @@ export default function AdminOrderDetailPage() {
 
   return (
     <div data-testid="adm-07-order-detail-page">
-      <div className="mx-auto w-full max-w-[1240px]">
+      <div className="w-full">
         <Link
           to="/admin/orders"
           data-testid="adm-07-order-detail-home-link"

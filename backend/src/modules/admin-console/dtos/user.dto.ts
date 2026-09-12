@@ -7,6 +7,7 @@ import {
   MaxLength,
   Min,
   MinLength,
+  IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -50,6 +51,7 @@ export class AdminUserQueryDto {
 export class CreateAdminUserDto {
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(120)
   fullName!: string;
 
@@ -60,6 +62,7 @@ export class CreateAdminUserDto {
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   @MinLength(8)
   @MaxLength(72)
   password!: string;

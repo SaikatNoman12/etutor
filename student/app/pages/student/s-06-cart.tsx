@@ -147,6 +147,8 @@ export default function CartPage() {
   const [busy, setBusy] = useState<boolean>(false);
   const [coupon, setCoupon] = useState<string>('');
 
+  // Unused since the stepper came out: the API pins a course's quantity to 1
+  // (one enrolment per learner), so there was nothing for +/− to change.
   const changeQty = async (id: string, next: number) => {
     if (next < 1) return;
     setBusy(true);
@@ -329,29 +331,6 @@ export default function CartPage() {
                         </span>
                       )}
                       <span className="flex items-center gap-[12px]">
-                        <span className="inline-flex items-center gap-[12px] rounded-[9999px] border border-[var(--c-hairline)] px-[8px] py-[2px]">
-                          <button
-                            type="button"
-                            aria-label={t('cart.decrease', 'Decrease quantity')}
-                            onClick={() => changeQty(line.id, qty - 1)}
-                            disabled={busy || qty <= 1}
-                            className="inline-flex h-[28px] w-[28px] cursor-pointer items-center justify-center rounded-[9999px] border-0 bg-[var(--c-surface-soft)] text-[var(--c-primary)] hover:bg-[var(--c-primary-soft)] disabled:cursor-not-allowed disabled:opacity-50"
-                            data-testid={`s-06-cart-qty-minus-${line.id}`}
-                          >
-                            <Minus className="h-4 w-4" aria-hidden="true" />
-                          </button>
-                          <span className="min-w-[16px] text-center text-[14px] text-[var(--c-ink)]">{qty}</span>
-                          <button
-                            type="button"
-                            aria-label={t('cart.increase', 'Increase quantity')}
-                            onClick={() => changeQty(line.id, qty + 1)}
-                            disabled={busy}
-                            className="inline-flex h-[28px] w-[28px] cursor-pointer items-center justify-center rounded-[9999px] border-0 bg-[var(--c-surface-soft)] text-[var(--c-primary)] hover:bg-[var(--c-primary-soft)] disabled:cursor-not-allowed disabled:opacity-50"
-                            data-testid={`s-06-cart-qty-plus-${line.id}`}
-                          >
-                            <Plus className="h-4 w-4" aria-hidden="true" />
-                          </button>
-                        </span>
                         <button
                           type="button"
                           onClick={() => removeLine(line.id)}
@@ -364,7 +343,7 @@ export default function CartPage() {
                       </span>
                     </span>
                     <span className="whitespace-nowrap text-[16px] font-bold text-[var(--c-primary)]">
-                      {money(unit * qty)}
+                      {money(unit)}
                     </span>
                   </div>
                 );

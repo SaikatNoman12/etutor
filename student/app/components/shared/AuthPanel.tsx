@@ -58,9 +58,6 @@ export function AuthPanel({
         </ul>
       </div>
 
-      <p className="m-0 mt-[24px] hidden text-[12px] text-[rgb(255_255_255/0.45)] lg:block">
-        © {new Date().getFullYear()} {brand}
-      </p>
     </aside>
   );
 }

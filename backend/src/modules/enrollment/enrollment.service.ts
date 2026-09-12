@@ -51,6 +51,12 @@ export interface PlayerLessonView {
   contentType: number;
   durationMinutes: number;
   isCompleted: boolean;
+  /** What the stage plays or shows. The entity had both columns and the
+   *  console's own lesson endpoints returned them; this projection did not, so
+   *  the player — the one screen that exists to show a lesson — had a title, a
+   *  duration and a grey rectangle. */
+  videoUrl: string | null;
+  content: string | null;
 }
 
 /** One section (with its published lessons) inside the course player. */
@@ -230,6 +236,8 @@ export class EnrollmentService extends BaseService<Enrollment> {
           contentType: l.contentType,
           durationMinutes: l.durationMinutes,
           isCompleted: completedLessonIds.has(l.id),
+          videoUrl: l.videoUrl ?? null,
+          content: l.content ?? null,
         })),
     }));
 

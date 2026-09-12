@@ -5,6 +5,7 @@ import { post } from '~/services/httpMethods/post';
 import { put } from '~/services/httpMethods/put';
 import { patch } from '~/services/httpMethods/patch';
 import { del } from '~/services/httpMethods/del';
+import { CART_CHANGED_EVENT } from '~/hooks/useCartCount';
 import type * as CartTypes from '~/types/cart';
 
 function __cleanQuery(q?: Record<string, unknown>): Record<string, unknown> | undefined {
@@ -17,6 +18,14 @@ function __cleanQuery(q?: Record<string, unknown>): Record<string, unknown> | un
   return Object.keys(out).length ? out : undefined;
 }
 
+
+/** Tell everyone showing a cart count that it changed. One signal, fired here,
+ *  so the header badge is right after an add from the course page, a removal
+ *  from the cart page, or a checkout — none of which need to know about it. */
+function cartChanged(): void {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(CART_CHANGED_EVENT));
+}
+
 export const getCart = createAsyncThunk(
   'cart/getCart',
   async (query?: Record<string, unknown>) => {
@@ -27,26 +36,31 @@ export const getCart = createAsyncThunk(
 
 export async function addItem(data: Record<string, unknown>): Promise<unknown> {
   const res = await post(`/cart/items`, data);
+  cartChanged();
   return res;
 }
 
 export async function updateItem(id: string, data: Record<string, unknown>): Promise<unknown> {
   const res = await patch(`/cart/items/${id}`, data);
+  cartChanged();
   return res;
 }
 
 export async function removeItem(id: string): Promise<unknown> {
   const res = await del(`/cart/items/${id}`);
+  cartChanged();
   return res;
 }
 
 export async function clear(): Promise<unknown> {
   const res = await del(`/cart`);
+  cartChanged();
   return res;
 }
 
 export async function applyCoupon(data: Record<string, unknown>): Promise<unknown> {
   const res = await post(`/cart/coupon`, data);
+  cartChanged();
   return res;
 }
 

@@ -592,22 +592,28 @@ a:hover :where(img, svg, [class*="rounded-full"]) { text-decoration: none; }
 .row-actions { position: relative; display: inline-flex; }
 .row-actions-trigger {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px; border-radius: var(--radius-sm);
-  color: var(--c-body); background: transparent; border: none; cursor: pointer;
+  width: 36px; height: 36px; border-radius: var(--radius-pill);
+  color: var(--c-muted); background: transparent; border: 1px solid transparent; cursor: pointer;
+  transition: background-color 150ms, color 150ms, border-color 150ms;
 }
-.row-actions-trigger:hover { background: var(--c-surface-soft); }
+.row-actions-trigger:hover,
+.row-actions-trigger[aria-expanded='true'] {
+  background: var(--c-surface-soft); color: var(--c-ink); border-color: var(--c-hairline);
+}
 .row-menu {
-  position: absolute; right: 0; top: 100%; z-index: 30; min-width: 160px;
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; min-width: 176px;
   background: var(--c-surface); border: var(--border-w) solid var(--c-hairline);
-  border-radius: var(--radius-md); box-shadow: var(--shadow-2); padding: var(--space-xs);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-3); padding: 6px;
 }
 .row-menu-item {
   display: flex; align-items: center; gap: var(--space-sm); width: 100%;
-  padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm);
-  font-size: var(--t-body-sm-size); color: var(--c-body); background: none; border: none; cursor: pointer; text-align: left;
+  padding: 10px 12px; border-radius: var(--radius-md);
+  font-size: 14px; font-weight: 500; color: var(--c-ink); background: none; border: none; cursor: pointer; text-align: left;
+  transition: background-color 120ms, color 120ms;
 }
-.row-menu-item:hover { background: var(--c-surface-soft); }
+.row-menu-item:hover { background: var(--c-surface-soft); color: var(--c-primary-text); }
 .row-menu-item.is-danger { color: var(--c-error); }
+.row-menu-item.is-danger:hover { background: color-mix(in srgb, var(--c-error) 8%, transparent); color: var(--c-error); }
 
 /* ---------- bulk action bar (low-risk repetitive only; AUTHORING_RULES #8) ----------
  * Row checkboxes + a bar showing the selected count/sum + a primary action that
@@ -1017,3 +1023,109 @@ a:focus-visible, .chip:focus-visible, .chip-remove:focus-visible,
   outline: 2px solid var(--c-error);
   outline-offset: -1px;
 }
+
+/* ── select ──────────────────────────────────────────────────────────────── */
+/* The native <select> stays — it is the only dropdown that a keyboard, a screen
+   reader and a phone's picker all already know how to drive — but it stops
+   looking like it came with the operating system. `appearance: none` drops the
+   platform arrow; the chevron is drawn here so it matches the inputs beside
+   it; the right padding leaves room for it. Border, radius and ground come
+   from the same utilities the inputs use, so a select and an input in one row
+   are the same height, the same corner and the same colour. */
+select:not([multiple]):not([size]):not(.sr-only) {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 44px !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a7a88' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px 16px;
+  transition: border-color 150ms, box-shadow 150ms, background-color 150ms;
+}
+select:not([multiple]):not([size]):not(.sr-only):hover {
+  border-color: var(--c-hairline-strong);
+  background-color: var(--c-surface);
+}
+select:not([multiple]):not([size]):not(.sr-only):focus-visible {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-primary) 18%, transparent);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f2541b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+/* The option list itself is the platform's; give it the app's colours where
+   the browser allows it (Chromium and Firefox honour these two). */
+select option {
+  background: var(--c-surface);
+  color: var(--c-ink);
+}
+
+/* ── cursors ─────────────────────────────────────────────────────────────── */
+/* Everything that does something on click says so with the pointer. A button
+   with the arrow cursor reads as text that happens to be in a box; half the
+   app's buttons had `cursor-pointer` in their class list and half did not,
+   which is the worst of both — it looks like a decision. One rule, and the
+   only exception is the thing that cannot be pressed right now. */
+a[href], button, [role="button"], [role="menuitem"], [role="tab"], [role="option"],
+select, summary, label[for], input[type="checkbox"], input[type="radio"],
+input[type="file"], input[type="submit"], input[type="button"], input[type="range"] {
+  cursor: pointer;
+}
+button:disabled, [role="button"][aria-disabled="true"], input:disabled, select:disabled,
+a[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* ── modal shell ─────────────────────────────────────────────────────────── */
+/* `.modal` existed; `.modal-backdrop` did not. With no rule the backdrop was a
+   plain <div> in normal flow, the dialog rendered wherever the component sat
+   in the DOM — the bottom of the page — and focusing its first field scrolled
+   the window 781px to reach it. "New course" opened a modal and the page
+   scrolled to the foot of the list anyway. A dialog is a layer over the page,
+   not a place on it. */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 80;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgb(22 22 29 / 0.48);
+  backdrop-filter: blur(3px);
+  animation: et-fade-in var(--dur-base, 240ms) var(--ease-out, ease) both;
+}
+.modal {
+  animation: et-scale-in var(--dur-base, 240ms) var(--ease-out, ease) both;
+  overflow: hidden;
+}
+.modal > h2 {
+  margin: 0; padding: 20px 24px 14px;
+  font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -0.02em;
+  color: var(--c-ink); border-bottom: 1px solid var(--c-hairline);
+}
+.modal > form { display: flex; flex-direction: column; min-height: 0; }
+.modal > form > *:not(.modal-actions):not(.modal-error) { padding: 20px 24px 4px; overflow: auto; }
+.modal-error {
+  margin: 0 24px 8px; padding: 10px 12px; border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--c-error) 8%, transparent); color: var(--c-error); font-size: 14px;
+}
+.modal-actions {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 14px 24px 20px; border-top: 1px solid var(--c-hairline); background: var(--c-surface-soft);
+}
+.modal-actions button {
+  min-height: 42px; padding: 0 18px; border-radius: var(--radius-pill);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: background-color 150ms, color 150ms, transform 120ms;
+}
+.modal-actions button:active { transform: translateY(1px); }
+.modal-actions button[type='button'] {
+  background: transparent; color: var(--c-body); border: 1px solid var(--c-hairline-strong);
+}
+.modal-actions button[type='button']:hover { border-color: var(--c-primary); color: var(--c-primary-text); }
+.modal-actions button[type='submit'] {
+  background: var(--c-primary); color: var(--c-on-primary); border: 1px solid transparent;
+}
+.modal-actions button[type='submit']:hover { background: var(--c-primary-active); }
+.modal-actions button:disabled { opacity: 0.55; cursor: not-allowed; }

@@ -33,6 +33,11 @@ export interface CartItemView {
     thumbnailUrl: string | null;
   } | null;
   unitPrice: number;
+  /** Always 1 — a course is bought once per learner. Sent so the client can
+   *  show the truth instead of assuming; the view omitted it and the cart page
+   *  fell back to `?? 1` while offering a +/− that this service quietly
+   *  ignored. */
+  quantity: number;
 }
 
 /** Shape returned for the whole cart. */
@@ -245,6 +250,7 @@ export class CartManagementService {
           }
         : null,
       unitPrice: Number(item.unitPrice),
+      quantity: item.quantity ?? 1,
     };
   }
 

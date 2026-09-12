@@ -152,3 +152,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* The ground below the page is the footer's ink, so a short page ends in
+   footer rather than in a light strip under it (see pages/layout.tsx). */
+html { background: var(--c-ink); }

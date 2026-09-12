@@ -29,7 +29,7 @@ import { SearchInput } from '~/components/atoms/SearchInput';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import type { CourseDetail, LessonRow } from '~/types/view-models';
 
-const CARD = 'rounded-lg border border-border bg-card p-6 shadow-sm';
+const CARD = 'rounded-[var(--radius-xl)] border border-border bg-card p-6 shadow-sm';
 const INPUT =
   'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
 const LABEL = 'text-sm font-medium text-foreground';
@@ -231,7 +231,7 @@ export default function AdminCourseDetailPage() {
   const handleAddLesson = async () => { await createLessons3(); setAddOpen(false); };
 
   return (
-    <div data-testid="adm-03-course-detail-page" className="mx-auto w-full max-w-[1240px]">
+    <div data-testid="adm-03-course-detail-page" className="w-full">
       <Link
         to="/admin/courses"
         data-testid="adm-03-course-detail-home-link"
@@ -415,6 +415,36 @@ export default function AdminCourseDetailPage() {
                     <label className="flex flex-col gap-1">
                       <span className={LABEL}>{t('admin.courseDetail.order', { defaultValue: 'Order' })}</span>
                       <input name="displayOrder" type="number" className={INPUT} data-testid="lessons-field-order" />
+                    </label>
+                    {/* The lesson's actual content. The entity has carried `video_url`
+                        and `content` since the schema was written and the API accepted
+                        both; this form never offered them, so no lesson created here
+                        could be watched. A URL, not an upload: a YouTube or Vimeo page
+                        link or a direct .mp4 — the player embeds whichever it is given,
+                        and no file has to live on this server. */}
+                    <label className="flex flex-col gap-1 sm:col-span-2">
+                      <span className={LABEL}>{t('admin.courseDetail.videoUrl', { defaultValue: 'Video URL' })}</span>
+                      <input
+                        name="videoUrl"
+                        type="url"
+                        inputMode="url"
+                        placeholder="https://www.youtube.com/watch?v=… or https://…/lesson.mp4"
+                        className={INPUT}
+                        data-testid="lessons-field-video-url"
+                      />
+                      <span className="text-[12px] text-muted-foreground">
+                        {t('admin.courseDetail.videoUrlHint', { defaultValue: 'YouTube, Vimeo, or a direct link to an .mp4 / .webm file.' })}
+                      </span>
+                    </label>
+                    <label className="flex flex-col gap-1 sm:col-span-2">
+                      <span className={LABEL}>{t('admin.courseDetail.content', { defaultValue: 'Article / notes' })}</span>
+                      <textarea
+                        name="content"
+                        rows={4}
+                        placeholder={t('admin.courseDetail.contentHint', { defaultValue: 'Shown under the video, or as the lesson itself for an article.' })}
+                        className={`${INPUT} min-h-[96px] py-2`}
+                        data-testid="lessons-field-content"
+                      />
                     </label>
                   </div>
                 </EntityFormModal>

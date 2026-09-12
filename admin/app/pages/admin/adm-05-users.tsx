@@ -38,8 +38,9 @@ import { Plus, X } from 'lucide-react';
 import type { AdminUserRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
-import { email as emailRule, readForm, required, validate, type FieldErrors } from '~/utils/validation';
+import { email as emailRule, minLength, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading } from '~/components/shared/Placeholder';
+import { EntityFormModal } from '~/components/listing/EntityFormModal';
 
 /** A user row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -156,14 +157,13 @@ export default function AdminUserListPage() {
   const loading3 = false;
 
   // --- Presentation state (added by convert-pages) -------------------------
+  const [formOpen, setFormOpen] = useState<boolean>(false);
   const [editing, setEditing] = useState<AdminUserRow | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [removedIds, setRemovedIds] = useState<string[]>([]);
   const [statusOverrides, setStatusOverrides] = useState<Record<string, number | string>>({});
-  const formRef = useRef<HTMLDivElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
 
   const applyOverride = (row: AdminUserRow): AdminUserRow =>
     statusOverrides[row.id] !== undefined ? { ...row, status: statusOverrides[row.id] } : row;
@@ -184,28 +184,32 @@ export default function AdminUserListPage() {
 
   const sel = useRowSelection(users.map((u) => u.id));
 
-  function focusForm() {
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    nameRef.current?.focus();
-  }
   function openCreate() {
     setEditing(null);
-    focusForm();
+    setFormOpen(true);
   }
   function openEdit(row: AdminUserRow) {
     setEditing(row);
-    focusForm();
+    setFormOpen(true);
   }
-  async function handleSave() {
+  async function handleSave(): Promise<boolean> {
     const values = readForm(document.querySelector('[data-testid="adm-05-users-ac-3"]'));
     const found = validate(values, {
       fullName: [required(t('admin.users.field.fullName', { defaultValue: 'Full name' }))],
       email: [required(t('admin.users.field.email', { defaultValue: 'Email' })), emailRule()],
+      // Only on create: the field is not rendered when editing, and the API's
+      // update DTO does not accept it.
+      ...(editing ? {} : {
+        password: [
+          required(t('admin.users.field.password', { defaultValue: 'Password' })),
+          minLength(t('admin.users.field.password', { defaultValue: 'Password' }), 8),
+        ],
+      }),
     });
     setErrors(found);
     if (Object.keys(found).length) {
       document.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
-      return;
+      return false;
     }
     setSaving(true);
     const body = readAc3Form();
@@ -232,6 +236,7 @@ export default function AdminUserListPage() {
     } finally {
       setSaving(false);
     }
+    return true;
   }
   async function handleSuspendToggle(row: AdminUserRow) {
     const next = isSuspended(row) ? user_status.ACTIVE : user_status.SUSPENDED;
@@ -323,7 +328,7 @@ export default function AdminUserListPage() {
     : [];
 
   return (
-    <div className="mx-auto w-full max-w-[1240px]" data-testid="adm-05-users-page">
+    <div className="w-full" data-testid="adm-05-users-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="text-sm text-muted-foreground">
@@ -468,35 +473,27 @@ export default function AdminUserListPage() {
 
         {/* Create / edit a user. The prototype opens this as a modal; kept as an
             always-visible inline form so the story's fields stay reachable. */}
-        <section
-          ref={formRef}
-          className="rounded-[var(--radius-lg)] border border-border bg-card shadow-sm"
-          data-testid="adm-05-users-ac-3"
+        {/* Create / edit lives in a modal now. It used to be a card at the FOOT of
+            the list: "New course" scrolled you to the bottom of the page, past every
+            row, to a form that was always there whether or not you wanted it — and
+            on a long list it was below the fold and easy to miss. The categories and
+            coupons screens already did this properly; this is the same shell. */}
+        <EntityFormModal
+          open={formOpen}
+          entityLabel={t('admin.users.entity', { defaultValue: 'User' })}
+          initialValues={editing ?? undefined}
+          onClose={() => { setFormOpen(false); setEditing(null); }}
+          onSubmit={async () => {
+            const ok = await handleSave();
+            if (!ok) throw new Error(t('actions.fixErrors', { defaultValue: 'Check the highlighted fields.' }));
+          }}
+          testId="adm-05-users-form"
         >
-          <div className="flex items-center justify-between border-b border-border px-5 py-4">
-            <h2 className="text-lg font-semibold text-foreground">
-              {editing
-                ? t('admin.users.editTitle', { defaultValue: 'Edit user' })
-                : t('admin.users.newTitle', { defaultValue: 'New user' })}
-            </h2>
-            {editing && (
-              <button
-                type="button"
-                onClick={() => setEditing(null)}
-                data-testid="adm-05-users-form-reset"
-                className="inline-flex h-9 items-center gap-1 rounded-md px-2 text-sm text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-4 w-4" aria-hidden="true" />
-                {t('actions.cancel', { defaultValue: 'Cancel' })}
-              </button>
-            )}
-          </div>
-
-          <div key={editing?.id ?? 'new'} className="grid grid-cols-1 gap-4 px-5 py-4 sm:grid-cols-2">
+          <div data-testid="adm-05-users-ac-3">
+          <div key={editing?.id ?? 'new'} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.users.field.name', { defaultValue: 'Full name' })}</span>
               <input
-                ref={nameRef}
                 name="fullName"
                 {...fieldProps('fullName', errors)}
                 type="text"
@@ -523,17 +520,19 @@ export default function AdminUserListPage() {
                 <span className="text-sm font-medium text-foreground">{t('admin.users.field.password', { defaultValue: 'Password' })}</span>
                 <input
                   name="password"
+                  {...fieldProps('password', errors)}
                   type="password"
                   data-testid="adm-05-users-field-password"
                   className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
                 />
+                <FieldError id="password-error" message={errors.password} />
               </label>
             )}
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.users.field.role', { defaultValue: 'Role' })}</span>
               <select
                 name="role"
-                defaultValue={editing?.role != null ? String(editing.role) : ''}
+                defaultValue={editing?.role != null ? String(editing.role) : String(user_role.STUDENT)}
                 data-testid="adm-05-users-field-role"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               >
@@ -546,7 +545,7 @@ export default function AdminUserListPage() {
               <span className="text-sm font-medium text-foreground">{t('admin.users.field.status', { defaultValue: 'Status' })}</span>
               <select
                 name="status"
-                defaultValue={editing?.status != null ? String(editing.status) : ''}
+                defaultValue={editing?.status != null ? String(editing.status) : String(user_status.ACTIVE)}
                 data-testid="adm-05-users-field-status"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               >
@@ -555,33 +554,8 @@ export default function AdminUserListPage() {
               </select>
             </label>
           </div>
-
-          <div className="flex justify-end gap-2 border-t border-border px-5 py-4">
-            {editing && (
-              <button
-                type="button"
-                onClick={() => setEditing(null)}
-                data-testid="adm-05-users-modal-cancel"
-                className="inline-flex h-10 items-center rounded-md px-4 text-sm font-medium text-muted-foreground hover:text-foreground"
-              >
-                {t('actions.cancel', { defaultValue: 'Cancel' })}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={saving || loading3}
-              data-testid="adm-05-users-ac-3-action"
-              className="inline-flex h-10 items-center rounded-md bg-[var(--c-primary)] px-4 text-sm font-medium text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:opacity-50"
-            >
-              {saving
-                ? t('actions.saving', { defaultValue: 'Saving…' })
-                : editing
-                  ? t('actions.save', { defaultValue: 'Save' })
-                  : t('actions.create', { defaultValue: 'Create' })}
-            </button>
           </div>
-        </section>
+        </EntityFormModal>
       </main>
     </div>
   );

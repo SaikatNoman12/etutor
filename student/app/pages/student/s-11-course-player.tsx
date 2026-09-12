@@ -33,6 +33,7 @@ import type { Course } from '~/types/course';
 import type { Lesson } from '~/types/lesson';
 import type { PlayerDetail, PlayerLesson, PlayerSection } from '~/types/view-models';
 import { ArrowLeft, CheckCircle2, PlayCircle } from 'lucide-react';
+import { LessonStage } from '~/components/shared/LessonStage';
 
 /** A lesson row as it arrives embedded in the enrollment detail: the generated
  *  Lesson plus its per-student completion state (nested progress or a flat flag). */
@@ -230,9 +231,17 @@ export default function CoursePlayerPage() {
             <div className="grid grid-cols-1 items-start gap-[24px] lg:grid-cols-[3fr_1fr]">
               {/* left — video stage + current lesson */}
               <div className="space-y-[16px]">
-                <div className="flex aspect-video items-center justify-center overflow-hidden rounded-[var(--radius-lg)] text-[var(--c-muted)] [background:var(--media-fallback)]">
-                  <PlayCircle className="h-[24px] w-[24px]" aria-hidden="true" />
-                </div>
+                <LessonStage
+                  lesson={currentLesson}
+                  emptyLabel={t('player.noMedia', 'This lesson has no video yet.')}
+                  articleLabel={t('player.article', 'Article')}
+                />
+                {/* Notes under a video, when a video lesson also carries text. */}
+                {currentLesson?.videoUrl && currentLesson?.content ? (
+                  <div className="whitespace-pre-line rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[20px] text-[15px] leading-[1.7] text-[var(--c-body)]">
+                    {currentLesson.content}
+                  </div>
+                ) : null}
                 <h1
                   className="m-0 text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]"
                   data-testid="s-11-course-player-heading"

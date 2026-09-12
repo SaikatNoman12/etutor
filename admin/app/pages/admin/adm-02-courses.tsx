@@ -39,6 +39,8 @@ import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { maxLength, number, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading } from '~/components/shared/Placeholder';
+import { EntityFormModal } from '~/components/listing/EntityFormModal';
+import { get } from '~/services/httpMethods/get';
 
 /** A course row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -187,13 +189,26 @@ export default function AdminCourseListPage() {
   };
 
   // --- Presentation state (added by convert-pages) -------------------------
+  // The two lists the category / instructor selects offer.
+  const [categoryOptions, setCategoryOptions] = useState<Record<string, unknown>[]>([]);
+  const [instructorOptions, setInstructorOptions] = useState<Record<string, unknown>[]>([]);
+  useEffect(() => {
+    let active = true;
+    const items = (r: unknown): Record<string, unknown>[] => {
+      const bag = (r as { data?: { items?: unknown[] } })?.data ?? (r as { items?: unknown[] });
+      return Array.isArray(bag?.items) ? (bag.items as Record<string, unknown>[]) : Array.isArray(r) ? (r as Record<string, unknown>[]) : [];
+    };
+    get<unknown>('/categories').then((r) => { if (active) setCategoryOptions(items(r)); }).catch(() => {});
+    get<unknown>('/instructors').then((r) => { if (active) setInstructorOptions(items(r)); }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  const [formOpen, setFormOpen] = useState<boolean>(false);
   const [editing, setEditing] = useState<AdminCourseRow | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [removedIds, setRemovedIds] = useState<string[]>([]);
-  const formRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLInputElement>(null);
 
   const allCourses = extractRows(data1).filter((c) => !removedIds.includes(c.id));
   const term = searchTerm.trim().toLowerCase();
@@ -206,19 +221,15 @@ export default function AdminCourseListPage() {
 
   const sel = useRowSelection(courses.map((c) => c.id));
 
-  function focusForm() {
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    titleRef.current?.focus();
-  }
   function openCreate() {
     setEditing(null);
-    focusForm();
+    setFormOpen(true);
   }
   function openEdit(row: AdminCourseRow) {
     setEditing(row);
-    focusForm();
+    setFormOpen(true);
   }
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<boolean> {
     // Checked before the request, with the same rules the DTO enforces.
     const values = readForm(document.querySelector('[data-testid="adm-02-courses-ac-4"]'));
     const found = validate(values, {
@@ -230,7 +241,7 @@ export default function AdminCourseListPage() {
     setErrors(found);
     if (Object.keys(found).length) {
       document.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
-      return;
+      return false;
     }
     if (editing) {
       setSaving(true);
@@ -241,6 +252,7 @@ export default function AdminCourseListPage() {
         reload();
       } catch (err) {
         toast.error(getApiErrorMessage(err, t('admin.courses.updateFailed', { defaultValue: 'Could not update the course' })));
+        return false;
       } finally {
         setSaving(false);
       }
@@ -248,6 +260,7 @@ export default function AdminCourseListPage() {
       await createCourses4();
       toast.success(t('admin.courses.created', { defaultValue: 'Course created' }));
     }
+    return true;
   }
   async function handleDelete(row: AdminCourseRow) {
     try {
@@ -338,7 +351,7 @@ export default function AdminCourseListPage() {
     : [];
 
   return (
-    <div className="mx-auto w-full max-w-[1240px]" data-testid="adm-02-courses-page">
+    <div className="w-full" data-testid="adm-02-courses-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="text-sm text-muted-foreground">
@@ -504,35 +517,27 @@ export default function AdminCourseListPage() {
         </div>
         {/* Create / edit a course. The prototype opens this as a modal; kept as an
             always-visible inline form so the story's create fields stay reachable. */}
-        <section
-          ref={formRef}
-          className="rounded-[var(--radius-lg)] border border-border bg-card shadow-sm"
-          data-testid="adm-02-courses-ac-4"
+        {/* Create / edit lives in a modal now. It used to be a card at the FOOT of
+            the list: "New course" scrolled you to the bottom of the page, past every
+            row, to a form that was always there whether or not you wanted it — and
+            on a long list it was below the fold and easy to miss. The categories and
+            coupons screens already did this properly; this is the same shell. */}
+        <EntityFormModal
+          open={formOpen}
+          entityLabel={t('admin.courses.entity', { defaultValue: 'Course' })}
+          initialValues={editing ?? undefined}
+          onClose={() => { setFormOpen(false); setEditing(null); }}
+          onSubmit={async () => {
+            const ok = await handleSubmit();
+            if (!ok) throw new Error(t('actions.fixErrors', { defaultValue: 'Check the highlighted fields.' }));
+          }}
+          testId="adm-02-courses-form"
         >
-          <div className="flex items-center justify-between border-b border-border px-5 py-4">
-            <h2 className="text-lg font-semibold text-foreground">
-              {editing
-                ? t('admin.courses.editTitle', { defaultValue: 'Edit course' })
-                : t('admin.courses.newTitle', { defaultValue: 'New course' })}
-            </h2>
-            {editing && (
-              <button
-                type="button"
-                onClick={() => setEditing(null)}
-                data-testid="adm-02-courses-form-reset"
-                className="inline-flex h-9 items-center gap-1 rounded-md px-2 text-sm text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-4 w-4" aria-hidden="true" />
-                {t('actions.cancel', { defaultValue: 'Cancel' })}
-              </button>
-            )}
-          </div>
-
-          <div key={editing?.id ?? 'new'} className="grid grid-cols-1 gap-4 px-5 py-4 sm:grid-cols-2">
+          <div data-testid="adm-02-courses-ac-4">
+          <div key={editing?.id ?? 'new'} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 sm:col-span-2">
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.title', { defaultValue: 'Title' })}</span>
               <input
-                ref={titleRef}
                 name="title"
                 {...fieldProps('title', errors)}
                 type="text"
@@ -544,28 +549,34 @@ export default function AdminCourseListPage() {
             </label>
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.category', { defaultValue: 'Category' })}</span>
-              <input
+              <select
                 name="categoryId"
                 {...fieldProps('categoryId', errors)}
-                type="text"
                 defaultValue={editing?.categoryId ?? ''}
-                placeholder={t('admin.courses.field.categoryHint', { defaultValue: 'Category ID' })}
                 data-testid="adm-02-courses-field-category"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
+              >
+                <option value="">{t('admin.courses.field.select', { defaultValue: 'Select' })}</option>
+                {categoryOptions.map((c) => (
+                  <option key={String(c.id)} value={String(c.id)}>{String(c.name ?? '')}</option>
+                ))}
+              </select>
               <FieldError id="categoryId-error" message={errors.categoryId} />
             </label>
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.instructor', { defaultValue: 'Instructor' })}</span>
-              <input
+              <select
                 name="instructorId"
                 {...fieldProps('instructorId', errors)}
-                type="text"
                 defaultValue={editing?.instructorId ?? ''}
-                placeholder={t('admin.courses.field.instructorHint', { defaultValue: 'Instructor ID' })}
                 data-testid="adm-02-courses-field-instructor"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
+              >
+                <option value="">{t('admin.courses.field.select', { defaultValue: 'Select' })}</option>
+                {instructorOptions.map((i) => (
+                  <option key={String(i.id)} value={String(i.id)}>{String(i.name ?? i.fullName ?? '')}</option>
+                ))}
+              </select>
               <FieldError id="instructorId-error" message={errors.instructorId} />
             </label>
             <label className="flex flex-col gap-1">
@@ -618,23 +629,8 @@ export default function AdminCourseListPage() {
               />
             </label>
           </div>
-
-          <div className="flex justify-end gap-2 border-t border-border px-5 py-4">
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={loading4 || saving}
-              data-testid="adm-02-courses-ac-4-action"
-              className="inline-flex h-10 items-center rounded-md bg-[var(--c-primary)] px-4 text-sm font-medium text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:opacity-50"
-            >
-              {loading4 || saving
-                ? t('actions.saving', { defaultValue: 'Saving…' })
-                : editing
-                  ? t('actions.save', { defaultValue: 'Save' })
-                  : t('actions.create', { defaultValue: 'Create' })}
-            </button>
           </div>
-        </section>
+        </EntityFormModal>
       </main>
     </div>
   );

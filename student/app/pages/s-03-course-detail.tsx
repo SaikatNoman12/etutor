@@ -31,6 +31,8 @@ import type { Course } from '~/types/course';
 import type { Lesson } from '~/types/lesson';
 import type { CourseDetail, SyllabusSection } from '~/types/view-models';
 import { ChevronDown, ChevronRight, FileText, PlayCircle, Star } from 'lucide-react';
+import { useAppSelector } from '~/hooks/useAppSelector';
+import { get } from '~/services/httpMethods/get';
 
 /** The detail endpoint embeds relations the flat Course type does not
  *  guarantee; widen locally rather than reaching for `any`. */
@@ -82,6 +84,35 @@ export default function CourseDetailPage() {
 
   const course = useMemo<CourseDetail | null>(() => extractCourse(data1), [data1]);
 
+  // A button that will be refused should not be offered. "Add to cart" on a
+  // course already in the cart answered 409 "already in your cart"; on a course
+  // the learner already OWNS it answered 409 "you already own this course" —
+  // both correct, both a toast in the face of someone who clicked the only
+  // button there was. Know the two states before drawing the button.
+  const user = useAppSelector((st) => st.auth?.user);
+  const [inCart, setInCart] = useState<boolean>(false);
+  const [owned, setOwned] = useState<boolean>(false);
+  useEffect(() => {
+    if (!user || !course?.id) { setInCart(false); setOwned(false); return; }
+    let cancelled = false;
+    (async () => {
+      try {
+        const [cart, enr] = await Promise.all([
+          get<{ data?: { items?: { courseId?: string }[] } } | { items?: { courseId?: string }[] }>('/cart'),
+          get<{ data?: { items?: { course?: { slug?: string } }[] } } | { items?: { course?: { slug?: string } }[] }>('/enrollments'),
+        ]);
+        if (cancelled) return;
+        const lines = ((cart as { data?: { items?: unknown[] } })?.data?.items ?? (cart as { items?: unknown[] })?.items ?? []) as { courseId?: string }[];
+        const mine = ((enr as { data?: { items?: unknown[] } })?.data?.items ?? (enr as { items?: unknown[] })?.items ?? []) as { course?: { slug?: string } }[];
+        setInCart(lines.some((l) => l.courseId === course.id));
+        setOwned(mine.some((e) => e.course?.slug === course.slug));
+      } catch {
+        // Unknown state is the plain "Add to cart"; the server still refuses correctly.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user, course?.id, course?.slug]);
+
   const [loading3, setLoading3] = useState<boolean>(false);
   const createItems3 = async () => {
     // AddCartItemDto accepts only { courseId } and rejects unknown keys
@@ -91,6 +122,7 @@ export default function CourseDetailPage() {
     setLoading3(true);
     try {
       await addItem({ courseId: course.id });
+      setInCart(true);
       toast.success(t('courseDetail.addSuccess', 'Added to your cart'));
     } catch (err) {
       toast.error(getApiErrorMessage(err, t('courseDetail.addFailure', 'Could not add this course to your cart')));
@@ -335,16 +367,35 @@ export default function CourseDetailPage() {
                     )}
                   </div>
 
-                  <button
-                    className="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:opacity-50"
-                    type="button"
-                    onClick={createItems3}
-                    disabled={loading3}
-                    data-testid="s-03-course-detail-ac-3-action"
+                  {owned ? (
+                    <Link
+                      to={`/learn/${course.slug ?? ''}`}
+                      className="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:opacity-50"
+                      data-testid="s-03-course-detail-ac-3-action"
+                    >
+                      {t('courseDetail.goToCourse', 'Go to course')}
+                    </Link>
+                  ) : inCart ? (
+                    <Link
+                      to="/cart"
+                      className="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:opacity-50"
+                      data-testid="s-03-course-detail-ac-3-action"
+                    >
+                      {t('courseDetail.inCart', 'In your cart — view cart')}
+                    </Link>
+                  ) : (
+                      <button
+                      className="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:opacity-50"
+                      type="button"
+                      onClick={createItems3}
+                      disabled={loading3}
+                      data-testid="s-03-course-detail-ac-3-action"
                   >
-                    {loading3 ? t('courseDetail.adding', 'Adding…') : t('courseDetail.addToCart', 'Add to cart')}
-                  </button>
+                      {loading3 ? t('courseDetail.adding', 'Adding…') : t('courseDetail.addToCart', 'Add to cart')}
+                    </button>
+                  )}
 
+                  {!owned && (
                   <Link
                     to="/checkout"
                     className="flex min-h-[44px] w-full cursor-pointer items-center justify-center et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-ink)] hover:bg-[var(--c-surface-soft)]"
@@ -352,6 +403,7 @@ export default function CourseDetailPage() {
                   >
                     {t('courseDetail.buyNow', 'Buy now')}
                   </Link>
+                  )}
 
                   <div className="h-px w-full bg-[var(--c-hairline)]" />
 

@@ -308,7 +308,7 @@ export default function AdminOrderListPage() {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-[1240px]" data-testid="adm-06-orders-page">
+    <div className="w-full" data-testid="adm-06-orders-page">
       <header className="mb-6 flex flex-col gap-1">
         <Link to="/" className="text-sm text-muted-foreground hover:underline" data-testid="adm-06-orders-home-link">
           {t('nav.home', { defaultValue: 'Home' })}

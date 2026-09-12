@@ -113,7 +113,7 @@ export default function AdminEnrollmentListPage() {
 
   return (
     <div data-testid="adm-08-enrollments-page">
-      <div className="mx-auto w-full max-w-[1240px]">
+      <div className="w-full">
         <Link
           to="/"
           data-testid="adm-08-enrollments-home-link"

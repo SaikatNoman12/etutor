@@ -16,6 +16,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MoreHorizontal } from 'lucide-react';
 
 export interface RowActionsProps {
   testId: string;
@@ -61,22 +62,23 @@ export function RowActions({ testId, onView, onEdit, onDelete, extra }: RowActio
     <div className="row-actions" ref={ref}>
       <button
         type="button"
+        className="row-actions-trigger"
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={t('actions.rowMenu', { defaultValue: 'Row actions' })}
         onClick={() => setOpen((v) => !v)}
         data-testid={testId + '-actions'}
       >
-        &#8943;
+        <MoreHorizontal className="h-[18px] w-[18px]" aria-hidden="true" />
       </button>
       {open && (
-        <div role="menu" className="row-actions-menu">
+        <div role="menu" className="row-menu et-enter">
           {items.map((item) => (
             <button
               key={item.label}
               type="button"
               role="menuitem"
-              className={item.destructive ? 'is-destructive' : undefined}
+              className={item.destructive ? 'row-menu-item is-danger' : 'row-menu-item'}
               onClick={() => {
                 setOpen(false);
                 item.onSelect();

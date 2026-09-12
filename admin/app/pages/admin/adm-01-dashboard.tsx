@@ -153,7 +153,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div
-      className="mx-auto flex w-full max-w-[1240px] flex-col gap-[32px]"
+      className="flex w-full flex-col gap-[32px]"
       data-testid="adm-01-dashboard-page"
       data-role={role}
       data-is-admin={isAdmin ? 'true' : 'false'}

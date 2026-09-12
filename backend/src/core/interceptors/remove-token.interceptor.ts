@@ -23,43 +23,31 @@ export class RemoveTokenInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const res = context.switchToHttp().getResponse();
 
+    // Clear on SUCCESS, where success means the handler completed — not a
+    // `success: true` field in the body.
+    //
+    // The logout route answers 204 No Content and returns void, so `value` here
+    // is undefined, `value?.success` was never true, and the two res.cookie()
+    // calls below never ran. Logout revoked the refresh token, sent 204 with no
+    // Set-Cookie at all, and the browser kept both cookies: the very next
+    // GET /auth/me answered 200 and the header still said "Sign out". The
+    // person had signed out; the site had not.
+    const clear = () => {
+      const opts = { ...authCookieOptions(this.configService), maxAge: 0 };
+      res.cookie(this.configService.getOrThrow<string>("AUTH_TOKEN_COOKIE_NAME"), "", opts);
+      res.cookie(this.configService.getOrThrow<string>("AUTH_REFRESH_TOKEN_COOKIE_NAME"), "", opts);
+    };
+
     return next.handle().pipe(
       map((value) => {
-        if (value?.success) {
-          // Clear access token cookie
-          res.cookie(
-            this.configService.getOrThrow<string>("AUTH_TOKEN_COOKIE_NAME"),
-            "",
-            // The identical attributes the cookie was SET with. A cross-site response
-            // clearing it without SameSite=None; Secure is rejected by the browser, so
-            // the old cookie survives and logout does not log anyone out.
-            { ...authCookieOptions(this.configService), maxAge: 0 },
-          );
-
-          // Clear refresh token cookie
-          res.cookie(
-            this.configService.getOrThrow<string>(
-              "AUTH_REFRESH_TOKEN_COOKIE_NAME",
-            ),
-            "",
-            // The identical attributes the cookie was SET with. A cross-site response
-            // clearing it without SameSite=None; Secure is rejected by the browser, so
-            // the old cookie survives and logout does not log anyone out.
-            { ...authCookieOptions(this.configService), maxAge: 0 },
-          );
-
+        clear();
+        if (value && typeof value === "object" && "success" in value) {
           // Strip sensitive data — only return success + message
-          return {
-            success: true,
-            message: value.message || "Logged out successfully",
-          };
+          return { success: true, message: (value as { message?: string }).message || "Logged out successfully" };
         }
-
         return value;
       }),
-      catchError((err) => {
-        return throwError(() => err);
-      }),
+      catchError((err) => throwError(() => err)),
     );
   }
 }

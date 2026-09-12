@@ -6,6 +6,7 @@ import { useAppDispatch } from "~/hooks/useAppDispatch";
 import { logout } from "~/services/httpServices/authService";
 import { authSlice } from "~/redux/features/authSlice";
 import { Menu, ShoppingCart, X } from "lucide-react";
+import { useCartCount } from "~/hooks/useCartCount";
 
 /**
  * The site's primary navigation.
@@ -25,6 +26,7 @@ export default function Header() {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth?.user);
+  const cartCount = useCartCount();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -93,7 +95,11 @@ export default function Header() {
         scrolled ? "shadow-[var(--shadow-1)]" : ""
       }`}
     >
-      <div className="container mx-auto flex h-16 items-center justify-between gap-[16px] px-4">
+      {/* Three columns, the outer two equal, so the nav in the middle is centred
+          on the PAGE and not merely between two neighbours of different widths —
+          `justify-between` put it 71px left of centre because the logo is
+          narrower than the sign-in/sign-up pair. */}
+      <div className="container mx-auto grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-[16px] px-4">
         <Link
           to="/"
           className="shrink-0 text-[22px] font-extrabold tracking-[-0.03em] text-[var(--c-primary)]"
@@ -111,16 +117,25 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-[10px] md:gap-[16px]">
+        <div className="flex items-center justify-end gap-[10px] md:gap-[16px]">
           {user ? (
             <>
               <NavLink
                 to="/cart"
-                className="et-press rounded-[var(--radius-md)] p-[8px] text-[var(--c-body)] transition-colors hover:bg-[var(--c-surface-soft)] hover:text-[var(--c-primary-text)]"
-                aria-label={t("nav.cart")}
+                className="et-press relative rounded-[var(--radius-md)] p-[8px] text-[var(--c-body)] transition-colors hover:bg-[var(--c-surface-soft)] hover:text-[var(--c-primary-text)]"
+                aria-label={cartCount ? `${t("nav.cart")} (${cartCount})` : t("nav.cart")}
                 data-testid="header-nav-cart"
               >
                 <ShoppingCart className="h-5 w-5" aria-hidden="true" />
+                {cartCount > 0 && (
+                  <span
+                    key={cartCount}
+                    className="et-pop absolute -right-[2px] -top-[2px] inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[var(--radius-pill)] bg-[var(--c-primary)] px-[5px] text-[11px] font-bold leading-none text-[var(--c-on-primary)] ring-2 ring-[var(--c-surface)]"
+                    data-testid="header-cart-count"
+                  >
+                    {cartCount}
+                  </span>
+                )}
               </NavLink>
               <NavLink to="/profile" className={`hidden md:inline-flex ${deskLink({ isActive: false })}`} data-testid="header-nav-profile">
                 {t("nav.profile")}
@@ -183,7 +198,7 @@ export default function Header() {
                   {t("nav.profile")}
                 </NavLink>
                 <NavLink to="/cart" className={drawerLink} data-testid="drawer-nav-cart">
-                  {t("nav.cart")}
+                  {t("nav.cart")}{cartCount > 0 ? ` (${cartCount})` : ""}
                 </NavLink>
                 <button
                   type="button"

@@ -5,7 +5,13 @@ import { Toaster } from "~/components/ui/sonner";
 
 export default function BaseLayout() {
   return (
-    <div className="relative min-h-screen flex flex-col">
+    // No `min-h-screen`. It stretched <main> (flex-1) so the footer always sat
+    // at the bottom of the viewport — which on a short page (an empty cart, a
+    // two-row order list) is a long blank stretch of canvas between the content
+    // and the footer. The footer now follows the content; the html ground is
+    // the footer's ink, so on a short page the dark footer simply runs to the
+    // bottom of the window instead of a light strip appearing under it.
+    <div className="relative flex flex-col bg-[var(--c-canvas)]">
       <Header />
       {/* A plain block, deliberately. As a flex container it made every page a
           flex ITEM, and each page's own `mx-auto` then set auto margins on the
@@ -22,7 +28,7 @@ export default function BaseLayout() {
           and the console's orders screen — sat flush against the bar above them
           while every other page had 32px. A rhythm that every screen has to
           remember is a rhythm that some screen will forget. */}
-      <main className="container mx-auto w-full flex-1 py-[24px] sm:py-[32px]">
+      <main className="container mx-auto w-full py-[24px] sm:py-[32px]">
         <Outlet />
       </main>
       <Footer />

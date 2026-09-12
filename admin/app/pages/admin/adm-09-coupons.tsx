@@ -326,7 +326,7 @@ export default function AdminCouponListPage() {
     : [];
 
   return (
-    <div className="mx-auto w-full max-w-[1240px]" data-testid="adm-09-coupons-page">
+    <div className="w-full" data-testid="adm-09-coupons-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="text-sm text-muted-foreground">

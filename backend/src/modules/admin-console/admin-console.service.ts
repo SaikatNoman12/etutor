@@ -164,6 +164,13 @@ export class AdminConsoleService {
       instructor: c.instructor
         ? { id: c.instructor.id, name: c.instructor.fullName }
         : null,
+      // The edit form opens from a LIST row and binds its two <select>s to these
+      // foreign keys. The row carried only the display shapes above, so opening
+      // a course to edit it showed no category and no instructor — and saving
+      // was then refused for two fields the operator could see were filled in
+      // on the page behind the dialog.
+      categoryId: c.categoryId,
+      instructorId: c.instructorId,
       price: c.price,
       studentCount: c.studentCount,
       status: c.status,

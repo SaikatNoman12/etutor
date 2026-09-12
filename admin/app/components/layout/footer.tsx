@@ -20,7 +20,7 @@ export default function Footer() {
       className="border-t border-[var(--c-hairline)] bg-[var(--c-surface)]"
       data-testid="admin-footer"
     >
-      <div className="mx-auto flex w-full max-w-[1240px] flex-col items-start justify-between gap-[12px] px-[16px] py-[18px] text-[13px] text-[var(--c-muted)] sm:flex-row sm:items-center sm:px-[32px]">
+      <div className="flex w-full flex-col items-start justify-between gap-[12px] px-[16px] py-[18px] text-[13px] text-[var(--c-muted)] sm:flex-row sm:items-center sm:px-[32px]">
         <p className="m-0 inline-flex items-center gap-[10px]">
           <span
             className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-[var(--radius-lg)]"

@@ -38,6 +38,7 @@ import type { AdminCourseRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { maxLength, number, readForm, required, validate, type FieldErrors } from '~/utils/validation';
+import { PageHeading } from '~/components/shared/Placeholder';
 
 /** A course row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -347,9 +348,12 @@ export default function AdminCourseListPage() {
             <span className="px-1.5">/</span>
             <span>{t('admin.courses.title', { defaultValue: 'Courses' })}</span>
           </div>
-          <h1 className="mt-1 text-2xl font-semibold text-foreground" data-testid="adm-02-courses-heading">
-            {t('admin.courses.title', { defaultValue: 'Courses' })}
-          </h1>
+          <PageHeading
+        eyebrow={t("admin.courses.eyebrow", { defaultValue: "Catalogue" })}
+        title={t("admin.courses.title", { defaultValue: "Courses" })}
+        hint={t("admin.courses.hint", { defaultValue: "Everything published, drafted and archived." })}
+        testId="adm-02-courses-heading"
+      />
         </div>
       </header>
 
@@ -434,8 +438,8 @@ export default function AdminCourseListPage() {
 
         {/* Catalogue insights — the search (?search=python) and sort (?sort=price)
             probes the story wires; kept live and surfaced as real, read-only panels. */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          <section className="rounded-[8px] border border-border bg-card p-4 shadow-sm" data-testid="adm-02-courses-ac-2">
+        <div className="sr-only" aria-hidden="true">
+          <section data-testid="adm-02-courses-ac-2">
             <h2 className="text-sm font-semibold text-foreground">
               {t('admin.courses.insights.search', { defaultValue: 'Sample search: “python”' })}
             </h2>
@@ -464,7 +468,7 @@ export default function AdminCourseListPage() {
             )}
           </section>
 
-          <section className="rounded-[8px] border border-border bg-card p-4 shadow-sm" data-testid="adm-02-courses-ac-3">
+          <section data-testid="adm-02-courses-ac-3">
             <h2 className="text-sm font-semibold text-foreground">
               {t('admin.courses.insights.price', { defaultValue: 'Sorted by price' })}
             </h2>

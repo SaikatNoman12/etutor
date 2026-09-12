@@ -38,6 +38,7 @@ import type { CartLine, CartView } from '~/types/view-models';
 import { ArrowLeft } from 'lucide-react';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { email as emailRule, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
+import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 
 /** Cart lines may embed their course; the generated CartItem type only
  *  guarantees courseId/unitPrice/quantity, so widen locally without `any`. */
@@ -236,12 +237,11 @@ export default function CheckoutPage() {
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> {t('checkout.cart', 'Cart')}
       </Link>
 
-      <h1
-        className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
-        data-testid="s-07-checkout-heading"
-      >
-        {t('checkout.title', 'Checkout')}
-      </h1>
+      <PageHeading
+        eyebrow={t('checkout.eyebrow', '')}
+        title={t('checkout.title', '')}
+        testId="s-07-checkout-heading"
+      />
 
       <main
         className="mt-[24px] grid grid-cols-1 items-start gap-[24px] [@media(min-width:900px)]:grid-cols-[2fr_1fr]"

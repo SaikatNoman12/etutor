@@ -28,6 +28,7 @@ import { toast } from '~/lib/toast';
 import { Receipt } from 'lucide-react';
 import type { OrderRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
+import { PageHeading } from '~/components/shared/Placeholder';
 
 // A plain row shape with an index signature so it satisfies DataTable's
 // `T extends Record<string, unknown>` constraint (the generated OrderResponse
@@ -312,10 +313,12 @@ export default function AdminOrderListPage() {
         <Link to="/" className="text-sm text-muted-foreground hover:underline" data-testid="adm-06-orders-home-link">
           {t('nav.home', { defaultValue: 'Home' })}
         </Link>
-        <h1 className="flex items-center gap-2 text-2xl font-bold" data-testid="adm-06-orders-heading">
-          <Receipt className="h-6 w-6" aria-hidden="true" />
-          {t('orders.title', { defaultValue: 'Orders' })}
-        </h1>
+        <PageHeading
+        eyebrow={t("admin.orders.eyebrow", { defaultValue: "Sales" })}
+        title={t("admin.orders.title", { defaultValue: "Orders" })}
+        hint={t("admin.orders.hint", { defaultValue: "Every purchase and its payment state." })}
+        testId="adm-06-orders-heading"
+      />
       </header>
 
       <main className="space-y-4" data-testid="adm-06-orders-main">

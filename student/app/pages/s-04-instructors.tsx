@@ -25,6 +25,7 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { listInstructors } from '~/services/httpServices/catalogueService';
 import { Search } from 'lucide-react';
 import type { InstructorRow } from '~/types/view-models';
+import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 
 /** One row of GET /api/instructors → { items: [...] }. The catalogue returns
  *  id/name/headline/courseCount/studentCount; there is no avatar field, so the
@@ -107,12 +108,11 @@ export default function InstructorListPage() {
       {/* page-head */}
       <div className="mb-[24px] flex items-end justify-between gap-[16px]">
         <div>
-          <h1
-            className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
-            data-testid="s-04-instructors-heading"
-          >
-            {t('instructors.title', 'Instructors')}
-          </h1>
+          <PageHeading
+        eyebrow={t('instructors.eyebrow', '')}
+        title={t('instructors.title', '')}
+        testId="s-04-instructors-heading"
+      />
           <p className="m-0 text-[14px] font-normal leading-[1.5] text-[var(--c-muted)]">
             {filtered.length} {t('instructors.count', 'instructors')}
           </p>

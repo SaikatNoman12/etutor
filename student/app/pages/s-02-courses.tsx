@@ -25,9 +25,21 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { listCourses, listCategories } from '~/services/httpServices/catalogueService';
 import { course_level } from '~/enums/course-level.enum';
 import type { CourseRow, CategoryCard } from '~/types/view-models';
-import { ChevronLeft, ChevronRight, Search, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { CourseCard } from '~/components/shared/CourseCard';
+import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 
 const PAGE_SIZE = 8;
+
+/** The level, as a word. The enum travels as a number; a badge reading "2" is
+ *  not a badge. */
+const LEVEL_NAMES: Record<number, string> = {
+  [course_level.BEGINNER]: 'Beginner',
+  [course_level.INTERMEDIATE]: 'Intermediate',
+  [course_level.ADVANCED]: 'Advanced',
+};
+const levelName = (v: unknown): string | undefined =>
+  typeof v === 'number' ? LEVEL_NAMES[v] : undefined;
 
 /** Defensive extractor — the raw /api/courses body may be an array, a
  *  ResponsePayloadDto ({ data }), or a paginated envelope ({ items }). */
@@ -203,37 +215,83 @@ export default function CourseListPage() {
 
   return (
     <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-02-courses-page">
-      {/* page-head */}
-      <div className="flex items-end justify-between gap-[16px] mb-[24px]">
-        <div>
-          <h1
-            className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
-            data-testid="s-02-courses-heading"
-          >
-            {t('courses.title', 'All courses')}
-          </h1>
-          <p className="m-0 text-[14px] font-normal leading-[1.5] text-[var(--c-muted)]">
-            {total} {t('courses.count', 'courses')}
-          </p>
-        </div>
-      </div>
+      <PageHeading
+        eyebrow={t('courses.eyebrow', 'Catalogue')}
+        title={t('courses.title', 'All courses')}
+        hint={`${total} ${t('courses.count', 'courses')}`}
+        testId="s-02-courses-heading"
+      />
 
-      {/* filter-bar */}
-      <div className="mb-[24px] flex flex-wrap items-center gap-[12px]">
-        <span className="relative inline-flex w-full max-w-[320px] items-center">
-          <Search className="pointer-events-none absolute left-[12px] h-5 w-5 text-[var(--c-muted)]" aria-hidden="true" />
-          <input
-            className="min-h-[44px] w-full rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] py-[8px] pl-[36px] pr-[12px] text-[15px] text-[var(--c-ink)]"
-            type="search"
-            placeholder={t('courses.searchPlaceholder', 'Search courses')}
-            aria-label={t('courses.searchPlaceholder', 'Search courses')}
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            data-testid="s-02-courses-search"
-          />
-        </span>
+      {/* The filter bar is a surface, not a row of browser defaults. Category
+          is a scrollable pill rail — the control people reach for most, one tap
+          instead of a dropdown, and it survives a 390px screen by scrolling
+          rather than wrapping into four lines. Level and sort stay as selects:
+          they are used rarely and a pill rail for each would be noise. */}
+      <div className="mb-[24px] rounded-[var(--radius-xl)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[16px] shadow-[var(--shadow-1)]">
+        <div className="flex flex-wrap items-center gap-[12px]">
+          <span className="relative inline-flex min-w-[220px] flex-1 items-center">
+            <Search className="pointer-events-none absolute left-[14px] h-[18px] w-[18px] text-[var(--c-muted)]" aria-hidden="true" />
+            <input
+              className="min-h-[46px] w-full rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] py-[8px] pl-[42px] pr-[16px] text-[15px] text-[var(--c-ink)] transition-colors placeholder:text-[var(--c-muted)] focus:border-[var(--c-primary)] focus:outline-none"
+              type="search"
+              placeholder={t('courses.searchPlaceholder', 'Search courses')}
+              aria-label={t('courses.searchPlaceholder', 'Search courses')}
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              data-testid="s-02-courses-search"
+            />
+          </span>
+          <select
+            className="min-h-[46px] rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[16px] py-[8px] text-[15px] text-[var(--c-ink)] transition-colors focus:border-[var(--c-primary)] focus:outline-none"
+            aria-label={t('courses.level', 'Level')}
+            value={level}
+            onChange={(e) => { setLevel(e.target.value === 'All levels' ? '' : e.target.value); setPage(1); }}
+            data-testid="s-02-courses-filter-level"
+          >
+            <option value="">{t('courses.allLevels', 'All levels')}</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+          <select
+            className="min-h-[46px] rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[16px] py-[8px] text-[15px] text-[var(--c-ink)] transition-colors focus:border-[var(--c-primary)] focus:outline-none"
+            aria-label={t('courses.sortBy', 'Sort by')}
+            value={sort}
+            onChange={(e) => { setSort(e.target.value); setPage(1); }}
+            data-testid="s-02-courses-sort"
+          >
+            <option value="popular">{t('courses.sortPopular', 'Most popular')}</option>
+            <option value="newest">{t('courses.sortNewest', 'Newest')}</option>
+            <option value="price_asc">{t('courses.sortPriceAsc', 'Price: low to high')}</option>
+            <option value="price_desc">{t('courses.sortPriceDesc', 'Price: high to low')}</option>
+          </select>
+        </div>
+
+        <div className="mt-[14px] flex items-center gap-[8px] overflow-x-auto pb-[2px]" role="group" aria-label={t('courses.category', 'Category')}>
+          {[{ id: '', slug: '', name: t('courses.allCategories', 'All categories') }, ...categoryOptions].map((c) => {
+            const active = category === c.slug;
+            return (
+              <button
+                key={c.slug || 'all'}
+                type="button"
+                onClick={() => { setCategory(c.slug); setPage(1); }}
+                aria-pressed={active}
+                className={`et-press shrink-0 rounded-[var(--radius-pill)] border px-[14px] py-[8px] text-[13px] font-semibold transition-colors ${
+                  active
+                    ? 'border-[var(--c-primary)] bg-[var(--c-primary)] text-[var(--c-on-primary)]'
+                    : 'border-[var(--c-hairline-strong)] bg-[var(--c-surface)] text-[var(--c-body)] hover:border-[var(--c-primary)] hover:text-[var(--c-primary-text)]'
+                }`}
+                data-testid={`s-02-courses-category-${c.slug || 'all'}`}
+              >
+                {c.name}
+              </button>
+            );
+          })}
+        </div>
+        {/* The story spec drives the category filter through a select; kept, and
+            kept in sync with the pills above, rather than duplicated. */}
         <select
-          className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)]"
+          className="sr-only"
           aria-label={t('courses.category', 'Category')}
           value={category}
           onChange={(e) => { setCategory(e.target.value); setPage(1); }}
@@ -243,30 +301,6 @@ export default function CourseListPage() {
           {categoryOptions.map((c) => (
             <option key={c.id} value={c.slug}>{c.name}</option>
           ))}
-        </select>
-        <select
-          className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)]"
-          aria-label={t('courses.level', 'Level')}
-          value={level}
-          onChange={(e) => { setLevel(e.target.value === 'All levels' ? '' : e.target.value); setPage(1); }}
-          data-testid="s-02-courses-filter-level"
-        >
-          <option value="">{t('courses.allLevels', 'All levels')}</option>
-          <option>Beginner</option>
-          <option>Intermediate</option>
-          <option>Advanced</option>
-        </select>
-        <select
-          className="min-h-[44px] rounded-[4px] border border-[var(--c-hairline-strong)] bg-[var(--c-canvas)] px-[12px] py-[8px] text-[15px] text-[var(--c-ink)]"
-          aria-label={t('courses.sortBy', 'Sort by')}
-          value={sort}
-          onChange={(e) => { setSort(e.target.value); setPage(1); }}
-          data-testid="s-02-courses-sort"
-        >
-          <option value="popular">{t('courses.sortPopular', 'Most popular')}</option>
-          <option value="newest">{t('courses.sortNewest', 'Newest')}</option>
-          <option value="price_asc">{t('courses.sortPriceAsc', 'Price: low to high')}</option>
-          <option value="price_desc">{t('courses.sortPriceDesc', 'Price: high to low')}</option>
         </select>
       </div>
 
@@ -284,75 +318,52 @@ export default function CourseListPage() {
         )}
 
         {!loading1 && error1 && (
-          <div
-            className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
-            data-testid="s-02-courses-ac-1-error"
-          >
-            <p className="m-0 text-[15px] text-[var(--c-error)]">
-              {t('courses.loadError', 'We could not load the courses. Please try again.')}
-            </p>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="mt-[16px] inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)]"
-              data-testid="s-02-courses-ac-2-retry"
-            >
-              {t('courses.retry', 'Try again')}
-            </button>
-          </div>
+          <Placeholder
+            tone="error"
+            testId="s-02-courses-ac-1-error"
+            title={t('courses.loadErrorTitle', 'We could not load the catalogue')}
+            hint={t('courses.loadErrorHint', 'The connection may have dropped. Try again in a moment.')}
+            action={
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="et-press et-sheen inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[var(--radius-pill)] bg-[var(--c-primary)] px-[24px] text-[15px] font-semibold text-[var(--c-on-primary)]"
+                data-testid="s-02-courses-ac-2-retry"
+              >
+                {t('courses.retry', 'Try again')}
+              </button>
+            }
+          />
         )}
 
         {!loading1 && !error1 && paged.length === 0 && (
-          <div
-            className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
-            data-testid="s-02-courses-ac-2-empty"
-          >
-            <p className="m-0 text-[15px] text-[var(--c-muted)]">
-              {t('courses.empty', 'No courses match your filters yet.')}
-            </p>
-          </div>
+          <Placeholder
+            testId="s-02-courses-ac-2-empty"
+            title={t('courses.emptyTitle', 'No courses match those filters')}
+            hint={t('courses.emptyHint', 'Try a different category, or clear the search.')}
+            action={
+              <button
+                type="button"
+                onClick={() => { setSearch(''); setCategory(''); setLevel(''); setPage(1); }}
+                className="et-press inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] text-[15px] font-semibold text-[var(--c-primary-text)]"
+                data-testid="s-02-courses-clear-filters"
+              >
+                {t('courses.clearFilters', 'Clear filters')}
+              </button>
+            }
+          />
         )}
 
         {!loading1 && !error1 && paged.length > 0 && (
           <div className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-testid="s-02-courses-ac-2-list">
             {paged.map((course, i) => (
-              <Link
+              <CourseCard
                 key={course.id ?? i}
-                to={`/courses/${course.slug ?? ''}`}
-                className="block cursor-pointer overflow-hidden et-lift rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)] transition-all duration-150 hover:-translate-y-[2px] hover:border-[var(--c-hairline-strong)] hover:shadow-[var(--shadow-hover)]"
-                data-testid={`s-02-courses-ac-2-item-${i}`}
-              >
-                <div className="relative h-[180px] overflow-hidden [background:var(--media-fallback)]">
-                  <img className="block h-full w-full object-cover" src={course.thumbnailUrl ?? ''} alt={course.title ?? ''} />
-                </div>
-                <div className="space-y-[8px] p-[16px]">
-                  <div className="flex items-center justify-between gap-[8px]">
-                    <span className="inline-flex items-center gap-[2px] rounded-full bg-[var(--c-primary-soft)] px-[8px] py-[2px] text-[12px] font-medium tracking-[0.2px] text-[var(--c-primary)]">
-                      {course.category?.name ?? ''}
-                    </span>
-                    <span className="text-[16px] font-bold text-[var(--c-primary)]">
-                      {course.price != null ? `$${course.price}` : ''}
-                      {course.compareAtPrice != null && (
-                        <span className="ml-[4px] text-[14px] font-normal text-[var(--c-muted)] line-through">
-                          ${course.compareAtPrice}
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                  <p className="m-0 text-[16px] font-semibold leading-[1.35] text-[var(--c-ink)]">
-                    {course.title ?? ''}
-                  </p>
-                  <div className="flex items-center justify-between border-t border-[var(--c-hairline)] mt-[12px] pt-[12px]">
-                    <span className="inline-flex min-h-[36px] items-center gap-[4px] text-[14px] text-[var(--c-ink)]">
-                      <Star className="h-4 w-4 text-[var(--c-primary)]" aria-hidden="true" />
-                      {(course.ratingAvg ?? 0).toFixed(1)}
-                    </span>
-                    <span className="text-[14px] text-[var(--c-muted)]">
-                      {(course.studentCount ?? 0).toLocaleString()} {t('courses.students', 'students')}
-                    </span>
-                  </div>
-                </div>
-              </Link>
+                course={course}
+                testId={`s-02-courses-ac-2-item-${i}`}
+                levelLabel={levelName(course.level)}
+                studentsLabel={t('courses.students', 'students')}
+              />
             ))}
           </div>
         )}

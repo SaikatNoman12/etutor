@@ -33,6 +33,7 @@ import { getApiErrorMessage } from '~/utils/apiError';
 import { User } from 'lucide-react';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { maxLength, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
+import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 
 export default function ProfilePage() {
   const { t } = useTranslation('common');
@@ -166,12 +167,11 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-12-profile-page">
-      <h1
-        className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
-        data-testid="s-12-profile-heading"
-      >
-        {t('profile.title', 'My profile')}
-      </h1>
+      <PageHeading
+        eyebrow={t('profile.eyebrow', '')}
+        title={t('profile.title', '')}
+        testId="s-12-profile-heading"
+      />
 
       <main
         className="mt-[24px] grid grid-cols-1 items-start gap-[24px] [@media(min-width:900px)]:grid-cols-[2fr_1fr]"

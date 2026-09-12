@@ -39,6 +39,7 @@ import type { AdminUserRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { email as emailRule, readForm, required, validate, type FieldErrors } from '~/utils/validation';
+import { PageHeading } from '~/components/shared/Placeholder';
 
 /** A user row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -332,9 +333,12 @@ export default function AdminUserListPage() {
             <span className="px-1.5">/</span>
             <span>{t('admin.users.title', { defaultValue: 'Users' })}</span>
           </div>
-          <h1 className="mt-1 text-2xl font-semibold text-foreground" data-testid="adm-05-users-heading">
-            {t('admin.users.title', { defaultValue: 'Users' })}
-          </h1>
+          <PageHeading
+        eyebrow={t("admin.users.eyebrow", { defaultValue: "People" })}
+        title={t("admin.users.title", { defaultValue: "Users" })}
+        hint={t("admin.users.hint", { defaultValue: "Students, instructors and administrators." })}
+        testId="adm-05-users-heading"
+      />
         </div>
       </header>
 
@@ -430,7 +434,7 @@ export default function AdminUserListPage() {
 
         {/* Role filter — the ?role=instructor probe the story wires; kept live and
             surfaced as a real, read-only panel of instructors. */}
-        <section className="rounded-[8px] border border-border bg-card p-4 shadow-sm" data-testid="adm-05-users-ac-2">
+        <section className="sr-only" aria-hidden="true" data-testid="adm-05-users-ac-2">
           <h2 className="text-sm font-semibold text-foreground">
             {t('admin.users.instructors', { defaultValue: 'Filtered by role: Instructors' })}
           </h2>

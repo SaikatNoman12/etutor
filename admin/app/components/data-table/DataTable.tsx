@@ -22,6 +22,7 @@
  */
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Placeholder } from '~/components/shared/Placeholder';
 import { useSearchParams } from 'react-router';
 
 type Format = 'text' | 'date' | 'currency' | 'number';
@@ -108,14 +109,16 @@ export function DataTable<T extends Record<string, unknown>>({
     );
   }
   if (error) {
-    return <div className="p-6 text-destructive" data-testid={testId + '-error'}>{error}</div>;
+    return <Placeholder tone="error" testId={testId + '-error'} title={error} />;
   }
 
   if (data.length === 0) {
     return (
-      <div className="rounded-lg border p-12 text-center" data-testid={testId + '-empty'}>
-        <p className="text-lg font-medium">{emptyMessage ?? t('empty.title')}</p>
-      </div>
+      <Placeholder
+        testId={testId + '-empty'}
+        title={emptyMessage ?? t('empty.title')}
+        hint={t('empty.description', { defaultValue: '' }) || undefined}
+      />
     );
   }
 
@@ -133,7 +136,10 @@ export function DataTable<T extends Record<string, unknown>>({
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={col.sortable ? 'py-2 pr-4 cursor-pointer select-none' : 'py-2 pr-4'}
+                className={
+                  'whitespace-nowrap px-3 py-[10px] first:rounded-l-[var(--radius-md)] last:rounded-r-[var(--radius-md)]' +
+                  (col.sortable ? ' cursor-pointer select-none transition-colors hover:text-[var(--c-primary-text)]' : '')
+                }
                 onClick={col.sortable ? () => toggleSort(col.key) : undefined}
                 data-testid={testId + '-th-' + col.key}
                 style={col.width ? { width: col.width } : undefined}
@@ -146,20 +152,31 @@ export function DataTable<T extends Record<string, unknown>>({
                 )}
               </th>
             ))}
-            {rowAction && <th className="py-2 pr-4" data-testid={testId + '-th-actions'}>{t('actions.actions') ?? 'Actions'}</th>}
+            {rowAction && <th className="whitespace-nowrap px-3 py-[10px] text-right" data-testid={testId + '-th-actions'}>{t('actions.actions') ?? 'Actions'}</th>}
           </tr>
           </thead>
           <tbody>
           {data.map((row, idx) => {
             const k = rowKey ? rowKey(row) : String((row as Record<string, unknown>).id ?? idx);
             return (
-              <tr key={k} className="border-b" data-testid={testId + '-row-' + k}>
+              <tr
+                key={k}
+                className="border-b border-[var(--c-hairline)] transition-colors last:border-b-0 hover:bg-[var(--c-surface-soft)]"
+                data-testid={testId + '-row-' + k}
+              >
                 {columns.map((col) => (
-                  <td key={col.key} className="py-3 pr-4" data-testid={testId + '-cell-' + k + '-' + col.key}>
+                  <td
+                    key={col.key}
+                    className={
+                      'px-3 py-[14px] align-middle text-[14px] text-[var(--c-ink)]' +
+                      (col.format === 'currency' || col.format === 'number' ? ' tabular-nums' : '')
+                    }
+                    data-testid={testId + '-cell-' + k + '-' + col.key}
+                  >
                     {col.render ? col.render(row) : defaultFormat(row[col.key], col.format)}
                   </td>
                 ))}
-                {rowAction && <td className="py-3 pr-4">{rowAction(row)}</td>}
+                {rowAction && <td className="px-3 py-[14px] text-right">{rowAction(row)}</td>}
               </tr>
             );
           })}

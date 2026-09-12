@@ -30,6 +30,7 @@ import { cn } from '~/lib/utils';
 import type { Order } from '~/types/order';
 import type { OrderRow } from '~/types/view-models';
 import { ChevronDown, Search } from 'lucide-react';
+import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 
 /** Order rows may embed their line items; the generated Order type only
  *  guarantees the header fields, so widen locally without reaching for `any`. */
@@ -169,12 +170,11 @@ export default function OrderListPage() {
 
   return (
     <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-08-orders-page">
-      <h1
-        className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
-        data-testid="s-08-orders-heading"
-      >
-        {t('orders.title', 'My orders')}
-      </h1>
+      <PageHeading
+        eyebrow={t('orders.eyebrow', '')}
+        title={t('orders.title', '')}
+        testId="s-08-orders-heading"
+      />
 
       <div
         className="mt-[24px] space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"

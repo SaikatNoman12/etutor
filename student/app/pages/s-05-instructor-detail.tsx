@@ -26,6 +26,7 @@ import type { Course } from '~/types/course';
 import type { User } from '~/types/user';
 import type { CourseRow, InstructorDetail } from '~/types/view-models';
 import { ArrowLeft, Star } from 'lucide-react';
+import { CourseCard } from '~/components/shared/CourseCard';
 
 /** Course rows may embed their category name; the generated type only
  *  guarantees categoryId, so widen locally without reaching for `any`. */
@@ -236,43 +237,12 @@ export default function InstructorDetailPage() {
                   data-testid="s-05-instructor-detail-ac-2-list"
                 >
                   {courses.map((course, i) => (
-                    <Link
+                    <CourseCard
                       key={course.id ?? i}
-                      to={`/courses/${course.slug ?? ''}`}
-                      className="block cursor-pointer overflow-hidden rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)] transition-all duration-150 hover:-translate-y-[2px] hover:border-[var(--c-hairline-strong)] hover:shadow-[var(--shadow-hover)]"
-                      data-testid={`s-05-instructor-detail-ac-2-item-${i}`}
-                    >
-                      <div className="relative h-[var(--card-media-h)] overflow-hidden [background:var(--media-fallback)]">
-                        <img className="block h-full w-full object-cover" src={course.thumbnailUrl ?? ''} alt={course.title ?? ''} />
-                      </div>
-                      <div className="space-y-[var(--space-sm)] p-[var(--space-lg)]">
-                        <div className="flex items-center justify-between gap-[var(--space-sm)]">
-                          <span className="inline-flex items-center gap-[var(--space-xxs)] rounded-full bg-[var(--c-primary-soft)] px-[var(--space-sm)] py-[var(--space-xxs)] text-[12px] font-medium tracking-[0.2px] text-[var(--c-primary)]">
-                            {course.category?.name ?? ''}
-                          </span>
-                          <span className="text-[16px] font-bold text-[var(--c-primary)]">
-                            {course.price != null ? `$${course.price}` : ''}
-                            {course.compareAtPrice != null && (
-                              <span className="ml-[var(--space-xs)] text-[14px] font-normal text-[var(--c-muted)] line-through">
-                                ${course.compareAtPrice}
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                        <p className="m-0 text-[16px] font-semibold leading-[1.35] text-[var(--c-ink)]">
-                          {course.title ?? ''}
-                        </p>
-                        <div className="mt-[var(--space-md)] flex items-center justify-between border-t border-[var(--c-hairline)] pt-[var(--space-md)]">
-                          <span className="inline-flex items-center gap-[var(--space-xs)] text-[14px] text-[var(--c-ink)]">
-                            <Star className="h-4 w-4 text-[var(--c-primary)]" aria-hidden="true" />
-                            {(course.ratingAvg ?? 0).toFixed(1)}
-                          </span>
-                          <span className="text-[14px] text-[var(--c-muted)]">
-                            {(course.studentCount ?? 0).toLocaleString()} {t('instructorDetail.students', 'students')}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
+                      course={course}
+                      testId={`s-05-instructor-detail-ac-2-item-${i}`}
+                      studentsLabel={t('instructorDetail.students', 'students')}
+                    />
                   ))}
                 </div>
               )}

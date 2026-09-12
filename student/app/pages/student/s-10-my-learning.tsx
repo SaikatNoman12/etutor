@@ -26,6 +26,7 @@ import { findAll } from '~/services/httpServices/enrollmentService';
 import type { Enrollment } from '~/types/enrollment';
 import type { EnrollmentRow } from '~/types/view-models';
 import { Search } from 'lucide-react';
+import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 
 /** Defensive extractor — the raw /api/enrollments body may be an array, a
  *  ResponsePayloadDto ({ data }), or a paginated envelope ({ items }). */
@@ -106,12 +107,11 @@ export default function MyLearningPage() {
 
   return (
     <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-10-my-learning-page">
-      <h1
-        className="m-0 mb-[24px] text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
-        data-testid="s-10-my-learning-heading"
-      >
-        {t('learning.title', 'My learning')}
-      </h1>
+      <PageHeading
+        eyebrow={t('learning.eyebrow', '')}
+        title={t('learning.title', '')}
+        testId="s-10-my-learning-heading"
+      />
 
       {/* filter-bar */}
       <div className="mb-[24px] flex flex-wrap items-center gap-[12px]">

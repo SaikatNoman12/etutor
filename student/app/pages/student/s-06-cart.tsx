@@ -32,6 +32,7 @@ import type { Cart } from '~/types/cart';
 import type { CartItem } from '~/types/cart-item';
 import type { CartLine, CartView } from '~/types/view-models';
 import { Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
+import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
 
 /** Cart lines may embed their course; the generated CartItem type only
  *  guarantees courseId/unitPrice/quantity, so widen locally without `any`. */
@@ -208,12 +209,11 @@ export default function CartPage() {
     <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-06-cart-page">
       {/* page-head */}
       <div className="mb-[24px] flex items-end justify-between gap-[16px]">
-        <h1
-          className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
-          data-testid="s-06-cart-heading"
-        >
-          {t('cart.title', 'My cart')}
-        </h1>
+        <PageHeading
+        eyebrow={t('cart.eyebrow', '')}
+        title={t('cart.title', '')}
+        testId="s-06-cart-heading"
+      />
         <button
           type="button"
           onClick={clearCart}

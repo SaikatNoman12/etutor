@@ -18,6 +18,7 @@ import { ROLE_VALUES } from '~/enums/role.enum';
 import { SearchInput } from '~/components/atoms/SearchInput';
 import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { EnrollmentListResponse, EnrollmentRow } from '~/types/view-models';
+import { PageHeading } from '~/components/shared/Placeholder';
 
 const PAGE_SIZE = 10;
 
@@ -122,12 +123,12 @@ export default function AdminEnrollmentListPage() {
           {t('adm08.dashboard', 'Dashboard')}
         </Link>
 
-        <h1
-          data-testid="adm-08-enrollments-heading"
-          className="mb-[16px] text-[20px] font-[600] leading-[1.3] text-[var(--c-ink)]"
-        >
-          {t('adm08.title', 'Enrollments')}
-        </h1>
+        <PageHeading
+        eyebrow={t("admin.enrollments.eyebrow", { defaultValue: "Learning" })}
+        title={t("admin.enrollments.title", { defaultValue: "Enrolments" })}
+        hint={t("admin.enrollments.hint", { defaultValue: "Who has access to what, and how far they are." })}
+        testId="adm-08-enrollments-heading"
+      />
 
         <main data-testid="adm-08-enrollments-main">
           <section data-testid="adm-08-enrollments-ac-1" className={CARD}>

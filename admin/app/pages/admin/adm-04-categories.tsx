@@ -38,6 +38,7 @@ import type { AdminCategoryRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { number, readForm, required, slug as slugRule, validate, type FieldErrors } from '~/utils/validation';
+import { PageHeading } from '~/components/shared/Placeholder';
 
 /** A category row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -298,9 +299,12 @@ export default function AdminCategoryListPage() {
             <span className="px-1.5">/</span>
             <span>{t('admin.categories.title', { defaultValue: 'Categories' })}</span>
           </div>
-          <h1 className="mt-1 text-2xl font-semibold text-foreground" data-testid="adm-04-categories-heading">
-            {t('admin.categories.title', { defaultValue: 'Categories' })}
-          </h1>
+          <PageHeading
+        eyebrow={t("admin.categories.eyebrow", { defaultValue: "Catalogue" })}
+        title={t("admin.categories.title", { defaultValue: "Categories" })}
+        hint={t("admin.categories.hint", { defaultValue: "How the catalogue is organised." })}
+        testId="adm-04-categories-heading"
+      />
         </div>
       </header>
 

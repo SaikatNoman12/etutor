@@ -21,7 +21,7 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { useAppSelector } from '~/hooks/useAppSelector';
 import { listCourses, listCategories, listInstructors } from '~/services/httpServices/catalogueService';
 import type { CourseRow, CategoryCard, InstructorRow } from '~/types/view-models';
-import { Star } from 'lucide-react';
+import { CourseCard } from '~/components/shared/CourseCard';
 import { Reveal } from '~/components/shared/Reveal';
 
 /** Type-safe extraction of a list from an unknown API payload (bare array, {items}, or {data}). */
@@ -121,39 +121,12 @@ export default function HomePage() {
   const recentlyAdded = toArray<CourseRow>(data4).slice(0, 4);
 
   const renderCourseCard = (course: CourseRow, testId: string) => (
-    <Link
+    <CourseCard
       key={course.id}
-      to={`/courses/${course.slug}`}
-      data-testid={testId}
-      className="et-lift group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)]"
-    >
-      <div className="h-[180px] w-full overflow-hidden bg-[var(--c-canvas)]">
-        <Media src={course.thumbnailUrl ?? undefined} alt={course.title ?? ""} />
-      </div>
-      <div className="flex flex-col gap-[8px] p-[16px]">
-        <div className="flex items-center justify-between gap-[8px]">
-          <span className="inline-flex items-center rounded-full bg-[var(--c-primary-soft)] px-[8px] py-[2px] text-[12px] font-medium text-[var(--c-primary-text)]">
-            {course.category?.name ?? ''}
-          </span>
-          <span className="text-[16px] font-bold text-[var(--c-primary-text)]">
-            ${course.price ?? 0}
-            {course.compareAtPrice != null && course.compareAtPrice > (course.price ?? 0) && (
-              <span className="ml-[4px] text-[14px] font-normal text-[var(--c-muted)] line-through">${course.compareAtPrice}</span>
-            )}
-          </span>
-        </div>
-        <p className="text-[16px] font-semibold leading-[1.35] text-[var(--c-ink)]">{course.title}</p>
-        <div className="mt-[12px] flex items-center justify-between border-t border-[var(--c-hairline)] pt-[12px]">
-          <span className="inline-flex min-h-[36px] items-center gap-[4px] text-[14px] text-[var(--c-ink)]">
-            <Star className="h-[14px] w-[14px] text-[var(--c-primary-text)]" aria-hidden="true" />
-            {course.ratingAvg != null ? (course.ratingAvg ?? 0).toFixed(1) : '0.0'}
-          </span>
-          <span className="text-[14px] text-[var(--c-muted)]">
-            {(course.studentCount ?? 0).toLocaleString()} {t('home.students', 'students')}
-          </span>
-        </div>
-      </div>
-    </Link>
+      course={course}
+      testId={testId}
+      studentsLabel={t('home.students', 'students')}
+    />
   );
 
   return (

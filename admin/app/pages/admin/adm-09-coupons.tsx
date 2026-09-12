@@ -34,6 +34,7 @@ import type { AdminCouponRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { number, readForm, required, validate, type FieldErrors } from '~/utils/validation';
+import { PageHeading } from '~/components/shared/Placeholder';
 
 /** A coupon row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -335,9 +336,12 @@ export default function AdminCouponListPage() {
             <span className="px-1.5">/</span>
             <span>{t('admin.coupons.title', { defaultValue: 'Coupons' })}</span>
           </div>
-          <h1 className="mt-1 text-2xl font-semibold text-foreground" data-testid="adm-09-coupons-heading">
-            {t('admin.coupons.title', { defaultValue: 'Coupons' })}
-          </h1>
+          <PageHeading
+        eyebrow={t("admin.coupons.eyebrow", { defaultValue: "Sales" })}
+        title={t("admin.coupons.title", { defaultValue: "Coupons" })}
+        hint={t("admin.coupons.hint", { defaultValue: "Discount codes and how they are performing." })}
+        testId="adm-09-coupons-heading"
+      />
         </div>
       </header>
 

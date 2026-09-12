@@ -25,6 +25,8 @@ import { order_status } from '~/enums/order-status.enum';
 
 import { cn } from '~/lib/utils';
 import type { DashboardOrderRow, DashboardStats, OrdersListResponse } from '~/types/view-models';
+import { BookOpen, ReceiptText, TrendingUp, Users } from 'lucide-react';
+import { PageHeading } from '~/components/shared/Placeholder';
 
 const STATUS_STYLES: Record<number, string> = {
   [order_status.PAID]: 'bg-emerald-100 text-emerald-700',
@@ -113,24 +115,34 @@ export default function AdminDashboardPage() {
     };
   }, [dispatch]);
 
+  // An icon and a tint per metric: four bare numbers in four identical boxes is
+  // a table pretending to be a dashboard.
   const kpis = [
     {
       key: 'published-courses',
+      Icon: BookOpen,
+      tint: 'var(--c-primary)',
       label: t('admin.dashboard.kpi.publishedCourses', 'Published courses'),
       value: formatCount(stats?.publishedCourses),
     },
     {
       key: 'students',
+      Icon: Users,
+      tint: 'var(--c-accent)',
       label: t('admin.dashboard.kpi.students', 'Students'),
       value: formatCount(stats?.students),
     },
     {
       key: 'paid-orders',
+      Icon: ReceiptText,
+      tint: '#b45309',
       label: t('admin.dashboard.kpi.paidOrders', 'Paid orders (30d)'),
       value: formatCount(stats?.paidOrders30d),
     },
     {
       key: 'revenue',
+      Icon: TrendingUp,
+      tint: '#0f766e',
       label: t('admin.dashboard.kpi.revenue', 'Revenue (30d)'),
       value: formatCurrency(stats?.revenue30d),
     },
@@ -146,6 +158,12 @@ export default function AdminDashboardPage() {
       data-role={role}
       data-is-admin={isAdmin ? 'true' : 'false'}
     >
+      <PageHeading
+        eyebrow={t('admin.dashboard.eyebrow', { defaultValue: 'Console' })}
+        title={t('admin.dashboard.title', { defaultValue: 'Dashboard' })}
+        hint={t('admin.dashboard.hint', { defaultValue: 'Catalogue, sales and enrolments at a glance.' })}
+        testId="adm-01-dashboard-heading"
+      />
       <div className="flex items-center gap-2 text-[14px] text-muted-foreground">
         <Link to="/" className="hover:text-foreground" data-testid="adm-01-dashboard-home-link">
           {t('admin.dashboard.home', 'Home')}
@@ -186,11 +204,29 @@ export default function AdminDashboardPage() {
               {kpis.map((kpi) => (
                 <div
                   key={kpi.key}
-                  className={cn(CARD, 'flex flex-col gap-2')}
+                  className={cn(CARD, 'et-lift relative flex flex-col gap-3 overflow-hidden')}
                   data-testid={`adm-01-dashboard-kpi-${kpi.key}`}
                 >
-                  <span className="text-[28px] font-bold leading-tight text-foreground">{kpi.value}</span>
-                  <span className="text-[14px] text-muted-foreground">{kpi.label}</span>
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 top-0 h-[3px]"
+                    style={{ background: kpi.tint }}
+                  />
+                  <span
+                    className="inline-flex h-[38px] w-[38px] items-center justify-center rounded-[var(--radius-md)]"
+                    style={{ background: `color-mix(in srgb, ${kpi.tint} 12%, transparent)`, color: kpi.tint }}
+                  >
+                    <kpi.Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+                  </span>
+                  <span
+                    className="text-[30px] font-extrabold leading-none tracking-[-0.02em] text-foreground"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    {kpi.value}
+                  </span>
+                  <span className="text-[13px] font-medium uppercase tracking-[0.6px] text-muted-foreground">
+                    {kpi.label}
+                  </span>
                 </div>
               ))}
             </div>

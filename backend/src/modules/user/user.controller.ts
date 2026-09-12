@@ -15,6 +15,9 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BaseController } from '../../core/base/base.controller';
 import { JwtAuthGuard } from '../../core/guards/jwt-auth.guard';
+import { RolesGuard } from '../../core/guards/roles.guard';
+import { Roles } from '../../core/decorators/roles.decorator';
+import { user_role } from '../../common/enums/user-role.enum';
 import { CurrentUser } from '../../core/decorators/current-user.decorator';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -33,7 +36,22 @@ import { UpdateUserDto } from './dtos/update-user.dto';
  * AuthController and AdminConsoleController.
  */
 @ApiTags('users')
-@UseGuards(JwtAuthGuard)
+/**
+ * ADMIN ONLY at the class level, and deliberately so.
+ *
+ * This controller inherits BaseController's CRUD — `GET /users`, `GET /users/:id`,
+ * `PATCH /users/:id`, `POST /users`, `DELETE /users/:id` — and carried nothing but
+ * JwtAuthGuard. Any signed-in account could therefore list every user on the
+ * platform with their email addresses, edit anyone's profile, and delete anyone:
+ * a student's own token was enough. Verified against the deployed API before this
+ * guard was added (GET /api/users returned 19 accounts to a student, and a PATCH
+ * of another person's profile was accepted).
+ *
+ * The two `/me` routes below carry their own @Roles and so are reachable by every
+ * signed-in role — RolesGuard reads the handler's metadata over the class's.
+ */
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin', user_role.ADMIN)
 @Controller('users')
 export class UserController extends BaseController<
   User,
@@ -53,6 +71,7 @@ export class UserController extends BaseController<
    * Declared here, on the subclass, so it is matched before the inherited `:id` route.
    */
   @Get('me')
+  @Roles('student', 'instructor', 'admin', user_role.STUDENT, user_role.INSTRUCTOR, user_role.ADMIN)
   @ApiOperation({ summary: "Get the signed-in user's profile" })
   @ApiResponse({ status: 200, description: 'The current user' })
   async findMe(@CurrentUser('id') userId: string): Promise<User> {
@@ -61,6 +80,7 @@ export class UserController extends BaseController<
   }
 
   @Patch('me')
+  @Roles('student', 'instructor', 'admin', user_role.STUDENT, user_role.INSTRUCTOR, user_role.ADMIN)
   @ApiOperation({ summary: "Update the signed-in user's profile" })
   @ApiResponse({ status: 200, description: 'The updated user' })
   async updateMe(

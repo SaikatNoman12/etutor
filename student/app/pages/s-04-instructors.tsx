@@ -26,6 +26,7 @@ import { listInstructors } from '~/services/httpServices/catalogueService';
 import { Search } from 'lucide-react';
 import type { InstructorRow } from '~/types/view-models';
 import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
+import { useDebouncedValue } from '~/hooks/useDebouncedValue';
 
 /** One row of GET /api/instructors → { items: [...] }. The catalogue returns
  *  id/name/headline/courseCount/studentCount; there is no avatar field, so the
@@ -66,20 +67,24 @@ export default function InstructorListPage() {
   const [loading2, setLoading2] = useState<boolean>(true);
   const [error2, setError2] = useState<string | null>(null);
 
-  // Client-side search over the visible directory (drives the grid from data1).
   const [search, setSearch] = useState<string>('');
+  // The box searched an array this page had already downloaded, so it could only
+  // ever find the instructors on screen. GET /api/instructors has taken ?search=
+  // (ILIKE over name and headline) since it was written — ask the database.
+  const term = useDebouncedValue(search, 250);
 
   // Primary directory — GET /api/instructors via the catalogue read thunk.
   useEffect(() => {
     let cancelled = false;
     setLoading1(true);
     setError1(null);
-    dispatch(listInstructors(undefined)).unwrap()
+    const q = term.trim();
+    dispatch(listInstructors(q ? { search: q } : undefined)).unwrap()
       .then((d) => { if (!cancelled) setData1(d); })
       .catch((e: unknown) => { if (!cancelled) setError1(e instanceof Error ? e.message : 'Failed to load'); })
       .finally(() => { if (!cancelled) setLoading1(false); });
     return () => { cancelled = true; };
-  }, [dispatch]);
+  }, [dispatch, term]);
   // Acceptance-criteria variant — server-side name search (?search=james).
   useEffect(() => {
     let cancelled = false;
@@ -94,14 +99,8 @@ export default function InstructorListPage() {
 
   const allInstructors = useMemo<InstructorRow[]>(() => extractInstructors(data1), [data1]);
 
-  const filtered = useMemo<InstructorRow[]>(() => {
-    const term = search.trim().toLowerCase();
-    if (!term) return allInstructors;
-    return allInstructors.filter((ins) =>
-      (ins.name ?? '').toLowerCase().includes(term) ||
-      (ins.headline ?? '').toLowerCase().includes(term),
-    );
-  }, [allInstructors, search]);
+  // The server has already applied the search; the grid shows what it returned.
+  const filtered = allInstructors;
 
   return (
     <div className="mx-auto w-full max-w-[1240px]" data-testid="s-04-instructors-page">
@@ -113,7 +112,7 @@ export default function InstructorListPage() {
         title={t('instructors.title', '')}
         testId="s-04-instructors-heading"
       />
-          <p className="m-0 text-[14px] font-normal leading-[1.5] text-[var(--c-muted)]">
+          <p className="text-[14px] font-normal leading-[1.5] text-[var(--c-muted)]">
             {filtered.length} {t('instructors.count', 'instructors')}
           </p>
         </div>
@@ -153,7 +152,7 @@ export default function InstructorListPage() {
             className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-04-instructors-ac-1-error"
           >
-            <p className="m-0 text-[15px] text-[var(--c-error)]">
+            <p className="text-[15px] text-[var(--c-error)]">
               {t('instructors.loadError', 'We could not load the instructors. Please try again.')}
             </p>
             <button
@@ -172,7 +171,7 @@ export default function InstructorListPage() {
             className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-04-instructors-empty"
           >
-            <p className="m-0 text-[15px] text-[var(--c-muted)]">
+            <p className="text-[15px] text-[var(--c-muted)]">
               {t('instructors.empty', 'No instructors found.')}
             </p>
           </div>
@@ -194,13 +193,13 @@ export default function InstructorListPage() {
                     initials(ins.name)
                   )}
                 </span>
-                <p className="m-0 text-[16px] font-semibold leading-[1.35] text-[var(--c-ink)]">
+                <p className="text-[16px] font-semibold leading-[1.35] text-[var(--c-ink)]">
                   {ins.name ?? ''}
                 </p>
-                <p className="m-0 text-[14px] font-normal leading-[1.5] text-[var(--c-muted)]">
+                <p className="text-[14px] font-normal leading-[1.5] text-[var(--c-muted)]">
                   {ins.headline ?? ''}
                 </p>
-                <p className="m-0 text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
+                <p className="text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
                   {ins.courseCount ?? 0} {t('instructors.courses', 'courses')} · {(ins.studentCount ?? 0).toLocaleString()} {t('instructors.students', 'students')}
                 </p>
               </Link>

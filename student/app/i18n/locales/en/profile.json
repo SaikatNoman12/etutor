@@ -17,5 +17,12 @@
   "enrolledCourses": "Enrolled courses",
   "paidOrders": "Paid orders",
   "signOut": "Sign out",
-  "home": "Home"
+  "home": "Home",
+  "photoSaved": "Photo updated",
+  "photoSaving": "Uploading…",
+  "photoHint": "JPG or PNG. Cropped to a square.",
+  "photoTooLarge": "That image is larger than {{mb}}MB. Pick a smaller one.",
+  "photoNotImage": "That file is not an image.",
+  "photoUnreadable": "That image could not be read.",
+  "photoFailed": "Could not update your photo"
 }

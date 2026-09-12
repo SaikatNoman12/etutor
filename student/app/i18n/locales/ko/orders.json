@@ -13,5 +13,8 @@
   "emptyGuest": "Sign in to view your orders.",
   "view": "View",
   "home": "Home",
-  "viewDetail": "View order"
+  "viewDetail": "View order",
+  "pagination": "페이지 이동",
+  "prevPage": "이전 페이지",
+  "nextPage": "다음 페이지"
 }

@@ -183,7 +183,7 @@ export default function CourseDetailPage() {
             className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-03-course-detail-ac-1-error"
           >
-            <p className="m-0 text-[15px] text-[var(--c-error)]">
+            <p className="text-[15px] text-[var(--c-error)]">
               {t('courseDetail.loadError', 'We could not load this course. Please try again.')}
             </p>
             <button
@@ -202,7 +202,7 @@ export default function CourseDetailPage() {
             className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-03-course-detail-empty"
           >
-            <p className="m-0 text-[15px] text-[var(--c-muted)]">
+            <p className="text-[15px] text-[var(--c-muted)]">
               {t('courseDetail.empty', 'This course is not available.')}
             </p>
           </div>
@@ -221,7 +221,7 @@ export default function CourseDetailPage() {
                     </span>
                   )}
                   <h1
-                    className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
+                    className="text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
                     data-testid="s-03-course-detail-heading"
                   >
                     {course.title ?? ''}
@@ -340,7 +340,7 @@ export default function CourseDetailPage() {
                   <h2 className="mb-[12px] text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
                     {t('courseDetail.about', 'About this course')}
                   </h2>
-                  <p className="m-0 text-[15px] leading-[1.6] text-[var(--c-body)]">
+                  <p className="text-[15px] leading-[1.6] text-[var(--c-body)]">
                     {course.description ?? course.summary ?? ''}
                   </p>
                 </div>
@@ -407,7 +407,7 @@ export default function CourseDetailPage() {
 
                   <div className="h-px w-full bg-[var(--c-hairline)]" />
 
-                  <p className="m-0 text-[16px] font-semibold text-[var(--c-ink)]">
+                  <p className="text-[16px] font-semibold text-[var(--c-ink)]">
                     {t('courseDetail.included', 'What is included')}
                   </p>
                   <div className="flex items-center gap-[12px]">

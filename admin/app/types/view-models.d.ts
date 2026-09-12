@@ -53,6 +53,9 @@ export type AdminCourseRow = {
   studentCount?: number | string;
   categoryId?: string;
   instructorId?: string;
+  level?: string | number;
+  summary?: string | null;
+  thumbnailUrl?: string | null;
   category?: { name?: string } | null;
   instructor?: { name?: string; firstName?: string; lastName?: string } | null;
   categoryName?: string;

@@ -159,16 +159,33 @@ export class CartManagementService {
     const cart = await this.getOrCreateForUser(userId);
     const coupon = await this.coupons.findByCode(code);
 
+    // One sentence for five different causes told the shopper nothing they could
+    // act on — a typo, a code that ran out and a code that starts next week all
+    // read the same. Say which one it is.
     const now = new Date();
-    const usable =
-      !!coupon &&
-      coupon.isActive &&
-      (!coupon.validFrom || coupon.validFrom <= now) &&
-      (!coupon.validUntil || coupon.validUntil >= now) &&
-      (coupon.maxUses === 0 || coupon.usedCount < coupon.maxUses);
-    if (!coupon || !usable) {
+    if (!coupon) {
       throw new UnprocessableEntityException(
-        'This coupon is invalid, expired, or fully redeemed!',
+        `We could not find a coupon with the code "${code}".`,
+      );
+    }
+    if (!coupon.isActive) {
+      throw new UnprocessableEntityException(
+        'That coupon is no longer available.',
+      );
+    }
+    if (coupon.validFrom && coupon.validFrom > now) {
+      throw new UnprocessableEntityException(
+        `That coupon can be used from ${coupon.validFrom.toISOString().slice(0, 10)}.`,
+      );
+    }
+    if (coupon.validUntil && coupon.validUntil < now) {
+      throw new UnprocessableEntityException(
+        `That coupon expired on ${coupon.validUntil.toISOString().slice(0, 10)}.`,
+      );
+    }
+    if (coupon.maxUses !== 0 && coupon.usedCount >= coupon.maxUses) {
+      throw new UnprocessableEntityException(
+        'That coupon has been fully redeemed.',
       );
     }
 

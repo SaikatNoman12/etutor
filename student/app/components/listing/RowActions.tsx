@@ -6,6 +6,13 @@
  * read-only role gets a shorter menu rather than a row of dead buttons.
  * If no action survives, the whole control renders nothing.
  *
+ * The menu is rendered into <body> and positioned from the trigger's rect
+ * rather than absolutely inside the row. A table sits in a horizontal scroll
+ * container, and `overflow-x: auto` makes the vertical axis a scroll port too —
+ * so an absolutely-positioned menu on the LAST row was clipped by the table and
+ * grew a scrollbar instead of opening over the page. The same measurement
+ * flips the menu above the trigger when the viewport has no room below it.
+ *
  * Usage:
  *   <RowActions
  *     testId={`user-${row.id}`}
@@ -14,8 +21,10 @@
  *     onDelete={canDelete ? () => confirmDelete(row) : undefined}
  *   />
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { MoreHorizontal } from 'lucide-react';
 
 export interface RowActionsProps {
   testId: string;
@@ -26,18 +35,59 @@ export interface RowActionsProps {
   extra?: { label: string; onSelect: () => void; destructive?: boolean }[];
 }
 
+/** Gap between trigger and menu, and the margin kept from the viewport edge. */
+const GAP = 6;
+const EDGE = 8;
+
 export function RowActions({ testId, onView, onEdit, onDelete, extra }: RowActionsProps) {
   const { t } = useTranslation('common');
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Measure before paint so the menu never appears in the wrong place first.
+  useLayoutEffect(() => {
+    if (!open) return;
+    function place() {
+      const trigger = triggerRef.current;
+      const menu = menuRef.current;
+      if (!trigger || !menu) return;
+      const r = trigger.getBoundingClientRect();
+      const h = menu.offsetHeight;
+      const w = menu.offsetWidth;
+      const roomBelow = window.innerHeight - r.bottom;
+      const flipUp = roomBelow < h + GAP + EDGE && r.top > h + GAP + EDGE;
+      const top = flipUp ? r.top - h - GAP : r.bottom + GAP;
+      const left = Math.min(Math.max(EDGE, r.right - w), window.innerWidth - w - EDGE);
+      setPos({ top, left });
+    }
+    place();
+    // `true` — catch scrolling inside the table's own scroll container too.
+    window.addEventListener('scroll', place, true);
+    window.addEventListener('resize', place);
+    return () => {
+      window.removeEventListener('scroll', place, true);
+      window.removeEventListener('resize', place);
+    };
+  }, [open]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setPos(null);
+      return;
+    }
     function onDocClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      // The menu is a portal, so it is NOT inside the trigger's subtree.
+      if (triggerRef.current?.contains(target) || menuRef.current?.contains(target)) return;
+      setOpen(false);
     }
     function onEsc(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
     }
     document.addEventListener('mousedown', onDocClick);
     document.addEventListener('keydown', onEsc);
@@ -57,37 +107,51 @@ export function RowActions({ testId, onView, onEdit, onDelete, extra }: RowActio
   // No permitted action → no menu. Better than a ⋯ that opens onto nothing.
   if (items.length === 0) return null;
 
+  const menu = (
+    <div
+      role="menu"
+      ref={menuRef}
+      className="row-menu et-enter"
+      style={{
+        top: pos ? pos.top : 0,
+        left: pos ? pos.left : 0,
+        // First paint is the measuring pass; hide it rather than show a jump.
+        visibility: pos ? 'visible' : 'hidden',
+      }}
+    >
+      {items.map((item) => (
+        <button
+          key={item.label}
+          type="button"
+          role="menuitem"
+          className={item.destructive ? 'row-menu-item is-danger' : 'row-menu-item'}
+          onClick={() => {
+            setOpen(false);
+            item.onSelect();
+          }}
+          data-testid={testId + '-action-' + item.label.toLowerCase().replace(/\s+/g, '-')}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
-    <div className="row-actions" ref={ref}>
+    <div className="row-actions">
       <button
         type="button"
+        ref={triggerRef}
+        className="row-actions-trigger"
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={t('actions.rowMenu', { defaultValue: 'Row actions' })}
         onClick={() => setOpen((v) => !v)}
         data-testid={testId + '-actions'}
       >
-        &#8943;
+        <MoreHorizontal className="h-[18px] w-[18px]" aria-hidden="true" />
       </button>
-      {open && (
-        <div role="menu" className="row-actions-menu">
-          {items.map((item) => (
-            <button
-              key={item.label}
-              type="button"
-              role="menuitem"
-              className={item.destructive ? 'is-destructive' : undefined}
-              onClick={() => {
-                setOpen(false);
-                item.onSelect();
-              }}
-              data-testid={testId + '-action-' + item.label.toLowerCase().replace(/\s+/g, '-')}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-      )}
+      {open && typeof document !== 'undefined' && createPortal(menu, document.body)}
     </div>
   );
 }

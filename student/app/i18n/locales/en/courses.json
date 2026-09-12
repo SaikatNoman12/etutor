@@ -16,5 +16,7 @@
   "empty": "No courses match your filters yet.",
   "students": "Students",
   "pagination": "Pagination",
-  "home": "Home"
+  "home": "Home",
+  "prevPage": "Previous page",
+  "nextPage": "Next page"
 }

@@ -164,13 +164,6 @@ export default function AdminDashboardPage() {
         hint={t('admin.dashboard.hint', { defaultValue: 'Catalogue, sales and enrolments at a glance.' })}
         testId="adm-01-dashboard-heading"
       />
-      <div className="flex items-center gap-2 text-[14px] text-muted-foreground">
-        <Link to="/" className="hover:text-foreground" data-testid="adm-01-dashboard-home-link">
-          {t('admin.dashboard.home', 'Home')}
-        </Link>
-        <span aria-hidden="true">/</span>
-        <span className="font-medium text-foreground">{t('admin.dashboard.title', 'Dashboard')}</span>
-      </div>
       <h1 className="sr-only" data-testid="adm-01-dashboard-heading">
         {t('admin.dashboard.title', 'Dashboard')}
       </h1>

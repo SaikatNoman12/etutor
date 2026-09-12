@@ -1,7 +1,7 @@
 {
   "loading": "Loading",
   "actions": "Actions",
-  "selectedCount": "Selected count",
+  "selectedCount": "{{count}} selected",
   "clear": "Clear",
   "editEntity": "Edit entity",
   "createEntity": "Create entity",

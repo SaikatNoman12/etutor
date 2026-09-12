@@ -1,4 +1,5 @@
 import { PlayCircle, FileText } from 'lucide-react';
+import { isHtml, sanitizeLessonHtml } from '~/utils/lessonHtml';
 
 /**
  * What a lesson IS, on screen.
@@ -35,9 +36,48 @@ export function embedFor(url: string): { kind: 'youtube' | 'vimeo' | 'file' | 'u
   return { kind: 'unknown', src: url };
 }
 
-export function LessonStage({ lesson, emptyLabel, articleLabel }: { lesson: StageLesson | null; emptyLabel: string; articleLabel: string }) {
+/**
+ * The written part of a lesson. The console now authors it with a rich-text
+ * editor, so it is HTML — passed through the allowlist in `lessonHtml` before it
+ * is rendered. Anything written before that (and the seed) is plain text, and
+ * keeps its line breaks.
+ */
+export function LessonBody({ content, className = '' }: { content: string; className?: string }) {
+  const base = 'lesson-prose text-[16px] leading-[1.75] text-[var(--c-body)]';
+  if (isHtml(content)) {
+    return (
+      <div
+        className={`${base} ${className}`}
+        data-testid="lesson-body"
+        dangerouslySetInnerHTML={{ __html: sanitizeLessonHtml(content) }}
+      />
+    );
+  }
+  return (
+    <div className={`${base} whitespace-pre-line ${className}`} data-testid="lesson-body">
+      {content}
+    </div>
+  );
+}
+
+export function LessonStage({
+  lesson,
+  emptyLabel,
+  articleLabel,
+  quizLabel,
+  liveLabel,
+}: {
+  lesson: StageLesson | null;
+  emptyLabel: string;
+  articleLabel: string;
+  quizLabel?: string;
+  liveLabel?: string;
+}) {
   const url = lesson?.videoUrl?.trim() || '';
-  const isArticle = lesson?.contentType === 2 && !url;
+  // Any lesson with written material and no video shows the material — a quiz or
+  // a live session carries its questions and joining details here, and used to
+  // render as "no video yet" with the text nowhere on the page.
+  const isArticle = !url && Boolean(lesson?.content);
   const frame = 'aspect-video w-full overflow-hidden rounded-[var(--radius-lg)] bg-[var(--c-ink)] shadow-[var(--shadow-2)]';
 
   if (url) {
@@ -75,11 +115,13 @@ export function LessonStage({ lesson, emptyLabel, articleLabel }: { lesson: Stag
         data-testid="lesson-stage"
         data-kind="article"
       >
-        <p className="m-0 mb-[10px] inline-flex items-center gap-[6px] text-[12px] font-bold uppercase tracking-[1px] text-[var(--c-primary-text)]">
+        <p className="mb-[10px] inline-flex items-center gap-[6px] text-[12px] font-bold uppercase tracking-[1px] text-[var(--c-primary-text)]">
           <FileText className="h-[14px] w-[14px]" aria-hidden="true" />
-          {articleLabel}
+          {lesson?.contentType === 3 ? (quizLabel ?? articleLabel)
+            : lesson?.contentType === 4 ? (liveLabel ?? articleLabel)
+            : articleLabel}
         </p>
-        <div className="whitespace-pre-line text-[16px] leading-[1.75] text-[var(--c-body)]">{lesson.content}</div>
+        <LessonBody content={lesson.content} />
       </article>
     );
   }
@@ -87,7 +129,7 @@ export function LessonStage({ lesson, emptyLabel, articleLabel }: { lesson: Stag
   return (
     <div className={`${frame} flex flex-col items-center justify-center gap-[10px] text-[rgb(255_255_255/0.7)]`} data-testid="lesson-stage" data-kind="empty">
       <PlayCircle className="h-[36px] w-[36px]" aria-hidden="true" />
-      <p className="m-0 text-[14px]">{emptyLabel}</p>
+      <p className="text-[14px]">{emptyLabel}</p>
     </div>
   );
 }

@@ -155,7 +155,7 @@ export default function InstructorDetailPage() {
                   className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[var(--space-xl)] text-center shadow-[var(--shadow-1)]"
                   data-testid="s-05-instructor-detail-ac-1-error"
                 >
-                  <p className="m-0 text-[15px] text-[var(--c-error)]">
+                  <p className="text-[15px] text-[var(--c-error)]">
                     {t('instructorDetail.profileError', 'We could not load this instructor.')}
                   </p>
                 </div>
@@ -206,7 +206,7 @@ export default function InstructorDetailPage() {
                   className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[var(--space-xl)] text-center shadow-[var(--shadow-1)]"
                   data-testid="s-05-instructor-detail-ac-2-error"
                 >
-                  <p className="m-0 text-[15px] text-[var(--c-error)]">
+                  <p className="text-[15px] text-[var(--c-error)]">
                     {t('instructorDetail.coursesError', 'We could not load these courses. Please try again.')}
                   </p>
                   <button
@@ -225,7 +225,7 @@ export default function InstructorDetailPage() {
                   className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[var(--space-xl)] text-center shadow-[var(--shadow-1)]"
                   data-testid="s-05-instructor-detail-ac-2-empty"
                 >
-                  <p className="m-0 text-[15px] text-[var(--c-muted)]">
+                  <p className="text-[15px] text-[var(--c-muted)]">
                     {t('instructorDetail.coursesEmpty', 'This instructor has not published any courses yet.')}
                   </p>
                 </div>

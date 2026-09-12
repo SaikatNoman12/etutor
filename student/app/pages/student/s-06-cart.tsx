@@ -259,7 +259,7 @@ export default function CartPage() {
             className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
             data-testid="s-06-cart-ac-1-error"
           >
-            <p className="m-0 text-[15px] text-[var(--c-error)]">
+            <p className="text-[15px] text-[var(--c-error)]">
               {t('cart.loadError', 'We could not load your cart. Please try again.')}
             </p>
             <button
@@ -281,7 +281,7 @@ export default function CartPage() {
             <span className="inline-flex h-[64px] w-[64px] items-center justify-center rounded-[9999px] bg-[var(--c-surface-soft)] text-[var(--c-muted)]">
               <ShoppingCart className="h-8 w-8" aria-hidden="true" />
             </span>
-            <p className="m-0 text-[16px] text-[var(--c-body)]">{t('cart.empty', 'Your cart is empty.')}</p>
+            <p className="text-[16px] text-[var(--c-body)]">{t('cart.empty', 'Your cart is empty.')}</p>
             <Link
               to="/courses"
               className="inline-flex min-h-[44px] items-center justify-center et-press et-sheen rounded-[var(--radius-pill)] bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
@@ -352,7 +352,7 @@ export default function CartPage() {
 
             {/* order summary */}
             <div className="sticky top-[88px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
-              <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
+              <h2 className="text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
                 {t('cart.orderSummary', 'Order summary')}
               </h2>
               <div className="flex items-center justify-between">

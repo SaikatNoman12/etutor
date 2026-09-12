@@ -8,5 +8,7 @@
   "complete": "Complete",
   "review": "Review",
   "continue": "Continue",
-  "home": "Home"
+  "home": "Home",
+  "finished": "Finished",
+  "progress": "Progress"
 }

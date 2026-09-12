@@ -6,7 +6,7 @@
 //
 // Restyled by convert-pages to mirror design/html/admin/ADM-03-course-detail.html.
 // Scope-locked parts preserved verbatim: every data-testid, the default export,
-// and the fetch + loading/error/empty data wiring (updateCourses2 / createLessons3
+// and the fetch + loading/error/empty data wiring (updateCourses2
 // / removeLessons4). Presentation + real data binding added around them.
 
 import { useEffect, useState } from 'react';
@@ -28,6 +28,10 @@ import { useRowSelection } from '~/components/listing/useRowSelection';
 import { SearchInput } from '~/components/atoms/SearchInput';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import type { CourseDetail, LessonRow } from '~/types/view-models';
+import { useSlugField } from '~/hooks/useSlugField';
+import { RichTextEditor } from '~/components/ui/rich-text-editor';
+import { ImageUrlField } from '~/components/shared/ImageUrlField';
+import { getApiErrorMessage } from '~/utils/apiError';
 
 const CARD = 'rounded-[var(--radius-xl)] border border-border bg-card p-6 shadow-sm';
 const INPUT =
@@ -57,6 +61,27 @@ function toItems(res: unknown): Record<string, unknown>[] {
 }
 
 const titleCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+
+/** Sentinel for the "new section" choice in the lesson dialog's section picker. */
+const NEW_SECTION = '__new__';
+
+/** Numeric lesson_type → the word the table shows. */
+function typeOf(value: unknown): string {
+  const n = Number(value);
+  const hit = Object.entries(lesson_type).find(([, v]) => v === n);
+  return hit ? titleCase(hit[0]) : '';
+}
+
+/**
+ * What each lesson type MEANS — the picker offered four words and explained
+ * none of them, so "Quiz" and "Live" were guesses. Shown under the picker.
+ */
+const TYPE_HELP: Record<number, { en: string }> = {
+  [lesson_type.VIDEO]: { en: 'A recorded video the student watches. Needs a video URL.' },
+  [lesson_type.ARTICLE]: { en: 'Written material the student reads. Put the text in Article / notes.' },
+  [lesson_type.QUIZ]: { en: 'Questions the student answers to check what they learnt. Write them in Article / notes until the quiz builder lands.' },
+  [lesson_type.LIVE]: { en: 'A scheduled live session. Put the meeting link in Video URL and the date and joining details in Article / notes.' },
+};
 const optId = (o: Record<string, unknown>) => String(o.id ?? o._id ?? '');
 const optName = (o: Record<string, unknown>) => String(o.name ?? o.title ?? o.fullName ?? '');
 
@@ -105,28 +130,6 @@ export default function AdminCourseDetailPage() {
       setLoading2(false);
     }
   };
-  const [loading3, setLoading3] = useState<boolean>(false);
-  const createLessons3 = async () => {
-    if (!id) return;
-    setLoading3(true);
-    const __body: Record<string, unknown> = {};
-    if (typeof document !== 'undefined') {
-      const __sect = document.querySelector('[data-testid="adm-03-course-detail-ac-3"]');
-      __sect?.querySelectorAll('input, textarea, select').forEach((el) => {
-        const __el = el as HTMLInputElement; const n = __el.name; const v = __el.value;
-        if (n && v) __body[n] = __el.type === 'number' ? Number(v) : v;
-      });
-    }
-    try {
-      await addLesson(id, __body);
-      toast.success(t('admin.courseDetail.lessonAdded', { defaultValue: 'Lesson added' }));
-      reload();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : t('admin.courseDetail.lessonAddFailed', { defaultValue: 'Could not add the lesson' }));
-    } finally {
-      setLoading3(false);
-    }
-  };
   const [loading4, setLoading4] = useState<boolean>(false);
   const removeLesson = async (lessonId: string) => {
     if (!lessonId) return;
@@ -166,6 +169,12 @@ export default function AdminCourseDetailPage() {
   const [instructors, setInstructors] = useState<Record<string, unknown>[]>([]);
   const [addOpen, setAddOpen] = useState<boolean>(false);
   const [lessonQuery, setLessonQuery] = useState<string>('');
+  // A lesson lives under a SECTION, and a freshly created course has none — so
+  // the form offers the course's sections and lets the operator name a new one.
+  const [lessonSection, setLessonSection] = useState<string>('');
+  const [lessonType, setLessonType] = useState<string>(String(lesson_type.VIDEO));
+  const [lessonContent, setLessonContent] = useState<string>('');
+  const [lessonError, setLessonError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -188,13 +197,46 @@ export default function AdminCourseDetailPage() {
   // course to nothing.
   const [categoryId, setCategoryId] = useState<string>('');
   const [instructorId, setInstructorId] = useState<string>('');
+  // The slug follows the title, but only while it is blank — a published course
+  // keeps the URL it already has when someone rewords its title.
+  const slugField = useSlugField();
+  const [thumbnail, setThumbnail] = useState<string>('');
   useEffect(() => {
     if (!course) return;
     setCategoryId(String(course.categoryId ?? ''));
     setInstructorId(String(course.instructorId ?? ''));
-  }, [course?.id, course?.categoryId, course?.instructorId]);
+    slugField.reset(course.slug ? String(course.slug) : '');
+    setThumbnail(course.thumbnailUrl ? String(course.thumbnailUrl) : '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [course?.id, course?.categoryId, course?.instructorId, course?.slug, course?.thumbnailUrl]);
 
-  const lessons: LessonRow[] = Array.isArray(course?.lessons) ? (course!.lessons as LessonRow[]) : [];
+  const sections: { id: string; title: string }[] = Array.isArray(course?.sections)
+    ? (course!.sections as { id?: unknown; title?: unknown }[]).map((sec) => ({
+        id: String(sec.id ?? ''),
+        title: String(sec.title ?? ''),
+      })).filter((sec) => sec.id)
+    : [];
+
+  /**
+   * The payload carries lessons nested under `sections[]`, never as a flat
+   * `course.lessons` — so this table read a field that does not exist and every
+   * course, however full its syllabus, showed "No lessons yet". Flatten it, and
+   * carry the section name down so the Section column has something to say.
+   */
+  const lessons: LessonRow[] = Array.isArray(course?.sections)
+    ? (course!.sections as { id?: unknown; title?: unknown; lessons?: unknown }[]).flatMap((sec) =>
+        (Array.isArray(sec.lessons) ? (sec.lessons as Record<string, unknown>[]) : []).map((l) => ({
+          id: String(l.id ?? ''),
+          order: typeof l.displayOrder === 'number' ? l.displayOrder : undefined,
+          section: String(sec.title ?? ''),
+          title: String(l.title ?? ''),
+          type: typeOf(l.contentType),
+          duration: typeof l.durationMinutes === 'number' && l.durationMinutes > 0
+            ? `${l.durationMinutes} min`
+            : '',
+        })),
+      )
+    : [];
   const q = lessonQuery.trim().toLowerCase();
   const filteredLessons = lessons.filter(
     (l) => !q || String(l.title ?? '').toLowerCase().includes(q) || String(l.section ?? '').toLowerCase().includes(q),
@@ -228,7 +270,58 @@ export default function AdminCourseDetailPage() {
     { key: 'duration', label: t('admin.courseDetail.duration', { defaultValue: 'Duration' }), sortable: true },
   ];
 
-  const handleAddLesson = async () => { await createLessons3(); setAddOpen(false); };
+  function openAddLesson() {
+    const first = sections[0];
+    setLessonSection(first ? String(first.id) : NEW_SECTION);
+    setLessonType(String(lesson_type.VIDEO));
+    setLessonContent('');
+    setLessonError(null);
+    setAddOpen(true);
+  }
+
+  /**
+   * Reads the dialog's own FormData. It used to sweep every input inside the
+   * whole "Sections and lessons" card, which pulled in the search box and the
+   * row checkboxes, and dropped any field left blank.
+   */
+  async function handleAddLesson(form: FormData) {
+    if (!id) return;
+    const str = (k: string) => String(form.get(k) ?? '').trim();
+    const title = str('title');
+    if (!title) {
+      setLessonError(t('admin.courseDetail.lessonTitleRequired', { defaultValue: 'A lesson needs a title.' }));
+      throw new Error('title required');
+    }
+    const sectionTitle = str('sectionTitle');
+    if (lessonSection === NEW_SECTION && !sectionTitle) {
+      setLessonError(t('admin.courseDetail.sectionRequired', { defaultValue: 'Name the new section, or pick an existing one.' }));
+      throw new Error('section required');
+    }
+
+    const body: Record<string, unknown> = {
+      title,
+      contentType: Number(str('contentType') || lesson_type.VIDEO),
+    };
+    if (lessonSection === NEW_SECTION) body.sectionTitle = sectionTitle;
+    else if (lessonSection) body.sectionId = lessonSection;
+    if (str('videoUrl')) body.videoUrl = str('videoUrl');
+    if (lessonContent.trim() && lessonContent !== '<p></p>') body.content = lessonContent;
+    if (str('durationMinutes')) body.durationMinutes = Number(str('durationMinutes'));
+    if (str('displayOrder')) body.displayOrder = Number(str('displayOrder'));
+
+    setLessonError(null);
+    try {
+      await addLesson(id, body);
+      toast.success(t('admin.courseDetail.lessonAdded', { defaultValue: 'Lesson added' }));
+      setAddOpen(false);
+      reload();
+    } catch (e) {
+      const msg = getApiErrorMessage(e, t('admin.courseDetail.lessonAddFailed', { defaultValue: 'Could not add the lesson' }));
+      toast.error(msg);
+      setLessonError(msg);
+      throw e; // keep the dialog open with what was typed
+    }
+  }
 
   return (
     <div data-testid="adm-03-course-detail-page" className="w-full">
@@ -281,11 +374,11 @@ export default function AdminCourseDetailPage() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <label className="flex flex-col gap-1">
                     <span className={LABEL}>{t('admin.courseDetail.titleField', { defaultValue: 'Title' })}</span>
-                    <input name="title" type="text" defaultValue={course.title ?? ''} className={INPUT} data-testid="adm-03-course-detail-ac-2-title" />
+                    <input name="title" type="text" defaultValue={course.title ?? ''} onChange={(e) => slugField.follow(e.target.value)} className={INPUT} data-testid="adm-03-course-detail-ac-2-title" />
                   </label>
                   <label className="flex flex-col gap-1">
                     <span className={LABEL}>{t('admin.courseDetail.slug', { defaultValue: 'Slug' })}</span>
-                    <input name="slug" type="text" defaultValue={course.slug ?? ''} className={INPUT} data-testid="course-detail-slug" />
+                    <input name="slug" type="text" value={slugField.value} onChange={slugField.onChange} className={INPUT} data-testid="course-detail-slug" />
                   </label>
                   <label className="flex flex-col gap-1">
                     <span className={LABEL}>{t('admin.courseDetail.category', { defaultValue: 'Category' })}</span>
@@ -318,6 +411,18 @@ export default function AdminCourseDetailPage() {
                     </select>
                   </label>
                 </div>
+                <ImageUrlField
+                  name="thumbnailUrl"
+                  label={t('admin.courseDetail.cover', { defaultValue: 'Cover image' })}
+                  value={thumbnail}
+                  onChange={setThumbnail}
+                  hint={t('admin.courseDetail.coverHint', { defaultValue: 'A link to the image. Shown on the course card and the course page.' })}
+                  emptyLabel={t('admin.courseDetail.coverEmpty', { defaultValue: 'No image yet' })}
+                  invalidLabel={t('admin.courseDetail.coverBroken', { defaultValue: 'That link did not load' })}
+                  labelClassName={LABEL}
+                  inputClassName={INPUT}
+                  testId="course-detail-cover"
+                />
                 <label className="flex flex-col gap-1">
                   <span className={LABEL}>{t('admin.courseDetail.summary', { defaultValue: 'Summary' })}</span>
                   <textarea name="summary" rows={3} defaultValue={course.summary ?? ''} className={`${INPUT} min-h-[80px]`} data-testid="adm-03-course-detail-ac-2-content" />
@@ -333,7 +438,7 @@ export default function AdminCourseDetailPage() {
                   <h2 className="text-lg font-semibold text-foreground">
                     {t('admin.courseDetail.sectionsAndLessons', { defaultValue: 'Sections and lessons' })}
                   </h2>
-                  <button type="button" onClick={() => setAddOpen(true)} className={BTN_SECONDARY} data-testid="adm-03-course-detail-ac-3-action">
+                  <button type="button" onClick={openAddLesson} className={BTN_SECONDARY} data-testid="adm-03-course-detail-ac-3-action">
                     <Plus className="h-4 w-4" aria-hidden="true" />
                     {t('admin.courseDetail.addLesson', { defaultValue: 'Add lesson' })}
                   </button>
@@ -375,7 +480,6 @@ export default function AdminCourseDetailPage() {
                     rowAction={(row) => (
                       <RowActions
                         testId={`lessons-${row.id}`}
-                        onEdit={isAdmin ? () => setAddOpen(true) : undefined}
                         onDelete={isAdmin ? () => removeLesson(String(row.id)) : undefined}
                       />
                     )}
@@ -394,19 +498,59 @@ export default function AdminCourseDetailPage() {
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
                       <span className={LABEL}>{t('admin.courseDetail.titleField', { defaultValue: 'Title' })}</span>
-                      <input name="title" type="text" className={INPUT} data-testid="adm-03-course-detail-ac-3-title" />
+                      <input name="title" type="text" required className={INPUT} data-testid="adm-03-course-detail-ac-3-title" />
                     </label>
+                    {/* A lesson belongs to a section. This asked for a raw UUID,
+                        typed by hand, on a page that never showed one — and a new
+                        course has no sections at all, so its first lesson could
+                        not be added. Pick one, or name a new one. */}
                     <label className="flex flex-col gap-1">
                       <span className={LABEL}>{t('admin.courseDetail.section', { defaultValue: 'Section' })}</span>
-                      <input name="sectionId" type="text" className={INPUT} data-testid="adm-03-course-detail-ac-3-content" />
+                      <select
+                        value={lessonSection}
+                        onChange={(e) => setLessonSection(e.target.value)}
+                        className={INPUT}
+                        data-testid="lessons-field-section"
+                      >
+                        {sections.map((sec) => (
+                          <option key={sec.id} value={sec.id}>{sec.title}</option>
+                        ))}
+                        <option value={NEW_SECTION}>
+                          {t('admin.courseDetail.newSection', { defaultValue: '+ New section…' })}
+                        </option>
+                      </select>
                     </label>
+                    {lessonSection === NEW_SECTION && (
+                      <label className="flex flex-col gap-1 sm:col-span-2">
+                        <span className={LABEL}>{t('admin.courseDetail.newSectionName', { defaultValue: 'New section name' })}</span>
+                        <input
+                          name="sectionTitle"
+                          type="text"
+                          placeholder={t('admin.courseDetail.newSectionHint', { defaultValue: 'e.g. Getting started' })}
+                          className={INPUT}
+                          data-testid="adm-03-course-detail-ac-3-content"
+                        />
+                      </label>
+                    )}
                     <label className="flex flex-col gap-1">
                       <span className={LABEL}>{t('admin.courseDetail.type', { defaultValue: 'Type' })}</span>
-                      <select name="contentType" className={INPUT} data-testid="lessons-field-type">
+                      <select
+                        name="contentType"
+                        value={lessonType}
+                        onChange={(e) => setLessonType(e.target.value)}
+                        className={INPUT}
+                        data-testid="lessons-field-type"
+                      >
                         {typeOptions.map(([k, v]) => (
                           <option key={k} value={String(v)}>{titleCase(k)}</option>
                         ))}
                       </select>
+                      {/* Four words with no explanation is a guess, not a choice. */}
+                      <span className="text-[12px] leading-[1.5] text-muted-foreground" data-testid="lessons-field-type-help">
+                        {t(`admin.courseDetail.typeHelp.${Number(lessonType)}`, {
+                          defaultValue: TYPE_HELP[Number(lessonType)]?.en ?? '',
+                        })}
+                      </span>
                     </label>
                     <label className="flex flex-col gap-1">
                       <span className={LABEL}>{t('admin.courseDetail.durationMinutes', { defaultValue: 'Duration (minutes)' })}</span>
@@ -436,16 +580,23 @@ export default function AdminCourseDetailPage() {
                         {t('admin.courseDetail.videoUrlHint', { defaultValue: 'YouTube, Vimeo, or a direct link to an .mp4 / .webm file.' })}
                       </span>
                     </label>
-                    <label className="flex flex-col gap-1 sm:col-span-2">
+                    {/* Written material, with formatting — a plain textarea meant an
+                        article lesson could only ever be one unbroken block of text.
+                        The student player renders this HTML. */}
+                    <div className="flex flex-col gap-1 sm:col-span-2">
                       <span className={LABEL}>{t('admin.courseDetail.content', { defaultValue: 'Article / notes' })}</span>
-                      <textarea
-                        name="content"
-                        rows={4}
+                      <RichTextEditor
+                        value={lessonContent}
+                        onChange={setLessonContent}
                         placeholder={t('admin.courseDetail.contentHint', { defaultValue: 'Shown under the video, or as the lesson itself for an article.' })}
-                        className={`${INPUT} min-h-[96px] py-2`}
-                        data-testid="lessons-field-content"
+                        testId="lessons-field-content"
                       />
-                    </label>
+                    </div>
+                    {lessonError && (
+                      <p className="sm:col-span-2 text-[13px] text-[var(--c-error)]" role="alert" data-testid="lessons-form-error">
+                        {lessonError}
+                      </p>
+                    )}
                   </div>
                 </EntityFormModal>
               </div>

@@ -2,7 +2,7 @@
   "loading": "Loading",
   "actions": "Actions",
   "search": "Search",
-  "selectedCount": "Selected count",
+  "selectedCount": "{{count}} selected",
   "clear": "Clear",
   "editEntity": "Edit entity",
   "createEntity": "Create entity",

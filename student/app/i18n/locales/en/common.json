@@ -64,7 +64,7 @@
     "filter": "Filter",
     "loading": "Loading...",
     "actions": "Actions",
-    "selectedCount": "Selected count",
+    "selectedCount": "{{count}} selected",
     "editEntity": "Edit entity",
     "createEntity": "Create entity"
   },
@@ -142,7 +142,9 @@
     "emptyHint": "Try a different category, or clear the search.",
     "clearFilters": "Clear filters",
     "loadErrorTitle": "We could not load the catalogue",
-    "loadErrorHint": "The connection may have dropped. Try again in a moment."
+    "loadErrorHint": "The connection may have dropped. Try again in a moment.",
+    "prevPage": "Previous page",
+    "nextPage": "Next page"
   },
   "courseDetail": {
     "addSuccess": "Added to your cart",
@@ -236,7 +238,12 @@
     "discount": "Discount",
     "total": "Total",
     "home": "Home",
-    "eyebrow": "Almost there"
+    "eyebrow": "Almost there",
+    "billingHint": "Where your receipt goes. Your courses unlock straight away.",
+    "itemCount": "{{count}} item",
+    "itemCount_other": "{{count}} items",
+    "subtotal": "Subtotal",
+    "reassurance": "Lifetime access. 30-day refund if the course is not for you."
   },
   "orders": {
     "title": "Your orders",
@@ -253,7 +260,10 @@
     "emptyGuest": "Sign in to view your orders.",
     "home": "Home",
     "viewDetail": "View order",
-    "eyebrow": "Purchases"
+    "eyebrow": "Purchases",
+    "pagination": "Pagination",
+    "prevPage": "Previous page",
+    "nextPage": "Next page"
   },
   "orderDetail": {
     "statusPaid": "Paid",
@@ -273,7 +283,7 @@
     "placed": "Placed",
     "paid": "Paid",
     "method": "Method",
-    "coupon": "Coupon {{code}}",
+    "coupon": "Coupon",
     "home": "Home",
     "eyebrow": "Purchase",
     "loadError": "We could not load this order. Please try again."
@@ -288,7 +298,9 @@
     "review": "Review",
     "continue": "Continue",
     "home": "Home",
-    "eyebrow": "Keep going"
+    "eyebrow": "Keep going",
+    "finished": "Finished",
+    "progress": "Progress"
   },
   "player": {
     "completeSuccess": "Lesson marked complete",
@@ -301,7 +313,9 @@
     "markComplete": "Mark as complete",
     "nextLesson": "Next lesson",
     "courseContent": "Course content",
-    "pickLessonHint": "Pick a lesson to switch the stage and title."
+    "pickLessonHint": "Pick a lesson to switch the stage and title.",
+    "quiz": "Quiz",
+    "live": "Live session"
   },
   "profile": {
     "saveError": "Could not save your profile",
@@ -320,7 +334,14 @@
     "paidOrders": "Paid orders",
     "signOut": "Sign out",
     "home": "Home",
-    "eyebrow": "Account"
+    "eyebrow": "Account",
+    "photoSaved": "Photo updated",
+    "photoSaving": "Uploading…",
+    "photoHint": "JPG or PNG. Cropped to a square.",
+    "photoTooLarge": "That image is larger than {{mb}}MB. Pick a smaller one.",
+    "photoNotImage": "That file is not an image.",
+    "photoUnreadable": "That image could not be read.",
+    "photoFailed": "Could not update your photo"
   },
   "footer": {
     "explore": "Explore",

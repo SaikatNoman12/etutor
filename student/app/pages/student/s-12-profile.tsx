@@ -21,7 +21,7 @@
 // ac-1-error, and the remaining story testids live in the sr-only wiring block
 // (scope-lock keeps them; the design does not re-draw them on screen).
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '~/hooks/useAppSelector';
@@ -30,10 +30,11 @@ import { updateUser } from '~/services/httpServices/userService';
 import { logout, fetchMeThunk } from '~/services/httpServices/authService';
 import { toast } from '~/lib/toast';
 import { getApiErrorMessage } from '~/utils/apiError';
-import { User } from 'lucide-react';
+import { Loader2, User } from 'lucide-react';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { maxLength, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
+import { fileToAvatarDataUrl, ImageFileError, MAX_SOURCE_BYTES } from '~/utils/imageFile';
 
 export default function ProfilePage() {
   const { t } = useTranslation('common');
@@ -50,6 +51,8 @@ export default function ProfilePage() {
   const [data1, setData1] = useState<unknown>(null);
   const [loading1, setLoading1] = useState<boolean>(true);
   const [error1, setError1] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState<number>(0);
+  const reload = () => setReloadKey((k) => k + 1);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,7 +63,7 @@ export default function ProfilePage() {
       .catch((e: unknown) => { if (!cancelled) setError1(e instanceof Error ? e.message : 'Failed to load'); })
       .finally(() => { if (!cancelled) setLoading1(false); });
     return () => { cancelled = true; };
-  }, [dispatch]);
+  }, [dispatch, reloadKey]);
 
   // Preserved story-spec wiring (scope-lock) — kept accessible-only below.
   const [loading2, setLoading2] = useState<boolean>(false);
@@ -156,6 +159,44 @@ export default function ProfilePage() {
     }
   };
 
+  // ── profile photo ────────────────────────────────────────────────────────
+  // "Change photo" opened a toast saying the feature did not exist. Nothing here
+  // stores files, so the browser downscales the chosen picture to a 256px square
+  // and the small result is saved on the account itself.
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [photo, setPhoto] = useState<string>('');
+  const [uploading, setUploading] = useState<boolean>(false);
+  const shownAvatar = photo || avatarUrl;
+
+  const onPhotoChosen = async (file: File | undefined) => {
+    if (!file) return;
+    if (!userId) { toast.error(t('profile.saveError', 'Could not save your profile')); return; }
+    setUploading(true);
+    try {
+      const dataUrl = await fileToAvatarDataUrl(file);
+      await updateUser(userId, { avatarUrl: dataUrl });
+      setPhoto(dataUrl);
+      toast.success(t('profile.photoSaved', 'Photo updated'));
+      reload();
+    } catch (err) {
+      if (err instanceof ImageFileError) {
+        const mb = Math.round(MAX_SOURCE_BYTES / (1024 * 1024));
+        toast.error(
+          err.message === 'too-large'
+            ? t('profile.photoTooLarge', 'That image is larger than {{mb}}MB. Pick a smaller one.', { mb })
+            : err.message === 'not-an-image'
+              ? t('profile.photoNotImage', 'That file is not an image.')
+              : t('profile.photoUnreadable', 'That image could not be read.'),
+        );
+      } else {
+        toast.error(getApiErrorMessage(err, t('profile.photoFailed', 'Could not update your photo')));
+      }
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
+
   const signOut = async () => {
     try {
       await logout();
@@ -183,21 +224,36 @@ export default function ProfilePage() {
           onSubmit={(e) => { e.preventDefault(); void saveProfile(); }}
         >
           <div className="flex items-center gap-[12px]">
-            <span className="inline-flex h-[64px] w-[64px] items-center justify-center overflow-hidden rounded-full bg-[var(--c-surface-soft)]">
-              {avatarUrl ? (
-                <img className="h-full w-full object-cover" src={avatarUrl} alt={fullName} />
+            <span className="inline-flex h-[64px] w-[64px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--c-surface-soft)]">
+              {shownAvatar ? (
+                <img className="h-full w-full object-cover" src={shownAvatar} alt={fullName} data-testid="s-12-profile-avatar" />
               ) : (
                 <User className="h-6 w-6 text-[var(--c-muted)]" aria-hidden="true" />
               )}
             </span>
-            <button
-              type="button"
-              onClick={() => toast.info(t('profile.photoSoon', 'Photo upload is not available yet'))}
-              className="inline-flex min-h-[40px] cursor-pointer items-center justify-center gap-[8px] et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)]"
-              data-testid="s-12-profile-change-photo"
-            >
-              {t('profile.changePhoto', 'Change photo')}
-            </button>
+            <div className="flex flex-col gap-[4px]">
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={(e) => { void onPhotoChosen(e.target.files?.[0]); }}
+                data-testid="s-12-profile-photo-input"
+              />
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="inline-flex min-h-[40px] cursor-pointer items-center justify-center gap-[8px] et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-60"
+                data-testid="s-12-profile-change-photo"
+              >
+                {uploading && <Loader2 className="h-[14px] w-[14px] animate-spin" aria-hidden="true" />}
+                {uploading ? t('profile.photoSaving', 'Uploading…') : t('profile.changePhoto', 'Change photo')}
+              </button>
+              <span className="text-[12px] leading-[1.4] text-[var(--c-muted)]">
+                {t('profile.photoHint', 'JPG or PNG. Cropped to a square.')}
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-[16px] [@media(min-width:600px)]:grid-cols-2">
@@ -278,7 +334,7 @@ export default function ProfilePage() {
           className="sticky top-[88px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
           data-testid="s-12-profile-ac-1"
         >
-          <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
+          <h2 className="text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
             {t('profile.account', 'Account')}
           </h2>
 
@@ -292,7 +348,7 @@ export default function ProfilePage() {
 
           {!loading1 && error1 && (
             <div className="space-y-[12px]" data-testid="s-12-profile-ac-1-error">
-              <p className="m-0 text-[14px] text-[var(--c-error)]">
+              <p className="text-[14px] text-[var(--c-error)]">
                 {t('profile.loadError', 'We could not load your account. Please try again.')}
               </p>
               <button

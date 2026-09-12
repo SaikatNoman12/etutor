@@ -32,8 +32,17 @@ import type { Enrollment } from '~/types/enrollment';
 import type { Course } from '~/types/course';
 import type { Lesson } from '~/types/lesson';
 import type { PlayerDetail, PlayerLesson, PlayerSection } from '~/types/view-models';
-import { ArrowLeft, CheckCircle2, PlayCircle } from 'lucide-react';
-import { LessonStage } from '~/components/shared/LessonStage';
+import { ArrowLeft, CheckCircle2, FileText, HelpCircle, PlayCircle, Radio } from 'lucide-react';
+import { LessonStage, LessonBody } from '~/components/shared/LessonStage';
+
+/** What each lesson type looks like in the syllabus list. */
+function LessonTypeIcon({ type }: { type?: number }) {
+  const cls = 'h-[16px] w-[16px] shrink-0 text-[var(--c-primary-text)]';
+  if (type === 2) return <FileText className={cls} aria-hidden="true" />;
+  if (type === 3) return <HelpCircle className={cls} aria-hidden="true" />;
+  if (type === 4) return <Radio className={cls} aria-hidden="true" />;
+  return <PlayCircle className={cls} aria-hidden="true" />;
+}
 
 /** A lesson row as it arrives embedded in the enrollment detail: the generated
  *  Lesson plus its per-student completion state (nested progress or a flat flag). */
@@ -199,7 +208,7 @@ export default function CoursePlayerPage() {
               className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
               data-testid="s-11-course-player-ac-1-error"
             >
-              <p className="m-0 text-[15px] text-[var(--c-error)]">
+              <p className="text-[15px] text-[var(--c-error)]">
                 {t('player.loadError', 'We could not load this lesson. Please try again.')}
               </p>
               <button
@@ -218,7 +227,7 @@ export default function CoursePlayerPage() {
               className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
               data-testid="s-11-course-player-ac-1-empty"
             >
-              <p className="m-0 text-[15px] text-[var(--c-muted)]">
+              <p className="text-[15px] text-[var(--c-muted)]">
                 {t('player.empty', 'There are no lessons available for this course yet.')}
               </p>
               <Link to="/my-learning" className={`mt-[16px] no-underline ${btnPrimary}`} data-testid="s-11-course-player-empty-back">
@@ -235,23 +244,29 @@ export default function CoursePlayerPage() {
                   lesson={currentLesson}
                   emptyLabel={t('player.noMedia', 'This lesson has no video yet.')}
                   articleLabel={t('player.article', 'Article')}
+                  quizLabel={t('player.quiz', 'Quiz')}
+                  liveLabel={t('player.live', 'Live session')}
                 />
                 {/* Notes under a video, when a video lesson also carries text. */}
                 {currentLesson?.videoUrl && currentLesson?.content ? (
-                  <div className="whitespace-pre-line rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[20px] text-[15px] leading-[1.7] text-[var(--c-body)]">
-                    {currentLesson.content}
+                  <div className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[20px]">
+                    <LessonBody content={currentLesson.content} />
                   </div>
                 ) : null}
-                <h1
-                  className="m-0 text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]"
-                  data-testid="s-11-course-player-heading"
-                >
-                  {currentLesson?.title ?? ''}
-                </h1>
-                <p className="m-0 text-[15px] leading-[1.6] text-[var(--c-body)]">
-                  {detail?.course?.title ?? ''}
-                </p>
-                <div className="flex items-center gap-[12px]">
+                {/* Title and the course it belongs to read as ONE unit, so they
+                    sit closer to each other than to the actions below them. */}
+                <div className="flex flex-col gap-[4px]">
+                  <h1
+                    className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]"
+                    data-testid="s-11-course-player-heading"
+                  >
+                    {currentLesson?.title ?? ''}
+                  </h1>
+                  <p className="text-[15px] leading-[1.6] text-[var(--c-body)]">
+                    {detail?.course?.title ?? ''}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-[12px]">
                   <button
                     type="button"
                     onClick={createComplete3}
@@ -274,13 +289,13 @@ export default function CoursePlayerPage() {
 
               {/* right — course content list */}
               <aside className="space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)] lg:sticky lg:top-[88px]">
-                <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
+                <h2 className="text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
                   {t('player.courseContent', 'Course content')}
                 </h2>
                 <div className="h-[8px] overflow-hidden rounded-full bg-[var(--c-hairline)]">
                   <div className="et-grow h-full rounded-full bg-[var(--c-primary)]" style={{ width: `${pct}%` }} />
                 </div>
-                <p className="m-0 text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
+                <p className="text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
                   {pct}% {t('player.complete', 'complete')}
                 </p>
                 {/* Grouped by section, because that is how a syllabus reads and how
@@ -292,7 +307,7 @@ export default function CoursePlayerPage() {
                     return sections.map((section, si) => (
                       <div key={section.id ?? si} className="mb-[8px] last:mb-0">
                         {section.title ? (
-                          <p className="m-0 mt-[12px] px-0 pb-[4px] text-[12px] font-semibold uppercase tracking-[0.6px] text-[var(--c-muted)]">
+                          <p className="mt-[12px] px-0 pb-[4px] text-[12px] font-semibold uppercase tracking-[0.6px] text-[var(--c-muted)]">
                             {section.title}
                           </p>
                         ) : null}
@@ -313,7 +328,10 @@ export default function CoursePlayerPage() {
                                   {done ? (
                                     <CheckCircle2 className="h-[16px] w-[16px] shrink-0 text-[var(--c-success,#16a34a)]" aria-hidden="true" />
                                   ) : (
-                                    <PlayCircle className="h-[16px] w-[16px] shrink-0 text-[var(--c-primary-text)]" aria-hidden="true" />
+                                    /* The list drew a play icon on every row, so an
+                                       article, a quiz and a live session all looked
+                                       like a video the student could sit and watch. */
+                                    <LessonTypeIcon type={lesson.contentType} />
                                   )}
                                   <span className="min-w-0 flex-1 text-[14px] leading-[1.5] text-[var(--c-ink)]">
                                     {lesson.title ?? ''}

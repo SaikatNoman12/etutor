@@ -17,5 +17,12 @@
   "enrolledCourses": "Enrolled courses",
   "paidOrders": "Paid orders",
   "signOut": "Sign out",
-  "home": "Home"
+  "home": "Home",
+  "photoSaved": "사진이 변경되었습니다",
+  "photoSaving": "업로드 중…",
+  "photoHint": "JPG 또는 PNG. 정사각형으로 잘립니다.",
+  "photoTooLarge": "{{mb}}MB보다 큰 이미지입니다. 더 작은 파일을 선택하세요.",
+  "photoNotImage": "이미지 파일이 아닙니다.",
+  "photoUnreadable": "이미지를 읽을 수 없습니다.",
+  "photoFailed": "사진을 변경하지 못했습니다"
 }

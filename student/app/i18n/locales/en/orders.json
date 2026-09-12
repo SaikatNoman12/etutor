@@ -13,5 +13,8 @@
   "emptyGuest": "Sign in to view your orders.",
   "view": "View",
   "home": "Home",
-  "viewDetail": "View order"
+  "viewDetail": "View order",
+  "pagination": "Pagination",
+  "prevPage": "Previous page",
+  "nextPage": "Next page"
 }

@@ -6,13 +6,12 @@
 //
 // Restyled to mirror design/html/admin/ADM-09-coupons.html. Scope-locked parts
 // preserved: default export (AdminCouponListPage), every data-testid, and the
-// fetch wiring below (data1 useEffect + createCoupons2 + updateCoupons3). Only
+// fetch wiring below (the data1 useEffect). Only
 // the presentation was rebuilt to match the prototype, wiring the fetched
 // coupons into the shared DataTable / listing components + entity-form-modal.
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
 
 import { discount_type } from '~/enums/discount-type.enum';
 
@@ -35,6 +34,7 @@ import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { number, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading } from '~/components/shared/Placeholder';
+import { datedFilename, downloadCsv } from '~/utils/csv';
 
 /** A coupon row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -107,60 +107,6 @@ export default function AdminCouponListPage() {
       .finally(() => { if (!cancelled) setLoading1(false); });
     return () => { cancelled = true; };
   }, [dispatch, reloadKey]);
-
-  const [loading2, setLoading2] = useState<boolean>(false);
-  const createCoupons2 = async () => {
-    setLoading2(true);
-    const __body: Record<string, unknown> = {};
-    if (typeof document !== 'undefined') {
-      const __sect = document.querySelector('[data-testid="adm-09-coupons-ac-2"]');
-      __sect?.querySelectorAll('input, textarea, select').forEach((el) => {
-        const __el = el as HTMLInputElement; const n = __el.name; const v = __el.value;
-        if (n && v) __body[n] = __el.type === 'number' ? Number(v) : v;
-      });
-    }
-    try {
-      await createCoupon(__body);
-      toast.success(t('admin.coupons.created', { defaultValue: 'Coupon created' }));
-      reload();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : t('admin.coupons.createFailed', { defaultValue: 'Could not create the coupon' }));
-    } finally {
-      setLoading2(false);
-    }
-  };
-  const [loading3, setLoading3] = useState<boolean>(false);
-  const updateCoupons3 = async () => {
-    setLoading3(true);
-    const __body: Record<string, unknown> = {};
-    if (typeof document !== 'undefined') {
-      const __sect = document.querySelector('[data-testid="adm-09-coupons-ac-3"]');
-      __sect?.querySelectorAll('input, textarea, select').forEach((el) => {
-        const __el = el as HTMLInputElement; const n = __el.name; const v = __el.value;
-        if (n && v) __body[n] = __el.type === 'number' ? Number(v) : v;
-      });
-    }
-    // This route has no :id — resolve the target coupon by its code so the
-    // deactivate control patches the right record.
-    const targetCode = String(__body.code ?? '').toLowerCase();
-    const target = extractRows(data1).find((c) => String(c.code ?? '').toLowerCase() === targetCode);
-    if (!target) {
-      toast.error(t('admin.coupons.notFound', { defaultValue: 'No coupon matches that code' }));
-      setLoading3(false);
-      return;
-    }
-    delete __body.code;
-    if (typeof __body.isActive === 'string') __body.isActive = __body.isActive === 'true';
-    try {
-      await updateCoupon(target.id, __body);
-      toast.success(t('admin.coupons.updated', { defaultValue: 'Coupon updated' }));
-      reload();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : t('admin.coupons.updateFailed', { defaultValue: 'Could not update the coupon' }));
-    } finally {
-      setLoading3(false);
-    }
-  };
 
   // --- Presentation state (added by convert-pages) -------------------------
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -258,7 +204,14 @@ export default function AdminCouponListPage() {
     }
   }
   function handleBulkExport() {
-    toast.info(t('admin.coupons.exportStarted', { defaultValue: 'Preparing export…' }));
+    downloadCsv(datedFilename('coupons'), coupons.filter((row) => sel.isSelected(row.id)), [
+      { header: 'Code', value: (row) => row.code ?? '' },
+      { header: 'Discount', value: (row) => discountDisplay(row) },
+      { header: 'Used', value: (row) => row.usedCount ?? '' },
+      { header: 'Max uses', value: (row) => row.maxUses ?? '' },
+      { header: 'Valid until', value: (row) => String(row.validUntil ?? '').slice(0, 10) },
+      { header: 'Active', value: (row) => (row.isActive === false ? 'Inactive' : 'Active') },
+    ]);
   }
   async function handleBulkDelete() {
     const ids = sel.selected;
@@ -329,13 +282,6 @@ export default function AdminCouponListPage() {
     <div className="w-full" data-testid="adm-09-coupons-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-sm text-muted-foreground">
-            <Link to="/" data-testid="adm-09-coupons-home-link" className="hover:text-foreground hover:underline">
-              {t('nav.home', { defaultValue: 'Home' })}
-            </Link>
-            <span className="px-1.5">/</span>
-            <span>{t('admin.coupons.title', { defaultValue: 'Coupons' })}</span>
-          </div>
           <PageHeading
         eyebrow={t("admin.coupons.eyebrow", { defaultValue: "Sales" })}
         title={t("admin.coupons.title", { defaultValue: "Coupons" })}
@@ -446,93 +392,6 @@ export default function AdminCouponListPage() {
           </div>
         </section>
 
-        {/* Scope-locked story surfaces (ac-2 / ac-3): a fast quick-add and a
-            retire-by-code control, kept live so the story's create/update wiring
-            (createCoupons2 / updateCoupons3) stays reachable. */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          <section className="rounded-[var(--radius-lg)] border border-border bg-card p-5 shadow-sm" data-testid="adm-09-coupons-ac-2">
-            <h2 className="text-sm font-semibold text-foreground">
-              {t('admin.coupons.quickAdd', { defaultValue: 'Quick add coupon' })}
-            </h2>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.coupons.field.code', { defaultValue: 'Code' })}</span>
-              <input
-                name="code"
-                type="text"
-                data-testid="adm-09-coupons-ac-2-title"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
-            </label>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.coupons.field.value', { defaultValue: 'Value' })}</span>
-              <input
-                name="discountValue"
-                type="number"
-                data-testid="adm-09-coupons-ac-2-content"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
-            </label>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.coupons.field.type', { defaultValue: 'Type' })}</span>
-              {/* CreateAdminCouponDto requires discountType (numeric discount_type 1/2); the
-                  quick-add form previously omitted it and 400'd on every create. */}
-              <select
-                name="discountType"
-                defaultValue={String(discount_type.PERCENT)}
-                data-testid="adm-09-coupons-ac-2-type"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value={String(discount_type.PERCENT)}>{t('admin.coupons.type.percent', { defaultValue: 'Percent' })}</option>
-                <option value={String(discount_type.FIXED)}>{t('admin.coupons.type.fixed', { defaultValue: 'Fixed amount' })}</option>
-              </select>
-            </label>
-            <button
-              type="button"
-              onClick={createCoupons2}
-              disabled={loading2}
-              data-testid="adm-09-coupons-ac-2-action"
-              className="mt-4 inline-flex h-10 items-center rounded-md bg-[var(--c-primary)] px-4 text-sm font-medium text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:opacity-50"
-            >
-              {loading2 ? t('actions.saving', { defaultValue: 'Saving…' }) : t('actions.create', { defaultValue: 'Create' })}
-            </button>
-          </section>
-
-          <section className="rounded-[var(--radius-lg)] border border-border bg-card p-5 shadow-sm" data-testid="adm-09-coupons-ac-3">
-            <h2 className="text-sm font-semibold text-foreground">
-              {t('admin.coupons.retire', { defaultValue: 'Deactivate a coupon' })}
-            </h2>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.coupons.field.code', { defaultValue: 'Code' })}</span>
-              <input
-                name="code"
-                type="text"
-                data-testid="adm-09-coupons-ac-3-title"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
-            </label>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.coupons.field.status', { defaultValue: 'Status' })}</span>
-              <select
-                name="isActive"
-                defaultValue="false"
-                data-testid="adm-09-coupons-ac-3-content"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value="false">{t('admin.coupons.status.inactive', { defaultValue: 'Inactive' })}</option>
-                <option value="true">{t('admin.coupons.status.active', { defaultValue: 'Active' })}</option>
-              </select>
-            </label>
-            <button
-              type="button"
-              onClick={updateCoupons3}
-              disabled={loading3}
-              data-testid="adm-09-coupons-ac-3-action"
-              className="mt-4 inline-flex h-10 items-center rounded-md bg-[var(--c-primary)] px-4 text-sm font-medium text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:opacity-50"
-            >
-              {loading3 ? t('actions.saving', { defaultValue: 'Saving…' }) : t('actions.deactivate', { defaultValue: 'Deactivate' })}
-            </button>
-          </section>
-        </div>
       </main>
 
       {/* Create / edit modal — mirrors the prototype's entity-form-modal. */}

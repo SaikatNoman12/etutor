@@ -9,18 +9,16 @@
 // wiring are preserved (enforced by scaffold-scope-lock-doctor).
 
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { listEnrollments } from '~/services/httpServices/adminConsoleService';
 import { enrollment_status } from '~/enums/enrollment-status.enum';
 import { ROLE_VALUES } from '~/enums/role.enum';
 import { SearchInput } from '~/components/atoms/SearchInput';
-import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import type { EnrollmentListResponse, EnrollmentRow } from '~/types/view-models';
 import { PageHeading } from '~/components/shared/Placeholder';
 
-const PAGE_SIZE = 10;
 
 const CARD =
   'rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]';
@@ -29,10 +27,6 @@ const TH =
 const TD =
   'px-[16px] py-[12px] text-[14px] text-[var(--c-body)] border-b border-[var(--c-hairline)]';
 const NUM = 'text-right tabular-nums';
-const PAGE_BTN =
-  'inline-flex items-center justify-center min-h-[40px] min-w-[40px] px-[12px] rounded-[var(--radius-md)] text-[14px] font-[600] text-[var(--c-body)] bg-[var(--c-surface)] border border-[var(--c-hairline-strong)] hover:bg-[var(--c-surface-soft)] disabled:opacity-50 disabled:cursor-not-allowed';
-const PAGE_BTN_ACTIVE =
-  'bg-[var(--c-primary-soft)] text-[var(--c-primary)] border-[var(--c-primary)]';
 
 const STATUS_META: Record<number, { key: string; label: string; cls: string }> = {
   [enrollment_status.ACTIVE]: {
@@ -72,7 +66,6 @@ export default function AdminEnrollmentListPage() {
   const [total, setTotal] = useState<number>(0);
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('');
-  const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -84,7 +77,6 @@ export default function AdminEnrollmentListPage() {
     const query: Record<string, unknown> = {};
     if (search) query.search = search;
     if (sort) query.sort = sort;
-    if (page > 1) query.page = page;
     dispatch(listEnrollments(query)).unwrap()
       .then((d: unknown) => {
         if (cancelled) return;
@@ -95,16 +87,14 @@ export default function AdminEnrollmentListPage() {
       .catch((e: unknown) => { if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load'); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [dispatch, search, sort, page, isAdmin]);
+  }, [dispatch, search, sort, isAdmin]);
 
   const searchActive = search.trim().length > 0;
   const sortActive = sort.length > 0;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const isEmpty = !loading && !error && rows.length === 0;
 
-  const onSearch = (value: string) => { setSearch(value); setPage(1); };
-  const onSort = (key: string) => { setSort((prev) => (prev === key ? '' : key)); setPage(1); };
-  const goToPage = (p: number) => { if (p >= 1 && p <= totalPages) setPage(p); };
+  const onSearch = (value: string) => setSearch(value);
+  const onSort = (key: string) => setSort((prev) => (prev === key ? '' : key));
 
   const fmtProgress = (v: number | null | undefined) => (typeof v === 'number' ? `${v}%` : '');
   const fmtDate = (v: string | null | undefined) => (v ? String(v).slice(0, 10) : '');
@@ -114,15 +104,6 @@ export default function AdminEnrollmentListPage() {
   return (
     <div data-testid="adm-08-enrollments-page">
       <div className="w-full">
-        <Link
-          to="/"
-          data-testid="adm-08-enrollments-home-link"
-          className="mb-[16px] inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-[600] text-[var(--c-body)] hover:text-[var(--c-primary)]"
-        >
-          <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-          {t('adm08.dashboard', 'Dashboard')}
-        </Link>
-
         <PageHeading
         eyebrow={t("admin.enrollments.eyebrow", { defaultValue: "Learning" })}
         title={t("admin.enrollments.title", { defaultValue: "Enrolments" })}
@@ -253,44 +234,6 @@ export default function AdminEnrollmentListPage() {
             </div>
           </section>
 
-          {/* Pagination — page-local control, never shared chrome (RULE-F13) */}
-          <nav
-            aria-label={t('adm08.pagination', 'Pagination')}
-            className="mt-[16px] flex items-center gap-[8px]"
-          >
-            <button
-              type="button"
-              data-testid="enrollments-page-prev"
-              onClick={() => goToPage(page - 1)}
-              disabled={page <= 1}
-              aria-label={t('adm08.prevPage', 'Previous page')}
-              className={PAGE_BTN}
-            >
-              <ChevronLeft className="w-4 h-4" aria-hidden="true" />
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                type="button"
-                data-testid={`enrollments-page-${p}`}
-                onClick={() => goToPage(p)}
-                aria-current={p === page ? 'page' : undefined}
-                className={`${PAGE_BTN} ${p === page ? PAGE_BTN_ACTIVE : ''}`}
-              >
-                {p}
-              </button>
-            ))}
-            <button
-              type="button"
-              data-testid="enrollments-page-next"
-              onClick={() => goToPage(page + 1)}
-              disabled={page >= totalPages}
-              aria-label={t('adm08.nextPage', 'Next page')}
-              className={PAGE_BTN}
-            >
-              <ChevronRight className="w-4 h-4" aria-hidden="true" />
-            </button>
-          </nav>
         </main>
       </div>
     </div>

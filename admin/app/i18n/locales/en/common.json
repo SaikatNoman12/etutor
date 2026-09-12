@@ -24,7 +24,7 @@
     "filter": "Filter",
     "loading": "Loading...",
     "actions": "Actions",
-    "selectedCount": "Selected count",
+    "selectedCount": "{{count}} selected",
     "editEntity": "Edit {{entity}}",
     "createEntity": "New {{entity}}"
   },
@@ -85,14 +85,33 @@
       "empty": "No enrollments found",
       "field": {
         "title": "Title",
-        "status": "Status"
+        "status": "Status",
+        "cover": "Cover image",
+        "coverHint": "A link to the image. Shown on the course card and the course page.",
+        "coverEmpty": "No image yet",
+        "coverBroken": "That link did not load"
       }
     },
     "courseDetail": {
       "order": "Order",
       "course": "Course",
       "status": "Status",
-      "students": "Students"
+      "students": "Students",
+      "typeHelp": {
+        "1": "A recorded video the student watches. Needs a video URL.",
+        "2": "Written material the student reads. Put the text in Article / notes.",
+        "3": "Questions the student answers to check what they learnt. Write them in Article / notes until the quiz builder lands.",
+        "4": "A scheduled live session. Put the meeting link in Video URL and the date and joining details in Article / notes."
+      },
+      "newSection": "+ New section…",
+      "newSectionName": "New section name",
+      "newSectionHint": "e.g. Getting started",
+      "sectionRequired": "Name the new section, or pick an existing one.",
+      "lessonTitleRequired": "A lesson needs a title.",
+      "cover": "Cover image",
+      "coverHint": "A link to the image. Shown on the course card and the course page.",
+      "coverEmpty": "No image yet",
+      "coverBroken": "That link did not load"
     },
     "categories": {
       "stat": {

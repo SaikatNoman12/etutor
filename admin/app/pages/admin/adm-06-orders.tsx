@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { listOrders, updateOrder } from '~/services/httpServices/adminConsoleService';
 
-import { DataTable, type DataTableColumn, type PaginationState } from '~/components/data-table/DataTable';
+import { DataTable, type DataTableColumn } from '~/components/data-table/DataTable';
 import { SearchInput } from '~/components/atoms/SearchInput';
 import { BulkActions } from '~/components/listing/BulkActions';
 import { RowSelect } from '~/components/listing/RowSelect';
@@ -87,18 +87,6 @@ function toRows(payload: unknown): OrderRow[] {
   });
 }
 
-function toPagination(payload: unknown): PaginationState | undefined {
-  if (!payload || typeof payload !== 'object') return undefined;
-  const o = payload as Record<string, unknown>;
-  const meta = o.meta && typeof o.meta === 'object' ? (o.meta as Record<string, unknown>) : o;
-  const page = Number(meta.page ?? meta.currentPage);
-  const limit = Number(meta.limit ?? meta.pageSize ?? meta.perPage);
-  const total = Number(meta.total ?? meta.totalItems ?? meta.count);
-  if (!Number.isFinite(page) || !Number.isFinite(total)) return undefined;
-  const totalPages = Number(meta.totalPages ?? (limit ? Math.ceil(total / limit) : 1));
-  return { page: page || 1, limit: limit || 20, total: total || 0, totalPages: totalPages || 1 };
-}
-
 function StatusBadge({ status }: { status: string }) {
   const s = status.toLowerCase();
   const cls =
@@ -141,10 +129,6 @@ export default function AdminOrderListPage() {
   const reload = () => setReloadKey((k) => k + 1);
 
   // AC-3 quick status update (kept fillable/text so the story spec keeps working).
-  const [quickOrderId, setQuickOrderId] = useState<string>('');
-  const [quickStatus, setQuickStatus] = useState<string>('');
-  const [quickNote, setQuickNote] = useState<string>('');
-  const [saving, setSaving] = useState<boolean>(false);
 
   // AC-3 richer edit modal (design's "Order status" dialog), opened per row.
   const [editingOrder, setEditingOrder] = useState<OrderRow | null>(null);
@@ -202,7 +186,6 @@ export default function AdminOrderListPage() {
 
   const rows = useMemo(() => toRows(data1), [data1]);
   const paidRows = useMemo(() => toRows(data2), [data2]);
-  const pagination = useMemo(() => toPagination(data1), [data1]);
   const rowIds = useMemo(() => rows.map((r) => r.id), [rows]);
   const sel = useRowSelection(rowIds);
 
@@ -227,21 +210,6 @@ export default function AdminOrderListPage() {
     }
     if (value < 0) throw new Error(`Invalid order status: ${status}`);
     await updateOrder(id, { status: value });
-  }
-
-  async function handleQuickUpdate() {
-    const id = quickOrderId || rows[0]?.id;
-    if (!id) return;
-    setSaving(true);
-    try {
-      await persistStatus(id, quickStatus);
-      toast.success(t('orders.updated', { defaultValue: 'Order updated' }));
-      reload();
-    } catch (err) {
-      toast.error(getApiErrorMessage(err, t('orders.updateFailed', { defaultValue: 'Could not update the order' })));
-    } finally {
-      setSaving(false);
-    }
   }
 
   async function handleModalSave(form: FormData) {
@@ -310,9 +278,6 @@ export default function AdminOrderListPage() {
   return (
     <div className="w-full" data-testid="adm-06-orders-page">
       <header className="mb-6 flex flex-col gap-1">
-        <Link to="/" className="text-sm text-muted-foreground hover:underline" data-testid="adm-06-orders-home-link">
-          {t('nav.home', { defaultValue: 'Home' })}
-        </Link>
         <PageHeading
         eyebrow={t("admin.orders.eyebrow", { defaultValue: "Sales" })}
         title={t("admin.orders.title", { defaultValue: "Orders" })}
@@ -426,7 +391,6 @@ export default function AdminOrderListPage() {
               <DataTable
                 data={rows}
                 columns={columns}
-                pagination={pagination}
                 emptyMessage={t('orders.empty', { defaultValue: 'No records yet' })}
                 testId="adm-06-orders"
                 rowAction={(row) => (
@@ -441,63 +405,6 @@ export default function AdminOrderListPage() {
           )}
         </section>
 
-        {/* AC-3 — quick status update */}
-        <section className="rounded-[var(--radius-lg)] border border-border bg-card p-4 shadow-sm" data-testid="adm-06-orders-ac-3">
-          <h2 className="mb-3 text-lg font-semibold">{t('orders.quickUpdate', { defaultValue: 'Update order status' })}</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
-            <label className="text-sm">
-              <span className="mb-1 block text-muted-foreground">{t('orders.order', { defaultValue: 'Order' })}</span>
-              <select
-                name="orderId"
-                value={quickOrderId}
-                onChange={(e) => setQuickOrderId(e.target.value)}
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-                data-testid="adm-06-orders-ac-3-order"
-              >
-                {rows.length === 0 && <option value="">{t('orders.empty', { defaultValue: 'No records yet' })}</option>}
-                {rows.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.orderNumber}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-sm">
-              <span className="mb-1 block text-muted-foreground">{t('orders.status', { defaultValue: 'Status' })}</span>
-              <input
-                name="status"
-                type="text"
-                value={quickStatus}
-                onChange={(e) => setQuickStatus(e.target.value)}
-                placeholder="paid"
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-                data-testid="adm-06-orders-ac-3-title"
-              />
-            </label>
-            <label className="text-sm">
-              <span className="mb-1 block text-muted-foreground">{t('orders.note', { defaultValue: 'Note' })}</span>
-              <input
-                name="note"
-                type="text"
-                value={quickNote}
-                onChange={(e) => setQuickNote(e.target.value)}
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-                data-testid="adm-06-orders-ac-3-content"
-              />
-            </label>
-            <div className="flex items-end">
-              <button
-                type="button"
-                onClick={handleQuickUpdate}
-                disabled={saving || !isAdmin || rows.length === 0}
-                className="rounded-md bg-[var(--c-primary)] px-4 py-2 font-medium text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:opacity-50"
-                data-testid="adm-06-orders-ac-3-action"
-              >
-                {saving ? t('actions.saving', { defaultValue: 'Saving…' }) : t('actions.save', { defaultValue: 'Save' })}
-              </button>
-            </div>
-          </div>
-        </section>
       </main>
 
       {editingOrder && (

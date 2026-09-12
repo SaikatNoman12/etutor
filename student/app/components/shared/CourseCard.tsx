@@ -78,7 +78,7 @@ export function CourseCard({
 
       <div className="flex flex-1 flex-col gap-[10px] p-[16px]">
         <p
-          className="m-0 line-clamp-2 text-[17px] font-bold leading-[1.3] tracking-[-0.01em] text-[var(--c-ink)]"
+          className="line-clamp-2 text-[17px] font-bold leading-[1.3] tracking-[-0.01em] text-[var(--c-ink)]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {course.title ?? ''}

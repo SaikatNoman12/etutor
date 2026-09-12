@@ -24,7 +24,8 @@
     "filter": "필터",
     "loading": "로딩 중...",
     "createEntity": "{{entity}} 추가",
-    "editEntity": "{{entity}} 수정"
+    "editEntity": "{{entity}} 수정",
+    "selectedCount": "{{count}}개 선택됨"
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",
@@ -80,14 +81,33 @@
       "empty": "No enrollments found",
       "field": {
         "title": "Title",
-        "status": "Status"
+        "status": "Status",
+        "cover": "대표 이미지",
+        "coverHint": "이미지 링크입니다. 코스 카드와 코스 페이지에 표시됩니다.",
+        "coverEmpty": "아직 이미지가 없습니다",
+        "coverBroken": "이 링크를 불러오지 못했습니다"
       }
     },
     "courseDetail": {
       "order": "Order",
       "course": "Course",
       "status": "Status",
-      "students": "Students"
+      "students": "Students",
+      "typeHelp": {
+        "1": "학생이 시청하는 녹화 영상입니다. 영상 URL이 필요합니다.",
+        "2": "학생이 읽는 글입니다. 본문은 아티클/노트에 작성하세요.",
+        "3": "배운 내용을 확인하는 문제입니다. 퀴즈 편집기가 준비되기 전까지는 아티클/노트에 작성하세요.",
+        "4": "예정된 라이브 수업입니다. 참여 링크는 영상 URL에, 일정과 안내는 아티클/노트에 적으세요."
+      },
+      "newSection": "+ 새 섹션…",
+      "newSectionName": "새 섹션 이름",
+      "newSectionHint": "예: 시작하기",
+      "sectionRequired": "새 섹션 이름을 입력하거나 기존 섹션을 선택하세요.",
+      "lessonTitleRequired": "레슨 제목을 입력하세요.",
+      "cover": "대표 이미지",
+      "coverHint": "이미지 링크입니다. 코스 카드와 코스 페이지에 표시됩니다.",
+      "coverEmpty": "아직 이미지가 없습니다",
+      "coverBroken": "이 링크를 불러오지 못했습니다"
     },
     "categories": {
       "stat": {

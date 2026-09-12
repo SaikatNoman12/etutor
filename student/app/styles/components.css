@@ -597,7 +597,9 @@ a:hover :where(img, svg, [class*="rounded-full"]) { text-decoration: none; }
 }
 .row-actions-trigger:hover { background: var(--c-surface-soft); }
 .row-menu {
-  position: absolute; right: 0; top: 100%; z-index: 30; min-width: 160px;
+  /* Positioned from the trigger's rect by RowActions, so it is never clipped
+     by the table's scroll container nor pushed off the bottom of the screen. */
+  position: fixed; z-index: 60; min-width: 176px;
   background: var(--c-surface); border: var(--border-w) solid var(--c-hairline);
   border-radius: var(--radius-md); box-shadow: var(--shadow-2); padding: var(--space-xs);
 }
@@ -623,6 +625,24 @@ a:hover :where(img, svg, [class*="rounded-full"]) { text-decoration: none; }
 }
 .bulk-bar .bulk-count { font-weight: var(--t-weight-semibold, var(--t-button-weight)); }
 .bulk-bar[hidden] { display: none; }
+/* The bar's actions are BUTTONS, not a run of words. Without this rule three
+   bare <button>s rendered edge to edge as "ExportDeleteClear". */
+.bulk-bar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); }
+.bulk-bar-actions button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 34px; padding: 0 var(--space-md);
+  border-radius: var(--radius-pill); border: var(--border-w) solid var(--c-hairline-strong);
+  background: var(--c-surface); color: var(--c-ink);
+  font-family: var(--t-button-family); font-size: var(--t-body-sm-size); font-weight: var(--t-button-weight);
+  cursor: pointer; white-space: nowrap;
+  transition: background-color 150ms, color 150ms, border-color 150ms;
+}
+.bulk-bar-actions button:hover:not(:disabled) { border-color: var(--c-primary); color: var(--c-primary-text); background: var(--c-surface-soft); }
+.bulk-bar-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+.bulk-bar-actions button.is-destructive { border-color: color-mix(in srgb, var(--c-error) 40%, transparent); color: var(--c-error); }
+.bulk-bar-actions button.is-destructive:hover:not(:disabled) { background: color-mix(in srgb, var(--c-error) 8%, transparent); border-color: var(--c-error); color: var(--c-error); }
+.bulk-bar-actions button:focus-visible { outline: 2px solid var(--c-focus-ring); outline-offset: 2px; }
+
 
 /* ---------- modal / dialog (single source — confirm | form | select) ----------
  * One overlay vocabulary reused by every dialog AND bulk-confirm AND mobile
@@ -1123,3 +1143,43 @@ a[aria-disabled="true"] {
 }
 .modal-actions button[type='submit']:hover { background: var(--c-primary-active); }
 .modal-actions button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ---------- lesson prose ----------
+ * Written lesson material, authored in the console's rich-text editor. The base
+ * layer zeroes margins on p/h* (this system owns rhythm through flex gap), so
+ * without this an article rendered as one undifferentiated wall of text: its
+ * paragraphs, headings and lists all touching. */
+.lesson-prose > * + * { margin-top: 0.9em; }
+.lesson-prose h1, .lesson-prose h2, .lesson-prose h3,
+.lesson-prose h4, .lesson-prose h5, .lesson-prose h6 {
+  font-family: var(--font-display, inherit);
+  font-weight: 700; line-height: 1.25; color: var(--c-ink);
+  margin-top: 1.4em;
+}
+.lesson-prose h1 { font-size: 1.5em; }
+.lesson-prose h2 { font-size: 1.3em; }
+.lesson-prose h3 { font-size: 1.12em; }
+.lesson-prose h4, .lesson-prose h5, .lesson-prose h6 { font-size: 1em; }
+.lesson-prose > :first-child { margin-top: 0; }
+.lesson-prose strong { font-weight: 700; color: var(--c-ink); }
+.lesson-prose em { font-style: italic; }
+.lesson-prose s, .lesson-prose del { text-decoration: line-through; }
+.lesson-prose a { color: var(--c-link); text-decoration: underline; }
+.lesson-prose ul, .lesson-prose ol { padding-left: 1.5em; }
+.lesson-prose ul { list-style: disc; }
+.lesson-prose ol { list-style: decimal; }
+.lesson-prose li + li { margin-top: 0.35em; }
+.lesson-prose blockquote {
+  border-left: 3px solid var(--c-primary);
+  padding-left: var(--space-md); color: var(--c-muted); font-style: italic;
+}
+.lesson-prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em;
+  background: var(--c-surface-soft); border-radius: var(--radius-sm); padding: 0.1em 0.35em;
+}
+.lesson-prose pre {
+  background: var(--c-ink); color: var(--c-surface); padding: var(--space-md);
+  border-radius: var(--radius-md); overflow-x: auto;
+}
+.lesson-prose pre code { background: none; color: inherit; padding: 0; }
+.lesson-prose hr { border: 0; border-top: var(--border-w) solid var(--c-hairline); margin: 1.5em 0; }

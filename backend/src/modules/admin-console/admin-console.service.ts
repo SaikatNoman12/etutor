@@ -43,7 +43,10 @@ import {
   UpdateOrderStatusDto,
 } from './dtos';
 
-const PAGE_SIZE = 10;
+// The console lists have no pager — an operator sees the whole table and
+// filters it with search. Keep a ceiling so a runaway table cannot be
+// serialised in one response.
+const PAGE_SIZE = 100;
 const BCRYPT_ROUNDS = 10;
 
 /**
@@ -174,6 +177,12 @@ export class AdminConsoleService {
       price: c.price,
       studentCount: c.studentCount,
       status: c.status,
+      // Same reason as the two foreign keys above: the edit dialog opens from a
+      // list row and binds a field per column here. Level and summary were not
+      // in this projection, so editing a course silently cleared both.
+      level: c.level,
+      summary: c.summary ?? null,
+      thumbnailUrl: c.thumbnailUrl ?? null,
     }));
     return { items, meta: this.meta(page, total) };
   }
@@ -322,18 +331,11 @@ export class AdminConsoleService {
       throw new NotFoundException('Course not found');
     }
 
-    const section = await this.dataSource
-      .getRepository(CourseSection)
-      .findOne({ where: { id: dto.sectionId } });
-    if (!section || section.courseId !== courseId) {
-      throw new NotFoundException(
-        `Section with ID ${dto.sectionId} not found for this course!`,
-      );
-    }
+    const section = await this.resolveSection(courseId, dto);
 
     const repo = this.dataSource.getRepository(Lesson);
     const lesson = repo.create({
-      sectionId: dto.sectionId,
+      sectionId: section.id,
       title: dto.title,
       contentType: dto.contentType,
       videoUrl: dto.videoUrl,
@@ -345,6 +347,51 @@ export class AdminConsoleService {
     });
     const saved = await repo.save(lesson);
     return this.mapLesson(saved);
+  }
+
+  /**
+   * The section a new lesson belongs to: an existing id, a name (reused if the
+   * course already has a section by that name, created otherwise), or — when the
+   * operator says nothing — the course's first section, creating a default one
+   * for a course that has none. A course starts with no sections, so requiring
+   * an id here meant its first lesson could never be added.
+   */
+  private async resolveSection(
+    courseId: string,
+    dto: CreateAdminLessonDto,
+  ): Promise<CourseSection> {
+    const repo = this.dataSource.getRepository(CourseSection);
+
+    if (dto.sectionId) {
+      const found = await repo.findOne({ where: { id: dto.sectionId } });
+      if (!found || found.courseId !== courseId) {
+        throw new NotFoundException(
+          `Section with ID ${dto.sectionId} not found for this course!`,
+        );
+      }
+      return found;
+    }
+
+    const title = dto.sectionTitle?.trim();
+    const existing = await repo.find({
+      where: { courseId },
+      order: { displayOrder: 'ASC' },
+    });
+
+    if (title) {
+      const match = existing.find(
+        (s) => s.title.trim().toLowerCase() === title.toLowerCase(),
+      );
+      if (match) return match;
+      return repo.save(
+        repo.create({ courseId, title, displayOrder: existing.length }),
+      );
+    }
+
+    if (existing.length) return existing[0];
+    return repo.save(
+      repo.create({ courseId, title: 'Course content', displayOrder: 0 }),
+    );
   }
 
   async deleteLesson(id: string): Promise<void> {

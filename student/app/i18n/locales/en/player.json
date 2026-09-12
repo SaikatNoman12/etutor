@@ -11,5 +11,7 @@
   "courseContent": "Course content",
   "complete": "Complete",
   "min": "Min",
-  "pickLessonHint": "Pick a lesson to switch the stage and title."
+  "pickLessonHint": "Pick a lesson to switch the stage and title.",
+  "quiz": "Quiz",
+  "live": "Live session"
 }

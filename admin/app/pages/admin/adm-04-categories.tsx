@@ -12,13 +12,12 @@
 //
 // Restyled to mirror design/html/admin/ADM-04-categories.html. Scope-locked parts
 // preserved: default export (AdminCategoryListPage), every data-testid, and the
-// fetch wiring below (data1 useEffect + createCategories2 + updateCategories3).
+// fetch wiring below (the data1 useEffect).
 // Only the presentation was rebuilt to match the prototype, wiring the fetched
 // categories into the shared DataTable / listing components.
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
 
 import { DataTable } from '~/components/data-table/DataTable';
 import { RowSelect } from '~/components/listing/RowSelect';
@@ -39,6 +38,8 @@ import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { number, readForm, required, slug as slugRule, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading } from '~/components/shared/Placeholder';
+import { useSlugField } from '~/hooks/useSlugField';
+import { datedFilename, downloadCsv } from '~/utils/csv';
 
 /** A category row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -90,59 +91,6 @@ export default function AdminCategoryListPage() {
     return () => { cancelled = true; };
   }, [dispatch, reloadKey]);
 
-  const [loading2, setLoading2] = useState<boolean>(false);
-  const createCategories2 = async () => {
-    setLoading2(true);
-    const __body: Record<string, unknown> = {};
-    if (typeof document !== 'undefined') {
-      const __sect = document.querySelector('[data-testid="adm-04-categories-ac-2"]');
-      __sect?.querySelectorAll('input, textarea, select').forEach((el) => {
-        const __el = el as HTMLInputElement; const n = __el.name; const v = __el.value;
-        if (n && v) __body[n] = __el.type === 'number' ? Number(v) : v;
-      });
-    }
-    try {
-      await createCategory(__body);
-      toast.success(t('admin.categories.created', { defaultValue: 'Category created' }));
-      reload();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : t('admin.categories.createFailed', { defaultValue: 'Could not create the category' }));
-    } finally {
-      setLoading2(false);
-    }
-  };
-  const [loading3, setLoading3] = useState<boolean>(false);
-  const updateCategories3 = async () => {
-    setLoading3(true);
-    const __body: Record<string, unknown> = {};
-    if (typeof document !== 'undefined') {
-      const __sect = document.querySelector('[data-testid="adm-04-categories-ac-3"]');
-      __sect?.querySelectorAll('input, textarea, select').forEach((el) => {
-        const __el = el as HTMLInputElement; const n = __el.name; const v = __el.value;
-        if (n && v) __body[n] = __el.type === 'number' ? Number(v) : v;
-      });
-    }
-    // This route has no :id — resolve the target category by its slug so the
-    // display-order tweak patches the right record.
-    const targetSlug = String(__body.slug ?? '').toLowerCase();
-    const target = extractRows(data1).find((c) => String(c.slug ?? '').toLowerCase() === targetSlug);
-    if (!target) {
-      toast.error(t('admin.categories.notFound', { defaultValue: 'No category matches that slug' }));
-      setLoading3(false);
-      return;
-    }
-    delete __body.slug;
-    try {
-      await updateCategory(target.id, __body);
-      toast.success(t('admin.categories.updated', { defaultValue: 'Category updated' }));
-      reload();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : t('admin.categories.updateFailed', { defaultValue: 'Could not update the category' }));
-    } finally {
-      setLoading3(false);
-    }
-  };
-
   // --- Presentation state (added by convert-pages) -------------------------
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [editing, setEditing] = useState<AdminCategoryRow | null>(null);
@@ -169,12 +117,17 @@ export default function AdminCategoryListPage() {
 
   const sel = useRowSelection(categories.map((c) => c.id));
 
+  // The slug writes itself from the name until the operator edits it.
+  const slugField = useSlugField();
+
   function openCreate() {
     setEditing(null);
+    slugField.reset();
     setModalOpen(true);
   }
   function openEdit(row: AdminCategoryRow) {
     setEditing(row);
+    slugField.reset(row.slug ? String(row.slug) : '');
     setModalOpen(true);
   }
   async function handleModalSubmit(form: FormData) {
@@ -221,7 +174,13 @@ export default function AdminCategoryListPage() {
     }
   }
   function handleBulkExport() {
-    toast.info(t('admin.categories.exportStarted', { defaultValue: 'Preparing export…' }));
+    downloadCsv(datedFilename('categories'), categories.filter((row) => sel.isSelected(row.id)), [
+      { header: 'Name', value: (row) => row.name ?? '' },
+      { header: 'Slug', value: (row) => row.slug ?? '' },
+      { header: 'Order', value: (row) => row.displayOrder ?? '' },
+      { header: 'Courses', value: (row) => row.courseCount ?? '' },
+      { header: 'Active', value: (row) => (row.isActive === false ? 'Hidden' : 'Active') },
+    ]);
   }
   async function handleBulkDelete() {
     const ids = sel.selected;
@@ -292,13 +251,6 @@ export default function AdminCategoryListPage() {
     <div className="w-full" data-testid="adm-04-categories-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-sm text-muted-foreground">
-            <Link to="/" data-testid="adm-04-categories-home-link" className="hover:text-foreground hover:underline">
-              {t('nav.home', { defaultValue: 'Home' })}
-            </Link>
-            <span className="px-1.5">/</span>
-            <span>{t('admin.categories.title', { defaultValue: 'Categories' })}</span>
-          </div>
           <PageHeading
         eyebrow={t("admin.categories.eyebrow", { defaultValue: "Catalogue" })}
         title={t("admin.categories.title", { defaultValue: "Categories" })}
@@ -395,76 +347,6 @@ export default function AdminCategoryListPage() {
           </div>
         </section>
 
-        {/* Scope-locked story surfaces (ac-2 / ac-3): a fast quick-add and a
-            display-order tweak, kept live so the story's create/update wiring
-            (createCategories2 / updateCategories3) stays reachable. */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          <section className="rounded-[var(--radius-lg)] border border-border bg-card p-5 shadow-sm" data-testid="adm-04-categories-ac-2">
-            <h2 className="text-sm font-semibold text-foreground">
-              {t('admin.categories.quickAdd', { defaultValue: 'Quick add category' })}
-            </h2>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.categories.field.name', { defaultValue: 'Name' })}</span>
-              <input
-                name="name"
-                type="text"
-                data-testid="adm-04-categories-ac-2-title"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
-            </label>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.categories.field.slug', { defaultValue: 'Slug' })}</span>
-              <input
-                name="slug"
-                type="text"
-                data-testid="adm-04-categories-ac-2-content"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
-            </label>
-            <button
-              type="button"
-              onClick={createCategories2}
-              disabled={loading2}
-              data-testid="adm-04-categories-ac-2-action"
-              className="mt-4 inline-flex h-10 items-center rounded-md bg-[var(--c-primary)] px-4 text-sm font-medium text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:opacity-50"
-            >
-              {loading2 ? t('actions.saving', { defaultValue: 'Saving…' }) : t('actions.create', { defaultValue: 'Create' })}
-            </button>
-          </section>
-
-          <section className="rounded-[var(--radius-lg)] border border-border bg-card p-5 shadow-sm" data-testid="adm-04-categories-ac-3">
-            <h2 className="text-sm font-semibold text-foreground">
-              {t('admin.categories.reorder', { defaultValue: 'Change display order' })}
-            </h2>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.categories.field.slug', { defaultValue: 'Slug' })}</span>
-              <input
-                name="slug"
-                type="text"
-                data-testid="adm-04-categories-ac-3-title"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
-            </label>
-            <label className="mt-3 flex flex-col gap-1">
-              <span className="text-sm font-medium text-foreground">{t('admin.categories.field.order', { defaultValue: 'Order' })}</span>
-              <input
-                name="displayOrder"
-                type="number"
-                data-testid="adm-04-categories-ac-3-content"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              />
-            </label>
-            <button
-              type="button"
-              onClick={updateCategories3}
-              disabled={loading3}
-              data-testid="adm-04-categories-ac-3-action"
-              className="mt-4 inline-flex h-10 items-center rounded-md bg-[var(--c-primary)] px-4 text-sm font-medium text-[var(--c-on-primary)] transition-colors hover:bg-[var(--c-primary-active)] disabled:opacity-50"
-            >
-              {loading3 ? t('actions.saving', { defaultValue: 'Saving…' }) : t('actions.save', { defaultValue: 'Save' })}
-            </button>
-          </section>
-        </div>
       </main>
 
       {/* Create / edit modal — mirrors the prototype's entity-form-modal. */}
@@ -484,6 +366,7 @@ export default function AdminCategoryListPage() {
                 name="name"
                 type="text"
                 defaultValue={editing?.name ? String(editing.name) : ''}
+                onChange={(e) => slugField.follow(e.target.value)}
                 data-testid="adm-04-categories-field-name"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
@@ -493,7 +376,8 @@ export default function AdminCategoryListPage() {
               <input
                 name="slug"
                 type="text"
-                defaultValue={editing?.slug ? String(editing.slug) : ''}
+                value={slugField.value}
+                onChange={slugField.onChange}
                 data-testid="adm-04-categories-field-slug"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />

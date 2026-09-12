@@ -35,8 +35,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Both apps sat under the browser's default globe. SVG first for the
+            browsers that take one, a 32px PNG for the ones that do not, and the
+            touch icon for a home-screen shortcut. */}
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <meta name="theme-color" content="#000000" />
+        <meta name="theme-color" content="#0f5f56" />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />

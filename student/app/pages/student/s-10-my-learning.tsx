@@ -147,7 +147,7 @@ export default function MyLearningPage() {
               className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
               data-testid="s-10-my-learning-ac-1-error"
             >
-              <p className="m-0 text-[15px] text-[var(--c-error)]">
+              <p className="text-[15px] text-[var(--c-error)]">
                 {t('learning.loadError', 'We could not load your courses. Please try again.')}
               </p>
               <button
@@ -166,7 +166,7 @@ export default function MyLearningPage() {
               className="rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] text-center"
               data-testid="s-10-my-learning-empty"
             >
-              <p className="m-0 text-[15px] text-[var(--c-muted)]">
+              <p className="text-[15px] text-[var(--c-muted)]">
                 {t('learning.empty', 'You have not enrolled in any courses yet.')}
               </p>
               <Link
@@ -193,19 +193,37 @@ export default function MyLearningPage() {
                     <div className="relative h-[180px] overflow-hidden [background:var(--media-fallback)]">
                       <img className="block h-full w-full object-cover" src={e.course?.thumbnailUrl ?? ''} alt={e.course?.title ?? ''} />
                     </div>
-                    <div className="space-y-[8px] p-[16px]">
-                      <p className="m-0 text-[16px] font-semibold leading-[1.35] text-[var(--c-ink)]">
+                    {/* flex + gap, not space-y: Tailwind v4 emits space-y inside
+                        :where(), so a child carrying any margin utility beat it and
+                        the title, the bar and the button all ran together. The
+                        progress reads as ONE unit — label and bar together — set
+                        apart from the title and the action. */}
+                    <div className="flex flex-col gap-[14px] p-[16px]">
+                      <p className="line-clamp-2 text-[16px] font-semibold leading-[1.35] text-[var(--c-ink)]">
                         {e.course?.title ?? ''}
                       </p>
-                      <div className="h-[8px] overflow-hidden rounded-full bg-[var(--c-hairline)]">
-                        <div className="et-grow h-full rounded-full bg-[var(--c-primary)]" style={{ width: `${pct}%` }} />
+                      <div className="flex flex-col gap-[6px]">
+                        <div className="flex items-baseline justify-between gap-[8px]">
+                          <span className="text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
+                            {done ? t('learning.finished', 'Finished') : t('learning.progress', 'Progress')}
+                          </span>
+                          <span className="text-[12px] font-bold tabular-nums leading-[1.4] text-[var(--c-primary-text)]">
+                            {pct}%
+                          </span>
+                        </div>
+                        <div
+                          className="h-[8px] overflow-hidden rounded-full bg-[var(--c-hairline)]"
+                          role="progressbar"
+                          aria-valuenow={pct}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                        >
+                          <div className="et-grow h-full rounded-full bg-[var(--c-primary)]" style={{ width: `${pct}%` }} />
+                        </div>
                       </div>
-                      <p className="m-0 text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
-                        {pct}% {t('learning.complete', 'complete')}
-                      </p>
                       <Link
                         to={`/learn/${e.course?.slug ?? ''}`}
-                        className="inline-flex min-h-[44px] items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
+                        className="et-press inline-flex min-h-[44px] w-full items-center justify-center gap-[8px] rounded-[var(--radius-pill)] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-on-primary)] no-underline transition-colors hover:bg-[var(--c-primary-active)]"
                         data-testid={`s-10-my-learning-continue-${i + 1}`}
                       >
                         {done ? t('learning.review', 'Review') : t('learning.continue', 'Continue')}

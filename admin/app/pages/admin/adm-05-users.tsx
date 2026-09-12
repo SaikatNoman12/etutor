@@ -17,7 +17,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
 
 import { user_role } from '~/enums/user-role.enum';
 import { user_status } from '~/enums/user-status.enum';
@@ -33,7 +32,7 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { listUsers, createUser, updateUser } from '~/services/httpServices/adminConsoleService';
 import { toast } from '~/lib/toast';
 
-import type { DataTableColumn, PaginationState } from '~/components/data-table/DataTable';
+import type { DataTableColumn } from '~/components/data-table/DataTable';
 import { Plus, X } from 'lucide-react';
 import type { AdminUserRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -41,6 +40,7 @@ import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { email as emailRule, minLength, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading } from '~/components/shared/Placeholder';
 import { EntityFormModal } from '~/components/listing/EntityFormModal';
+import { datedFilename, downloadCsv } from '~/utils/csv';
 
 /** A user row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -59,16 +59,6 @@ function extractRows(d: unknown): AdminUserRow[] {
     const rec = item && typeof item === 'object' ? (item as Record<string, unknown>) : {};
     return { ...rec, id: String(rec.id ?? rec._id ?? '') } as AdminUserRow;
   });
-}
-
-function extractPagination(d: unknown, count: number): PaginationState {
-  const meta =
-    d && typeof d === 'object' ? ((d as Record<string, unknown>).meta as Record<string, unknown> | undefined) : undefined;
-  const page = Number(meta?.page ?? 1) || 1;
-  const limit = Number(meta?.limit ?? (count || 20)) || 20;
-  const total = Number(meta?.total ?? count) || count;
-  const totalPages = Number(meta?.totalPages ?? Math.max(1, Math.ceil(total / (limit || 1)))) || 1;
-  return { page, limit, total, totalPages };
 }
 
 /** Normalise the role field (numeric enum or string) to a display label. */
@@ -180,7 +170,6 @@ export default function AdminUserListPage() {
       )
     : allUsers;
   const instructorRows = extractRows(data2);
-  const pagination = extractPagination(data1, users.length);
 
   const sel = useRowSelection(users.map((u) => u.id));
 
@@ -249,7 +238,13 @@ export default function AdminUserListPage() {
     }
   }
   function handleBulkExport() {
-    toast.info(t('admin.users.exportStarted', { defaultValue: 'Preparing export…' }));
+    downloadCsv(datedFilename('users'), users.filter((row) => sel.isSelected(row.id)), [
+      { header: 'Name', value: (row) => row.fullName ?? '' },
+      { header: 'Email', value: (row) => row.email ?? '' },
+      { header: 'Role', value: (row) => roleText(row) },
+      { header: 'Courses', value: (row) => row.courseCount ?? '' },
+      { header: 'Status', value: (row) => statusText(row) },
+    ]);
   }
   async function handleBulkSuspend() {
     const ids = sel.selected;
@@ -266,6 +261,12 @@ export default function AdminUserListPage() {
       toast.error(getApiErrorMessage(err, t('admin.users.bulkSuspendFailed', { defaultValue: 'Could not suspend the selected users' })));
     }
   }
+
+  const roleText = (row: AdminUserRow): string => roleLabel(row, t) ?? '';
+  const statusText = (row: AdminUserRow): string =>
+    isSuspended(row)
+      ? t('admin.users.status.suspended', { defaultValue: 'Suspended' })
+      : t('admin.users.status.active', { defaultValue: 'Active' });
 
   function renderRole(row: AdminUserRow) {
     const label = roleLabel(row, t);
@@ -331,13 +332,6 @@ export default function AdminUserListPage() {
     <div className="w-full" data-testid="adm-05-users-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-sm text-muted-foreground">
-            <Link to="/" data-testid="adm-05-users-home-link" className="hover:text-foreground hover:underline">
-              {t('nav.home', { defaultValue: 'Home' })}
-            </Link>
-            <span className="px-1.5">/</span>
-            <span>{t('admin.users.title', { defaultValue: 'Users' })}</span>
-          </div>
           <PageHeading
         eyebrow={t("admin.users.eyebrow", { defaultValue: "People" })}
         title={t("admin.users.title", { defaultValue: "Users" })}
@@ -405,7 +399,6 @@ export default function AdminUserListPage() {
                   <DataTable
                     data={users}
                     columns={columns}
-                    pagination={pagination}
                     rowKey={(row) => row.id}
                     rowAction={(row) => (
                       <span data-component="row-actions">

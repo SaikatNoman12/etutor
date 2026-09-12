@@ -32,15 +32,17 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { listCourses, createCourse, deleteCourse, updateCourse } from '~/services/httpServices/adminConsoleService';
 import { toast } from '~/lib/toast';
 
-import type { DataTableColumn, PaginationState } from '~/components/data-table/DataTable';
+import type { DataTableColumn } from '~/components/data-table/DataTable';
 import { Plus, X } from 'lucide-react';
 import type { AdminCourseRow } from '~/types/view-models';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { maxLength, number, readForm, required, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading } from '~/components/shared/Placeholder';
+import { ImageUrlField } from '~/components/shared/ImageUrlField';
 import { EntityFormModal } from '~/components/listing/EntityFormModal';
 import { get } from '~/services/httpMethods/get';
+import { datedFilename, downloadCsv } from '~/utils/csv';
 
 /** A course row as rendered by the listing. The index signature keeps it
  *  assignable to DataTable's `Record<string, unknown>` constraint while the
@@ -59,16 +61,6 @@ function extractRows(d: unknown): AdminCourseRow[] {
     const rec = item && typeof item === 'object' ? (item as Record<string, unknown>) : {};
     return { ...rec, id: String(rec.id ?? rec._id ?? '') } as AdminCourseRow;
   });
-}
-
-function extractPagination(d: unknown, count: number): PaginationState {
-  const meta =
-    d && typeof d === 'object' ? ((d as Record<string, unknown>).meta as Record<string, unknown> | undefined) : undefined;
-  const page = Number(meta?.page ?? 1) || 1;
-  const limit = Number(meta?.limit ?? (count || 20)) || 20;
-  const total = Number(meta?.total ?? count) || count;
-  const totalPages = Number(meta?.totalPages ?? Math.max(1, Math.ceil(total / (limit || 1)))) || 1;
-  return { page, limit, total, totalPages };
 }
 
 function categoryName(row: AdminCourseRow): string {
@@ -207,6 +199,10 @@ export default function AdminCourseListPage() {
   const [editing, setEditing] = useState<AdminCourseRow | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
   const [errors, setErrors] = useState<FieldErrors>({});
+  // The cover image. The API has accepted `thumbnailUrl` since the schema was
+  // written; this form never asked for one, so every course created here shipped
+  // with the catalogue's grey placeholder.
+  const [thumbnail, setThumbnail] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [removedIds, setRemovedIds] = useState<string[]>([]);
 
@@ -217,16 +213,17 @@ export default function AdminCourseListPage() {
     : allCourses;
   const searchRows = extractRows(data2);
   const priceRows = extractRows(data3);
-  const pagination = extractPagination(data1, courses.length);
 
   const sel = useRowSelection(courses.map((c) => c.id));
 
   function openCreate() {
     setEditing(null);
+    setThumbnail('');
     setFormOpen(true);
   }
   function openEdit(row: AdminCourseRow) {
     setEditing(row);
+    setThumbnail(row.thumbnailUrl ? String(row.thumbnailUrl) : '');
     setFormOpen(true);
   }
   async function handleSubmit(): Promise<boolean> {
@@ -272,7 +269,14 @@ export default function AdminCourseListPage() {
     }
   }
   function handleBulkExport() {
-    toast.info(t('admin.courses.exportStarted', { defaultValue: 'Preparing export…' }));
+    downloadCsv(datedFilename('courses'), courses.filter((row) => sel.isSelected(row.id)), [
+      { header: 'Title', value: (row) => row.title ?? '' },
+      { header: 'Category', value: (row) => categoryName(row) },
+      { header: 'Instructor', value: (row) => instructorName(row) },
+      { header: 'Price', value: (row) => row.price ?? '' },
+      { header: 'Students', value: (row) => row.studentCount ?? '' },
+      { header: 'Status', value: (row) => statusText(row) },
+    ]);
   }
   async function handleBulkDelete() {
     const ids = sel.selected;
@@ -284,6 +288,19 @@ export default function AdminCourseListPage() {
     } catch (err) {
       toast.error(getApiErrorMessage(err, t('admin.courses.bulkDeleteFailed', { defaultValue: 'Could not delete the selected courses' })));
     }
+  }
+
+  /** The status word — shared by the badge and the CSV export. */
+  function statusText(row: AdminCourseRow): string {
+    const s = row.status;
+    const norm = typeof s === 'number' ? s : String(s ?? '').toLowerCase();
+    if (norm === 'published' || norm === course_status.PUBLISHED) {
+      return t('admin.courses.status.published', { defaultValue: 'Published' });
+    }
+    if (norm === 'archived' || norm === course_status.ARCHIVED) {
+      return t('admin.courses.status.archived', { defaultValue: 'Archived' });
+    }
+    return t('admin.courses.status.draft', { defaultValue: 'Draft' });
   }
 
   function renderStatus(row: AdminCourseRow) {
@@ -354,13 +371,6 @@ export default function AdminCourseListPage() {
     <div className="w-full" data-testid="adm-02-courses-page">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-sm text-muted-foreground">
-            <Link to="/" data-testid="adm-02-courses-home-link" className="hover:text-foreground hover:underline">
-              {t('nav.home', { defaultValue: 'Home' })}
-            </Link>
-            <span className="px-1.5">/</span>
-            <span>{t('admin.courses.title', { defaultValue: 'Courses' })}</span>
-          </div>
           <PageHeading
         eyebrow={t("admin.courses.eyebrow", { defaultValue: "Catalogue" })}
         title={t("admin.courses.title", { defaultValue: "Courses" })}
@@ -428,7 +438,6 @@ export default function AdminCourseListPage() {
                   <DataTable
                     data={courses}
                     columns={columns}
-                    pagination={pagination}
                     rowKey={(row) => row.id}
                     rowAction={(row) => (
                       <span data-component="row-actions">
@@ -595,6 +604,7 @@ export default function AdminCourseListPage() {
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.level', { defaultValue: 'Level' })}</span>
               <select
                 name="level"
+                defaultValue={editing?.level != null ? String(editing.level) : ''}
                 data-testid="adm-02-courses-field-level"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               >
@@ -608,7 +618,7 @@ export default function AdminCourseListPage() {
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.status', { defaultValue: 'Status' })}</span>
               <select
                 name="status"
-                defaultValue={typeof editing?.status === 'string' ? editing.status : ''}
+                defaultValue={editing?.status != null ? String(editing.status) : ''}
                 data-testid="adm-02-courses-field-status"
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               >
@@ -618,12 +628,25 @@ export default function AdminCourseListPage() {
                 <option value="2">{t('admin.courses.status.archived', { defaultValue: 'Archived' })}</option>
               </select>
             </label>
+            <ImageUrlField
+              name="thumbnailUrl"
+              label={t('admin.courses.field.cover', { defaultValue: 'Cover image' })}
+              value={thumbnail}
+              onChange={setThumbnail}
+              hint={t('admin.courses.field.coverHint', { defaultValue: 'A link to the image. Shown on the course card and the course page.' })}
+              emptyLabel={t('admin.courses.field.coverEmpty', { defaultValue: 'No image yet' })}
+              invalidLabel={t('admin.courses.field.coverBroken', { defaultValue: 'That link did not load' })}
+              className="sm:col-span-2"
+              labelClassName="text-sm font-medium text-foreground"
+              inputClassName="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              testId="adm-02-courses-field-cover"
+            />
             <label className="flex flex-col gap-1 sm:col-span-2">
               <span className="text-sm font-medium text-foreground">{t('admin.courses.field.summary', { defaultValue: 'Summary' })}</span>
               <textarea
                 name="summary"
                 rows={3}
-                defaultValue={editing?.summary ? String(editing.summary) : ''}
+                defaultValue={editing?.summary != null ? String(editing.summary) : ''}
                 data-testid="adm-02-courses-ac-4-content"
                 className="rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               />

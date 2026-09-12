@@ -14,6 +14,8 @@
   "loadError": "We could not load the courses. Please try again.",
   "retry": "Try again",
   "empty": "No courses match your filters yet.",
-  "pagination": "Pagination",
-  "home": "Home"
+  "pagination": "페이지 이동",
+  "home": "Home",
+  "prevPage": "이전 페이지",
+  "nextPage": "다음 페이지"
 }

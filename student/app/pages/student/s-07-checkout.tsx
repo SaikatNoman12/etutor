@@ -35,7 +35,7 @@ import { getApiErrorMessage } from '~/utils/apiError';
 import type { Cart } from '~/types/cart';
 import type { CartItem } from '~/types/cart-item';
 import type { CartLine, CartView } from '~/types/view-models';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { FieldError, fieldProps } from '~/components/shared/FieldError';
 import { email as emailRule, required, serverFieldErrors, validate, type FieldErrors } from '~/utils/validation';
 import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
@@ -172,9 +172,14 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<string>('Card');
   const [errors, setErrors] = useState<FieldErrors>({});
   useEffect(() => {
-    setName(user?.name ?? '');
-    setEmail(user?.email ?? '');
-  }, [user?.name, user?.email]);
+    // The session carries `fullName` — this read `name`, which the payload has
+    // never had, so Full name opened blank on every checkout and the shopper had
+    // to type a name the system already knew. `name` stays as a fallback in case
+    // a caller supplies the shorter shape.
+    const u = user as { fullName?: string; name?: string; email?: string } | null;
+    setName(u?.fullName ?? u?.name ?? '');
+    setEmail(u?.email ?? '');
+  }, [user]);
 
   // Place order — runs the two design writes in sequence through the shared
   // orderService: POST /api/orders, then POST /api/orders/:id/pay.
@@ -249,12 +254,18 @@ export default function CheckoutPage() {
       >
         {/* Billing details */}
         <form
-          className="space-y-[16px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
+          id="checkout-form"
+          className="flex flex-col gap-[20px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)] sm:p-[28px]"
           onSubmit={(e) => { e.preventDefault(); void placeOrder(); }}
         >
-          <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
-            {t('checkout.billingDetails', 'Billing details')}
-          </h2>
+          <div className="flex flex-col gap-[4px]">
+            <h2 className="text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
+              {t('checkout.billingDetails', 'Billing details')}
+            </h2>
+            <p className="text-[14px] leading-[1.6] text-[var(--c-muted)]">
+              {t('checkout.billingHint', 'Where your receipt goes. Your courses unlock straight away.')}
+            </p>
+          </div>
           <div className="grid grid-cols-1 gap-[16px] [@media(min-width:600px)]:grid-cols-2">
             <label className="flex flex-col gap-[4px]">
               <span className="text-[14px] font-medium text-[var(--c-ink)]">{t('checkout.fullName', 'Full name')}</span>
@@ -306,21 +317,22 @@ export default function CheckoutPage() {
               </select>
             </label>
           </div>
-          <button
-            type="submit"
-            disabled={!canPlace}
-            className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-md)] border border-transparent bg-[var(--c-primary)] px-[32px] py-[16px] text-[18px] font-semibold text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50"
-            data-testid="s-07-checkout-place-order"
-          >
-            {placing ? t('checkout.placing', 'Placing order…') : t('checkout.placeOrder', 'Place order')}
-          </button>
+          {/* The button lives in the summary card, next to the total — a shopper
+              confirms an amount, not a form. It submits this form by id. */}
         </form>
 
         {/* Order summary */}
-        <div className="sticky top-[88px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
-          <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
-            {t('checkout.orderSummary', 'Order summary')}
-          </h2>
+        <div className="sticky top-[88px] flex flex-col gap-[16px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
+          <div className="flex items-baseline justify-between gap-[8px]">
+            <h2 className="text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
+              {t('checkout.orderSummary', 'Order summary')}
+            </h2>
+            {items.length > 0 && (
+              <span className="text-[13px] font-medium text-[var(--c-muted)]">
+                {t('checkout.itemCount', '{{count}} item', { count: items.length })}
+              </span>
+            )}
+          </div>
 
           {loading1 && (
             <div className="space-y-[12px]" data-testid="s-07-checkout-ac-1-loading">
@@ -333,7 +345,7 @@ export default function CheckoutPage() {
 
           {!loading1 && error1 && (
             <div className="space-y-[12px]" data-testid="s-07-checkout-ac-1-error">
-              <p className="m-0 text-[14px] text-[var(--c-error)]">
+              <p className="text-[14px] text-[var(--c-error)]">
                 {t('checkout.loadError', 'We could not load your order summary. Please try again.')}
               </p>
               <button
@@ -348,36 +360,73 @@ export default function CheckoutPage() {
           )}
 
           {!loading1 && !error1 && items.length === 0 && (
-            <p className="m-0 text-[14px] text-[var(--c-body)]" data-testid="s-07-checkout-empty">
+            <p className="text-[14px] text-[var(--c-body)]" data-testid="s-07-checkout-empty">
               {t('checkout.empty', 'Your cart is empty.')}
             </p>
           )}
 
           {!loading1 && !error1 && items.length > 0 && (
             <>
-              {items.map((line) => {
-                const qty = line.quantity ?? 1;
-                const unit = line.unitPrice ?? line.price ?? 0;
-                const title = line.course?.title ?? line.title ?? '';
-                return (
-                  <div key={line.id} className="flex items-center justify-between" data-testid={`s-07-checkout-summary-item-${line.id}`}>
-                    <span className="text-[14px] text-[var(--c-body)]">{title}</span>
-                    <span className="text-[14px] text-[var(--c-body)]">{money(unit * qty)}</span>
-                  </div>
-                );
-              })}
-              {discount > 0 && (
+              {/* The courses, with their covers — a row of bare text did not look
+                  like the thing being bought. */}
+              <ul className="flex list-none flex-col gap-[14px] p-0">
+                {items.map((line) => {
+                  const qty = line.quantity ?? 1;
+                  const unit = line.unitPrice ?? line.price ?? 0;
+                  const title = line.course?.title ?? line.title ?? '';
+                  const cover = line.course?.thumbnailUrl ?? '';
+                  return (
+                    <li key={line.id} className="flex items-start gap-[12px]" data-testid={`s-07-checkout-summary-item-${line.id}`}>
+                      {cover ? (
+                        <img
+                          src={cover}
+                          alt=""
+                          className="h-[44px] w-[64px] shrink-0 rounded-[var(--radius-md)] object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="h-[44px] w-[64px] shrink-0 rounded-[var(--radius-md)] bg-[var(--c-surface-soft)]" />
+                      )}
+                      <span className="min-w-0 flex-1 text-[14px] leading-[1.45] text-[var(--c-ink)]">{title}</span>
+                      <span className="shrink-0 text-[14px] font-semibold tabular-nums text-[var(--c-ink)]">{money(unit * qty)}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="flex flex-col gap-[8px] border-t border-[var(--c-hairline)] pt-[16px]">
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-[var(--c-body)]">
-                    {couponCode ? t('checkout.coupon', 'Coupon {{code}}', { code: couponCode }) : t('checkout.discount', 'Discount')}
-                  </span>
-                  <span className="text-[14px] text-[var(--c-body)]">-{money(discount)}</span>
+                  <span className="text-[14px] text-[var(--c-body)]">{t('checkout.subtotal', 'Subtotal')}</span>
+                  <span className="text-[14px] tabular-nums text-[var(--c-body)]">{money(subtotal)}</span>
                 </div>
-              )}
-              <div className="mt-[12px] flex items-center justify-between border-t border-[var(--c-hairline)] pt-[12px]">
-                <span className="text-[16px] font-semibold text-[var(--c-ink)]">{t('checkout.total', 'Total')}</span>
-                <span className="text-[24px] font-bold text-[var(--c-primary-text)]">{money(total)}</span>
+                {discount > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[14px] text-[var(--c-body)]">
+                      {couponCode ? t('checkout.coupon', 'Coupon {{code}}', { code: couponCode }) : t('checkout.discount', 'Discount')}
+                    </span>
+                    <span className="text-[14px] font-medium tabular-nums text-[var(--c-success,#16a34a)]">-{money(discount)}</span>
+                  </div>
+                )}
               </div>
+
+              <div className="flex items-baseline justify-between border-t border-[var(--c-hairline)] pt-[16px]">
+                <span className="text-[16px] font-semibold text-[var(--c-ink)]">{t('checkout.total', 'Total')}</span>
+                <span className="text-[26px] font-bold tabular-nums text-[var(--c-primary-text)]">{money(total)}</span>
+              </div>
+
+              <button
+                type="submit"
+                form="checkout-form"
+                disabled={!canPlace}
+                className="et-press et-sheen inline-flex min-h-[52px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[var(--radius-pill)] border border-transparent bg-[var(--c-primary)] px-[24px] text-[17px] font-semibold text-[var(--c-on-primary)] shadow-[var(--shadow-1)] transition-colors hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50"
+                data-testid="s-07-checkout-place-order"
+              >
+                {placing ? t('checkout.placing', 'Placing order…') : t('checkout.placeOrder', 'Place order')}
+              </button>
+              <p className="flex items-center justify-center gap-[6px] text-center text-[12px] leading-[1.5] text-[var(--c-muted)]">
+                <ShieldCheck className="h-[14px] w-[14px] shrink-0" aria-hidden="true" />
+                {t('checkout.reassurance', 'Lifetime access. 30-day refund if the course is not for you.')}
+              </p>
             </>
           )}
         </div>

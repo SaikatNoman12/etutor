@@ -5,13 +5,14 @@ import { Toaster } from "~/components/ui/sonner";
 
 export default function BaseLayout() {
   return (
-    // No `min-h-screen`. It stretched <main> (flex-1) so the footer always sat
-    // at the bottom of the viewport — which on a short page (an empty cart, a
-    // two-row order list) is a long blank stretch of canvas between the content
-    // and the footer. The footer now follows the content; the html ground is
-    // the footer's ink, so on a short page the dark footer simply runs to the
-    // bottom of the window instead of a light strip appearing under it.
-    <div className="relative flex flex-col bg-[var(--c-canvas)]">
+    // `min-h-screen` + `flex-1` on main: the footer sits at the BOTTOM of the
+    // window on a short page. Dropping it (to avoid a blank stretch of canvas
+    // above the footer) meant the footer ended wherever the content did and the
+    // html ground — the footer's own ink — filled the rest of the window. On an
+    // order page that was 380px of footer followed by 180px of black, which
+    // reads as one enormous footer. Canvas above the footer is the ordinary
+    // shape of a short page; a black void below it is not.
+    <div className="relative flex min-h-screen flex-col bg-[var(--c-canvas)]">
       <Header />
       {/* A plain block, deliberately. As a flex container it made every page a
           flex ITEM, and each page's own `mx-auto` then set auto margins on the
@@ -28,7 +29,7 @@ export default function BaseLayout() {
           and the console's orders screen — sat flush against the bar above them
           while every other page had 32px. A rhythm that every screen has to
           remember is a rhythm that some screen will forget. */}
-      <main className="container mx-auto w-full py-[24px] sm:py-[32px]">
+      <main className="container mx-auto w-full flex-1 py-[24px] sm:py-[32px]">
         <Outlet />
       </main>
       <Footer />

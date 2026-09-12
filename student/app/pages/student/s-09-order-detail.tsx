@@ -146,7 +146,7 @@ export default function OrderDetailPage() {
       {/* page-head */}
       <div className="mb-[24px] flex items-end justify-between gap-[16px]">
         <h1
-          className="m-0 text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
+          className="text-[32px] font-bold leading-[1.2] tracking-[-0.3px] text-[var(--c-ink)]"
           data-testid="s-09-order-detail-heading"
         >
           {t('orderDetail.title', 'Order')} {orderNumber}
@@ -167,7 +167,7 @@ export default function OrderDetailPage() {
           className="space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
           data-testid="s-09-order-detail-ac-1"
         >
-          <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
+          <h2 className="text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
             {t('orderDetail.items', 'Items')}
           </h2>
 
@@ -184,7 +184,7 @@ export default function OrderDetailPage() {
 
           {!loading1 && error1 && (
             <div data-testid="s-09-order-detail-ac-1-error" className="py-[8px]">
-              <p className="m-0 text-[14px] text-[var(--c-error)]">
+              <p className="text-[14px] text-[var(--c-error)]">
                 {t('orderDetail.itemsError', 'We could not load this order. Please try again.')}
               </p>
               <button
@@ -205,7 +205,7 @@ export default function OrderDetailPage() {
                   <span className="inline-flex h-[48px] w-[48px] items-center justify-center rounded-[9999px] bg-[var(--c-surface-soft)] text-[var(--c-muted)]">
                     <Package className="h-5 w-5" aria-hidden="true" />
                   </span>
-                  <p className="m-0 text-[14px] text-[var(--c-body)]">
+                  <p className="text-[14px] text-[var(--c-body)]">
                     {t('orderDetail.noItems', 'This order has no items.')}
                   </p>
                 </div>
@@ -262,7 +262,7 @@ export default function OrderDetailPage() {
           className="sticky top-[88px] space-y-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
           data-testid="s-09-order-detail-ac-2"
         >
-          <h2 className="m-0 text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
+          <h2 className="text-[20px] font-semibold leading-[1.3] text-[var(--c-ink)]">
             {t('orderDetail.details', 'Details')}
           </h2>
 
@@ -276,7 +276,7 @@ export default function OrderDetailPage() {
 
           {!loading2 && error2 && (
             <div data-testid="s-09-order-detail-ac-2-error" className="py-[8px]">
-              <p className="m-0 text-[14px] text-[var(--c-error)]">
+              <p className="text-[14px] text-[var(--c-error)]">
                 {t('orderDetail.detailsError', 'We could not load the order details.')}
               </p>
               <button
@@ -301,8 +301,14 @@ export default function OrderDetailPage() {
               <dd className="m-0 text-[14px] text-[var(--c-ink)]">{dash(fmtDate(order2?.paidAt))}</dd>
               <dt className="m-0 text-[14px] text-[var(--c-muted)]">{t('orderDetail.method', 'Method')}</dt>
               <dd className="m-0 text-[14px] text-[var(--c-ink)]">{dash(order2?.paymentMethod)}</dd>
-              <dt className="m-0 text-[14px] text-[var(--c-muted)]">{t('orderDetail.coupon', 'Coupon')}</dt>
-              <dd className="m-0 text-[14px] text-[var(--c-ink)]">{dash(order2?.coupon?.code)}</dd>
+              {/* No coupon, no row — an empty "Coupon —" is a question the reader
+                  did not ask. */}
+              {order2?.coupon?.code ? (
+                <>
+                  <dt className="m-0 text-[14px] text-[var(--c-muted)]">{t('orderDetail.coupon', 'Coupon')}</dt>
+                  <dd className="m-0 text-[14px] text-[var(--c-ink)]">{order2.coupon.code}</dd>
+                </>
+              ) : null}
             </dl>
           )}
         </div>

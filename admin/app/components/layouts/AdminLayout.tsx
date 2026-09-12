@@ -1,6 +1,6 @@
 /**
  * The console chrome: sidebar navigation, a top bar naming who is signed in,
- * and the footer.
+ * and the main region.
  *
  * The sidebar shipped with nothing in it but the generator's own
  * __ADMIN_NAV_ITEMS__ placeholder comment, which was never filled in. So the console had nine screens and
@@ -18,7 +18,6 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { logout } from '~/services/httpServices/authService';
 import { authSlice } from '~/redux/features/authSlice';
 import { user_role } from '~/enums/user-role.enum';
-import Footer from '~/components/layout/footer';
 import {
   BookOpen,
   FolderTree,
@@ -189,8 +188,6 @@ export default function AdminLayout() {
         <main className="min-w-0 flex-1 overflow-y-auto px-[16px] py-[24px] sm:px-[32px] sm:py-[32px]" data-testid="admin-main">
           <Outlet />
         </main>
-
-        <Footer />
       </div>
     </div>
   );

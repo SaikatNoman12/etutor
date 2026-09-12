@@ -7,5 +7,7 @@
   "browse": "Browse courses",
   "review": "Review",
   "continue": "Continue",
-  "home": "Home"
+  "home": "Home",
+  "finished": "완료됨",
+  "progress": "진행률"
 }

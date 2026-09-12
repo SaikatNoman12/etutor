@@ -49,19 +49,19 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="mt-[64px] bg-[var(--c-ink)] text-white" data-testid="site-footer">
+    <footer className="mt-[48px] bg-[var(--c-ink)] text-white" data-testid="site-footer">
       {/* The closing call to action — one more chance to start, before the
           small print. Sits half over the footer's top edge so the two surfaces
           read as one composition rather than a box on a box. */}
       <div className="container mx-auto px-4">
-        <div className="et-aurora relative -translate-y-[32px] overflow-hidden rounded-[var(--radius-xl)] border border-[rgb(255_255_255/0.08)] bg-[rgb(255_255_255/0.04)] p-[28px] shadow-[var(--shadow-3)] backdrop-blur-sm sm:p-[36px]">
+        <div className="et-aurora relative -translate-y-[32px] overflow-hidden rounded-[var(--radius-xl)] border border-[rgb(255_255_255/0.08)] bg-[rgb(255_255_255/0.04)] p-[24px] shadow-[var(--shadow-3)] backdrop-blur-sm sm:p-[28px]">
           <div className="flex flex-col items-start justify-between gap-[20px] sm:flex-row sm:items-center">
             <div>
-              <p className="m-0 mb-[6px] text-[12px] font-bold uppercase tracking-[1.2px] text-[#ffb08a]">
+              <p className="mb-[6px] text-[12px] font-bold uppercase tracking-[1.2px] text-[#ffb08a]">
                 {t("footer.ctaEyebrow", "Start today")}
               </p>
               <p
-                className="m-0 text-[24px] font-extrabold leading-[1.15] tracking-[-0.02em] text-white sm:text-[30px]"
+                className="text-[24px] font-extrabold leading-[1.15] tracking-[-0.02em] text-white sm:text-[30px]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {user
@@ -82,8 +82,8 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pb-[40px]">
-        <div className="grid grid-cols-1 gap-[32px] md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+      <div className="container mx-auto px-4 pb-[32px]">
+        <div className="grid grid-cols-1 gap-[24px] md:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <div className="flex flex-col gap-[14px]">
             <Link to="/" className="inline-flex items-center gap-[10px] text-[22px] font-extrabold tracking-[-0.03em] text-white" style={{ fontFamily: "var(--font-display)" }}>
               <span className="inline-flex h-[36px] w-[36px] items-center justify-center rounded-[10px]" style={{ background: "var(--grad-brand)" }}>
@@ -91,7 +91,7 @@ export default function Footer() {
               </span>
               {t("brand.name")}
             </Link>
-            <p className="m-0 max-w-[36ch] text-[14px] leading-[1.7] text-[rgb(255_255_255/0.62)]">
+            <p className="max-w-[36ch] text-[14px] leading-[1.7] text-[rgb(255_255_255/0.62)]">
               {t("app.tagline", "Learn with experts, anytime, anywhere")}
             </p>
             <a
@@ -105,7 +105,7 @@ export default function Footer() {
 
           {columns.map((col) => (
             <nav key={col.heading} className="flex flex-col gap-[10px]">
-              <p className="m-0 mb-[4px] text-[12px] font-bold uppercase tracking-[1.2px] text-[rgb(255_255_255/0.45)]">
+              <p className="mb-[4px] text-[12px] font-bold uppercase tracking-[1.2px] text-[rgb(255_255_255/0.45)]">
                 {col.heading}
               </p>
               {col.links.map((l) => (
@@ -121,11 +121,11 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-[36px] flex flex-col items-center justify-between gap-[10px] border-t border-[rgb(255_255_255/0.1)] pt-[22px] text-[13px] text-[rgb(255_255_255/0.5)] sm:flex-row">
-          <p className="m-0">
+        <div className="mt-[24px] flex flex-col items-center justify-between gap-[10px] border-t border-[rgb(255_255_255/0.1)] pt-[18px] text-[13px] text-[rgb(255_255_255/0.5)] sm:flex-row">
+          <p className="">
             © {new Date().getFullYear()} {t("brand.name")}. {t("footer.rights", "All rights reserved.")}
           </p>
-          <p className="m-0">{t("footer.madeFor", "Built for people who like to learn.")}</p>
+          <p className="">{t("footer.madeFor", "Built for people who like to learn.")}</p>
         </div>
       </div>
     </footer>

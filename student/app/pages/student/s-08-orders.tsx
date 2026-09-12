@@ -31,6 +31,7 @@ import type { Order } from '~/types/order';
 import type { OrderRow } from '~/types/view-models';
 import { ChevronDown, Search } from 'lucide-react';
 import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
+import { Pager } from '~/components/shared/Pager';
 
 /** Order rows may embed their line items; the generated Order type only
  *  guarantees the header fields, so widen locally without reaching for `any`. */
@@ -88,6 +89,10 @@ export default function OrderListPage() {
 
   // Client-side table controls (drive the visible list built from data1).
   const [search, setSearch] = useState<string>('');
+  // The API returns 20 orders per page and this page only ever asked for the
+  // first one, with no pager on screen — so order 21 onwards existed and could
+  // not be reached.
+  const [page, setPage] = useState<number>(1);
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
@@ -97,12 +102,12 @@ export default function OrderListPage() {
     let cancelled = false;
     setLoading1(true);
     setError1(null);
-    dispatch(findAll(undefined)).unwrap()
+    dispatch(findAll(page > 1 ? { page } : undefined)).unwrap()
       .then((d) => { if (!cancelled) setData1(d); })
       .catch((e: unknown) => { if (!cancelled) setError1(e instanceof Error ? e.message : 'Failed to load'); })
       .finally(() => { if (!cancelled) setLoading1(false); });
     return () => { cancelled = true; };
-  }, [dispatch]);
+  }, [dispatch, page]);
   // Acceptance-criteria variant — server-side sort by total.
   useEffect(() => {
     let cancelled = false;
@@ -116,6 +121,13 @@ export default function OrderListPage() {
   }, [dispatch]);
 
   const orders = useMemo<OrderRow[]>(() => extractOrders(data1), [data1]);
+  const totalPages = useMemo<number>(() => {
+    const body = (data1 as { data?: { meta?: Record<string, unknown> }; meta?: Record<string, unknown> } | null);
+    const meta = body?.data?.meta ?? body?.meta;
+    const total = Number(meta?.total ?? 0);
+    const size = Number(meta?.page_size ?? meta?.limit ?? 20) || 20;
+    return Math.max(1, Math.ceil(total / size));
+  }, [data1]);
   const ordersByTotal = useMemo<OrderRow[]>(() => extractOrders(data2), [data2]);
 
   const filtered = useMemo<OrderRow[]>(() => {
@@ -223,7 +235,7 @@ export default function OrderListPage() {
               {!loading1 && error1 && (
                 <tr data-testid="s-08-orders-ac-1-error">
                   <td colSpan={6} className="px-[16px] py-[24px] text-center">
-                    <p className="m-0 text-[15px] text-[var(--c-error)]">
+                    <p className="text-[15px] text-[var(--c-error)]">
                       {t('orders.loadError', 'We could not load your orders. Please try again.')}
                     </p>
                     <button
@@ -288,6 +300,16 @@ export default function OrderListPage() {
             </tbody>
           </table>
         </div>
+
+        <Pager
+          page={page}
+          totalPages={totalPages}
+          onChange={setPage}
+          label={t('orders.pagination', 'Pagination')}
+          prevLabel={t('orders.prevPage', 'Previous page')}
+          nextLabel={t('orders.nextPage', 'Next page')}
+          testId="s-08-orders"
+        />
       </div>
 
       {/*

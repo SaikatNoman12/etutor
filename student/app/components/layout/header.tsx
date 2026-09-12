@@ -140,14 +140,6 @@ export default function Header() {
               <NavLink to="/profile" className={`hidden md:inline-flex ${deskLink({ isActive: false })}`} data-testid="header-nav-profile">
                 {t("nav.profile")}
               </NavLink>
-              <button
-                type="button"
-                onClick={() => { void signOut(); }}
-                className="et-press hidden cursor-pointer text-[15px] text-[var(--c-muted)] transition-colors hover:text-[var(--c-primary-text)] md:inline-flex"
-                data-testid="header-sign-out"
-              >
-                {t("profile.signOut", "Sign out")}
-              </button>
             </>
           ) : (
             <>

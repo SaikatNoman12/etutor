@@ -18,5 +18,10 @@
   "coupon": "Coupon {{code}}",
   "discount": "Discount",
   "total": "Total",
-  "home": "Home"
+  "home": "Home",
+  "billingHint": "영수증을 받을 곳입니다. 코스는 결제 즉시 열립니다.",
+  "itemCount": "{{count}}개",
+  "itemCount_other": "{{count}}개",
+  "subtotal": "소계",
+  "reassurance": "평생 수강. 맞지 않으면 30일 이내 환불해 드립니다."
 }

@@ -56,7 +56,8 @@
     "close": "닫기",
     "search": "검색",
     "filter": "필터",
-    "loading": "로딩 중..."
+    "loading": "로딩 중...",
+    "selectedCount": "{{count}}개 선택됨"
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",
@@ -116,14 +117,16 @@
     "loadError": "강좌 목록을 불러오지 못했습니다. 다시 시도해 주세요.",
     "retry": "Try again",
     "empty": "조건에 맞는 강좌가 없습니다.",
-    "pagination": "Pagination",
+    "pagination": "페이지 이동",
     "home": "Home",
     "eyebrow": "강좌 목록",
     "emptyTitle": "조건에 맞는 강좌가 없습니다",
     "emptyHint": "다른 카테고리를 선택하거나 검색어를 지워 보세요.",
     "clearFilters": "필터 초기화",
     "loadErrorTitle": "강좌 목록을 불러오지 못했습니다",
-    "loadErrorHint": "연결이 끊겼을 수 있습니다. 잠시 후 다시 시도해 주세요."
+    "loadErrorHint": "연결이 끊겼을 수 있습니다. 잠시 후 다시 시도해 주세요.",
+    "prevPage": "이전 페이지",
+    "nextPage": "다음 페이지"
   },
   "courseDetail": {
     "addSuccess": "Added to your cart",
@@ -217,7 +220,12 @@
     "discount": "Discount",
     "total": "Total",
     "home": "Home",
-    "eyebrow": "거의 다 됐어요"
+    "eyebrow": "거의 다 됐어요",
+    "billingHint": "영수증을 받을 곳입니다. 코스는 결제 즉시 열립니다.",
+    "itemCount": "{{count}}개",
+    "itemCount_other": "{{count}}개",
+    "subtotal": "소계",
+    "reassurance": "평생 수강. 맞지 않으면 30일 이내 환불해 드립니다."
   },
   "orders": {
     "title": "주문 내역",
@@ -234,7 +242,10 @@
     "emptyGuest": "Sign in to view your orders.",
     "home": "Home",
     "viewDetail": "View order",
-    "eyebrow": "구매"
+    "eyebrow": "구매",
+    "pagination": "페이지 이동",
+    "prevPage": "이전 페이지",
+    "nextPage": "다음 페이지"
   },
   "orderDetail": {
     "statusPaid": "Paid",
@@ -254,7 +265,7 @@
     "placed": "Placed",
     "paid": "Paid",
     "method": "Method",
-    "coupon": "Coupon {{code}}",
+    "coupon": "쿠폰",
     "home": "Home",
     "eyebrow": "구매",
     "loadError": "주문 정보를 불러오지 못했습니다. 다시 시도해 주세요."
@@ -269,7 +280,9 @@
     "review": "Review",
     "continue": "Continue",
     "home": "Home",
-    "eyebrow": "이어서 배우기"
+    "eyebrow": "이어서 배우기",
+    "finished": "완료됨",
+    "progress": "진행률"
   },
   "player": {
     "completeSuccess": "Lesson marked complete",
@@ -282,7 +295,9 @@
     "markComplete": "Mark as complete",
     "nextLesson": "Next lesson",
     "courseContent": "Course content",
-    "pickLessonHint": "Pick a lesson to switch the stage and title."
+    "pickLessonHint": "Pick a lesson to switch the stage and title.",
+    "quiz": "퀴즈",
+    "live": "라이브 세션"
   },
   "profile": {
     "saveError": "Could not save your profile",
@@ -301,7 +316,14 @@
     "paidOrders": "Paid orders",
     "signOut": "Sign out",
     "home": "Home",
-    "eyebrow": "계정"
+    "eyebrow": "계정",
+    "photoSaved": "사진이 변경되었습니다",
+    "photoSaving": "업로드 중…",
+    "photoHint": "JPG 또는 PNG. 정사각형으로 잘립니다.",
+    "photoTooLarge": "{{mb}}MB보다 큰 이미지입니다. 더 작은 파일을 선택하세요.",
+    "photoNotImage": "이미지 파일이 아닙니다.",
+    "photoUnreadable": "이미지를 읽을 수 없습니다.",
+    "photoFailed": "사진을 변경하지 못했습니다"
   },
   "footer": {
     "explore": "둘러보기",

@@ -36,7 +36,7 @@ export function BulkActions({ testId, count, actions, onClear, busy }: BulkActio
 
   return (
     <div className="bulk-bar" role="region" aria-live="polite" data-testid={testId + '-bulk-bar'}>
-      <span data-testid={testId + '-bulk-count'}>
+      <span className="bulk-count" data-testid={testId + '-bulk-count'}>
         {t('actions.selectedCount', { count, defaultValue: '{{count}} selected' })}
       </span>
       <div className="bulk-bar-actions">

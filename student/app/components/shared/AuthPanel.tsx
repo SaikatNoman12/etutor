@@ -41,7 +41,7 @@ export function AuthPanel({
 
       <div className="mt-[28px] lg:mt-0">
         <p
-          className="m-0 max-w-[16ch] text-[26px] font-extrabold leading-[1.1] tracking-[-0.025em] text-white sm:text-[32px] lg:text-[38px]"
+          className="max-w-[16ch] text-[26px] font-extrabold leading-[1.1] tracking-[-0.025em] text-white sm:text-[32px] lg:text-[38px]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {title}

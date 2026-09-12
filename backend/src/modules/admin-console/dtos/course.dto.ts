@@ -201,9 +201,22 @@ export class UpdateAdminCourseDto {
 
 /** POST /api/admin/courses/:id/lessons. */
 export class CreateAdminLessonDto {
-  @ApiProperty()
+  /**
+   * Which section the lesson goes under. Either an existing section's id, or
+   * `sectionTitle` to name one — the console had no way to CREATE a section, so
+   * a freshly created course had none, and this field (then required, and a raw
+   * UUID typed by hand) made adding its first lesson impossible.
+   */
+  @ApiPropertyOptional({ description: 'Existing section id. Omit and pass sectionTitle to create one.' })
+  @IsOptional()
   @IsUUID()
-  sectionId!: string;
+  sectionId?: string;
+
+  @ApiPropertyOptional({ description: 'Section name; reused if the course already has one by that name.' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  sectionTitle?: string;
 
   @ApiProperty()
   @IsString()

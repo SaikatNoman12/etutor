@@ -60,11 +60,28 @@ export function EntityFormModal({
   const dialogRef = useRef<HTMLDivElement>(null);
   const isEdit = initialValues !== undefined;
 
+  // Focus the first control ONCE per opening, so keyboard users are not stranded
+  // behind the backdrop.
+  //
+  // This used to share an effect with the Escape handler, whose deps include
+  // `onClose` — an arrow function the caller re-creates on every render. So every
+  // state change while the dialog was open re-ran it and yanked focus back to the
+  // first field: in the lesson dialog the first character went into the rich-text
+  // editor and the rest of the sentence was typed into the Title box.
+  const focusedFor = useRef(false);
+  useEffect(() => {
+    if (!open) {
+      focusedFor.current = false;
+      return;
+    }
+    if (focusedFor.current) return;
+    focusedFor.current = true;
+    setError(null);
+    dialogRef.current?.querySelector<HTMLElement>('input, select, textarea, button')?.focus();
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
-    setError(null);
-    // Focus the first control so keyboard users are not stranded behind the backdrop.
-    dialogRef.current?.querySelector<HTMLElement>('input, select, textarea, button')?.focus();
     function onEsc(e: KeyboardEvent) {
       if (e.key === 'Escape' && !busy) onClose();
     }

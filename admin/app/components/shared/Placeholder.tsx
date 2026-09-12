@@ -42,12 +42,12 @@ export function Placeholder({
         />
       </span>
       <p
-        className="m-0 text-[18px] font-bold tracking-[-0.01em] text-[var(--c-ink)]"
+        className="text-[18px] font-bold tracking-[-0.01em] text-[var(--c-ink)]"
         style={{ fontFamily: 'var(--font-display)' }}
       >
         {title}
       </p>
-      {hint ? <p className="m-0 max-w-[46ch] text-[14px] leading-[1.6] text-[var(--c-muted)]">{hint}</p> : null}
+      {hint ? <p className="max-w-[46ch] text-[14px] leading-[1.6] text-[var(--c-muted)]">{hint}</p> : null}
       {action ? <div className="mt-[6px]">{action}</div> : null}
     </div>
   );
@@ -77,18 +77,18 @@ export function PageHeading({
     <div className="mb-[24px] flex flex-wrap items-end justify-between gap-[16px]">
       <div>
         {eyebrow ? (
-          <p className="m-0 mb-[6px] text-[12px] font-bold uppercase tracking-[1.2px] text-[var(--c-primary-text)]">
+          <p className="mb-[6px] text-[12px] font-bold uppercase tracking-[1.2px] text-[var(--c-primary-text)]">
             {eyebrow}
           </p>
         ) : null}
         <h1
           data-testid={testId}
-          className="m-0 text-[30px] font-extrabold leading-[1.15] tracking-[-0.025em] text-[var(--c-ink)] sm:text-[36px]"
+          className="text-[30px] font-extrabold leading-[1.15] tracking-[-0.025em] text-[var(--c-ink)] sm:text-[36px]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {title}
         </h1>
-        {hint ? <p className="m-0 mt-[6px] text-[14px] text-[var(--c-muted)]">{hint}</p> : null}
+        {hint ? <p className="mt-[6px] text-[14px] text-[var(--c-muted)]">{hint}</p> : null}
         <div className="mt-[12px] h-[3px] w-[52px] rounded-[var(--radius-pill)] bg-[var(--grad-brand)]" />
       </div>
       {right ? <div className="flex items-center gap-[8px]">{right}</div> : null}

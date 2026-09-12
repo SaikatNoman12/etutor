@@ -20,7 +20,11 @@ services:
     # `moduleResolution: node10`, and the build failed on options this project uses
     # correctly.
     buildCommand: npm ci --include=dev && npm run build
-    startCommand: npm run start
+    # Migrations run BEFORE the process starts, not as a side effect of booting.
+    # `migrationsRun` on the TypeORM connection is still on (MIGRATIONS_AUTO_RUN
+    # below), but it did not apply a new migration on a local boot, and a schema
+    # change that only *might* have run is one the next release quietly depends on.
+    startCommand: npm run migration:run:prod && npm run start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION

@@ -16,6 +16,9 @@ export interface RichTextEditorProps {
 export function RichTextEditor({ value = '', onChange, placeholder = 'Write something…', className, testId = 'rich-text-editor' }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [StarterKit],
+    // This app is server-rendered; tiptap must not render during SSR or the
+    // client hydrates onto markup ProseMirror did not produce.
+    immediatelyRender: false,
     content: value,
     editorProps: { attributes: { class: 'prose prose-sm max-w-none focus:outline-none min-h-[120px] p-3', placeholder } },
     onUpdate: ({ editor }) => { onChange?.(editor.getHTML()); },

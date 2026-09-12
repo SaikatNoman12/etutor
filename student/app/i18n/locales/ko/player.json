@@ -9,5 +9,7 @@
   "markComplete": "Mark as complete",
   "nextLesson": "Next lesson",
   "courseContent": "Course content",
-  "pickLessonHint": "Pick a lesson to switch the stage and title."
+  "pickLessonHint": "Pick a lesson to switch the stage and title.",
+  "quiz": "퀴즈",
+  "live": "라이브 세션"
 }

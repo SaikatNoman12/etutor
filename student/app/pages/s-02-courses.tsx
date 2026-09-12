@@ -25,9 +25,10 @@ import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { listCourses, listCategories } from '~/services/httpServices/catalogueService';
 import { course_level } from '~/enums/course-level.enum';
 import type { CourseRow, CategoryCard } from '~/types/view-models';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { CourseCard } from '~/components/shared/CourseCard';
 import { PageHeading, Placeholder } from '~/components/shared/Placeholder';
+import { Pager } from '~/components/shared/Pager';
 
 const PAGE_SIZE = 8;
 
@@ -368,49 +369,17 @@ export default function CourseListPage() {
           </div>
         )}
 
-        {/* pagination */}
+        {/* pagination — the shared Pager (see components/shared/Pager) */}
         {!loading1 && !error1 && paged.length > 0 && (
-          <nav className="mt-[24px] flex items-center gap-[8px]" aria-label={t('courses.pagination', 'Pagination')}>
-            <button
-              type="button"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage <= 1}
-              className="inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[12px] text-[14px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
-              data-testid="s-02-courses-page-prev"
-            >
-              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-            </button>
-            {Array.from({ length: totalPages }).map((_, i) => {
-              const n = i + 1;
-              const active = n === currentPage;
-              return (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => setPage(n)}
-                  aria-current={active ? 'page' : undefined}
-                  className={
-                    'inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border px-[12px] text-[14px] font-semibold ' +
-                    (active
-                      ? 'border-[var(--c-primary)] bg-[var(--c-primary-soft)] text-[var(--c-primary)]'
-                      : 'border-[var(--c-hairline-strong)] bg-[var(--c-surface)] text-[var(--c-body)] hover:bg-[var(--c-surface-soft)]')
-                  }
-                  data-testid={`s-02-courses-page-${n}`}
-                >
-                  {n}
-                </button>
-              );
-            })}
-            <button
-              type="button"
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage >= totalPages}
-              className="inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[12px] text-[14px] font-semibold text-[var(--c-body)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
-              data-testid="s-02-courses-page-next"
-            >
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </nav>
+          <Pager
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={setPage}
+            label={t('courses.pagination', 'Pagination')}
+            prevLabel={t('courses.prevPage', 'Previous page')}
+            nextLabel={t('courses.nextPage', 'Next page')}
+            testId="s-02-courses"
+          />
         )}
       </main>
 

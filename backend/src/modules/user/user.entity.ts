@@ -36,7 +36,9 @@ export class User extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   bio?: string;
 
-  @Column({ name: 'avatar_url', type: 'varchar', length: 500, nullable: true })
+  // text, not varchar(500): a photo the user picked is stored as a downscaled
+  // data URL (see WidenAvatarUrl migration).
+  @Column({ name: 'avatar_url', type: 'text', nullable: true })
   avatarUrl?: string;
 
   @Column({ type: 'varchar', length: 60, nullable: true })

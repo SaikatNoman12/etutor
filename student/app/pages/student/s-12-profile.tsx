@@ -26,7 +26,7 @@ import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '~/hooks/useAppSelector';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
-import { updateUser } from '~/services/httpServices/userService';
+import { updateMe } from '~/services/httpServices/userService';
 import { logout, fetchMeThunk } from '~/services/httpServices/authService';
 import { toast } from '~/lib/toast';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -79,7 +79,7 @@ export default function ProfilePage() {
       });
     }
     try {
-      await updateUser(user?.id ?? '', __body);
+      await updateMe(__body);
       toast.success(t('profile.saved', 'Profile saved'));
     } catch (err) {
       toast.error(getApiErrorMessage(err, t('profile.saveError', 'Could not save your profile')));
@@ -147,7 +147,7 @@ export default function ProfilePage() {
     if (!userId) { toast.error(t('profile.saveError', 'Could not save your profile')); return; }
     setSaving(true);
     try {
-      await updateUser(userId, {
+      await updateMe({
         fullName: fullName.trim(),
         email: email.trim(),
         headline: headline.trim(),
@@ -177,7 +177,7 @@ export default function ProfilePage() {
     setUploading(true);
     try {
       const dataUrl = await fileToAvatarDataUrl(file);
-      await updateUser(userId, { avatarUrl: dataUrl });
+      await updateMe({ avatarUrl: dataUrl });
       setPhoto(dataUrl);
       toast.success(t('profile.photoSaved', 'Photo updated'));
       reload();

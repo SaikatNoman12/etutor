@@ -18,7 +18,7 @@ import 'reflect-metadata';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as bcrypt from 'bcrypt';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { config as dotenvConfig } from 'dotenv';
 import { user_role } from 'src/common/enums/user-role.enum';
 import { buildDbConnection } from './connection.options';
@@ -1755,6 +1755,114 @@ async function resetCourseSyllabus(ds: DataSource, fixtures: RawFixtures): Promi
 }
 
 // Multi-entity seed orchestrator. Replaces the original seedUsers call.
+/**
+ * Make each enrolment's progress TRUE rather than asserted.
+ *
+ * The fixtures give every enrolment a `progress_percent` — 40, 72, 100 — and no
+ * lesson_progress rows at all. So My Learning showed a course 72% finished
+ * whose player had not one lesson ticked, and the moment a student marked
+ * anything complete the service recomputed honestly against the real count and
+ * the bar fell from 72% to 8%. Progress going BACKWARDS on the first click is
+ * the kind of thing a client notices in the first minute of a demo.
+ *
+ * So: complete the first N published lessons of the course, where N is what the
+ * fixture's percentage means in lessons, and store the percentage that
+ * recomputing will produce. The number and the ticks now come from the same
+ * fact, and the next "complete" moves it forward.
+ */
+async function seedLessonProgress(ds: DataSource, fixtures: RawFixtures): Promise<void> {
+  // The loader nests every entity list under `seed_data`; reading the top level
+  // returned undefined and this step silently did nothing at all.
+  const rows =
+    ((fixtures as Record<string, any>)['seed_data'] || {})['enrollments'] ??
+    (fixtures as Record<string, any>)['enrollments'];
+  const list: Record<string, unknown>[] = Array.isArray(rows)
+    ? rows
+    : rows && typeof rows === 'object'
+      ? Object.values(rows as Record<string, Record<string, unknown>>)
+      : [];
+  if (!list.length) { console.log('seed: lesson progress — no enrolment fixtures'); return; }
+
+  const find = (needle: string) =>
+    ds.entityMetadatas.find((m) => m.tableName === needle) ||
+    ds.entityMetadatas.find((m) => m.tableName.replace(/_/g, '') === needle.replace(/_/g, ''));
+  const enrMeta = find('enrollments');
+  const lessonMeta = find('lessons');
+  const sectionMeta = find('course_sections');
+  const progressMeta = find('lesson_progress');
+  const courseMeta = find('courses');
+  if (!enrMeta || !lessonMeta || !sectionMeta || !progressMeta || !courseMeta) {
+    console.log('seed: lesson progress — schema not found, skipped');
+    return;
+  }
+
+  const enrRepo = ds.getRepository(enrMeta.target);
+  const lessonRepo = ds.getRepository(lessonMeta.target);
+  const sectionRepo = ds.getRepository(sectionMeta.target);
+  const progressRepo = ds.getRepository(progressMeta.target);
+  const courseRepo = ds.getRepository(courseMeta.target);
+
+  let completed = 0, touched = 0;
+  for (const raw of list) {
+    const fx = raw as Record<string, unknown>;
+    const slug = String(fx.course ?? '');
+    const pct = Number(fx.progress_percent ?? 0);
+    if (!slug) continue;
+
+    const course: any = await courseRepo.findOne({ where: { slug } as any });
+    if (!course) continue;
+    const enrollments: any[] = await enrRepo.find({ where: { courseId: course.id } as any });
+    if (!enrollments.length) continue;
+
+    const sections: any[] = await sectionRepo.find({ where: { courseId: course.id } as any });
+    if (!sections.length) continue;
+    const sectionIds = sections
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map((x) => x.id);
+
+    const all: any[] = await lessonRepo.find({ where: { sectionId: In(sectionIds) } as any });
+    const published = all
+      .filter((l) => l.isPublished !== false)
+      .sort((a, b) =>
+        sectionIds.indexOf(a.sectionId) - sectionIds.indexOf(b.sectionId) ||
+        (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+    if (!published.length) continue;
+
+    const want = Math.min(published.length, Math.round((pct / 100) * published.length));
+    const done = published.slice(0, want);
+    const truePct = Math.round((done.length / published.length) * 100);
+
+    for (const enrollment of enrollments) {
+      for (const lesson of done) {
+        const existing: any = await progressRepo.findOne({
+          where: { enrollmentId: enrollment.id, lessonId: lesson.id } as any,
+        });
+        if (existing) {
+          if (!existing.isCompleted) {
+            existing.isCompleted = true;
+            existing.completedAt = existing.completedAt ?? new Date();
+            await progressRepo.save(existing);
+          }
+        } else {
+          await progressRepo.save(progressRepo.create({
+            enrollmentId: enrollment.id,
+            lessonId: lesson.id,
+            isCompleted: true,
+            completedAt: new Date(),
+          } as any));
+        }
+        completed += 1;
+      }
+      if (enrollment.progressPercent !== truePct) {
+        enrollment.progressPercent = truePct;
+        await enrRepo.save(enrollment);
+      }
+      touched += 1;
+    }
+  }
+  console.log(`seed: lesson progress — ${completed} lesson(s) completed across ${touched} enrolment(s)`);
+}
+
 async function seedAllWithUuidMap(ds: DataSource, fixtures: RawFixtures): Promise<void> {
   const uuidMap: Record<string, string> = {};
   await seedUsersWithUuidMap(ds, fixtures, uuidMap);
@@ -1770,6 +1878,7 @@ async function seedAllWithUuidMap(ds: DataSource, fixtures: RawFixtures): Promis
     'categories', 'courses', 'course_sections', 'lessons', 'coupons', 'enrollments', 'orders',
   ]);
   await seedOrderItems(ds, fixtures);
+  await seedLessonProgress(ds, fixtures);
   await reassertFixtureUsers(ds, fixtures, uuidMap);
   console.log('seed: multi-entity done — ' + Object.keys(uuidMap).length + ' refs mapped');
 }

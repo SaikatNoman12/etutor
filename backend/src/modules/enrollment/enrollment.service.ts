@@ -35,13 +35,22 @@ export interface EnrollmentListView {
   items: EnrollmentListItem[];
 }
 
-/** One lesson row inside the course player. */
+/**
+ * One lesson row inside the course player.
+ *
+ * camelCase, like every other response this API returns. These three fields
+ * used to be `content_type` / `duration_minutes` / `is_completed` — inside the
+ * same JSON object whose `course` carried `thumbnailUrl` — so the player page,
+ * written against the app's normal casing, read `lesson.isCompleted` and
+ * `lesson.durationMinutes` and got `undefined` for both: no completion tick,
+ * no duration, on every lesson in the list.
+ */
 export interface PlayerLessonView {
   id: string;
   title: string;
-  content_type: number;
-  duration_minutes: number;
-  is_completed: boolean;
+  contentType: number;
+  durationMinutes: number;
+  isCompleted: boolean;
 }
 
 /** One section (with its published lessons) inside the course player. */
@@ -157,6 +166,30 @@ export class EnrollmentService extends BaseService<Enrollment> {
     return { items };
   }
 
+  /**
+   * Which enrollment is this — ONE answer, for every route that takes `:id`.
+   *
+   * The player is reached by the course slug (/learn/:slug is the URL the design
+   * declares), so `:id` is a uuid OR a slug. `getPlayer` learned that; the
+   * complete-lesson route did not — it kept a `ParseUUIDPipe` and called
+   * `findByIdOrFail` directly, so the very id the GET had just accepted was
+   * rejected by the POST with "Validation failed (uuid is expected)". Marking a
+   * lesson complete answered 400 for every student, on the one action the
+   * learning feature exists for.
+   */
+  private async resolveOwned(
+    idOrSlug: string,
+    userId: string,
+    role: unknown,
+  ): Promise<Enrollment> {
+    const enrollment = UUID_RE.test(idOrSlug)
+      ? await this.findByIdOrFail(idOrSlug, { course: true })
+      : await this.findByCourseSlugOrFail(idOrSlug, userId);
+    this.assertOwner(enrollment, userId, role);
+    this.assertActive(enrollment);
+    return enrollment;
+  }
+
   /** The course player payload; 404 unknown, 403 for another user's or a cancelled enrollment. */
   /** The caller's enrollment in the course with this slug. */
   private async findByCourseSlugOrFail(slug: string, userId: string) {
@@ -177,14 +210,7 @@ export class EnrollmentService extends BaseService<Enrollment> {
     userId: string,
     role: unknown,
   ): Promise<PlayerView> {
-    // `id` is either this enrollment's uuid or the slug of the course it covers.
-    // Resolving both here keeps the course-centric URL the design declares working
-    // without asking the player page to look an id up first.
-    const enrollment = UUID_RE.test(id)
-      ? await this.findByIdOrFail(id, { course: true })
-      : await this.findByCourseSlugOrFail(id, userId);
-    this.assertOwner(enrollment, userId, role);
-    this.assertActive(enrollment);
+    const enrollment = await this.resolveOwned(id, userId, role);
     id = enrollment.id;
 
     const { sections, lessons } = await this.sectionsAndPublishedLessons(
@@ -201,9 +227,9 @@ export class EnrollmentService extends BaseService<Enrollment> {
         .map((l) => ({
           id: l.id,
           title: l.title,
-          content_type: l.contentType,
-          duration_minutes: l.durationMinutes,
-          is_completed: completedLessonIds.has(l.id),
+          contentType: l.contentType,
+          durationMinutes: l.durationMinutes,
+          isCompleted: completedLessonIds.has(l.id),
         })),
     }));
 
@@ -235,9 +261,8 @@ export class EnrollmentService extends BaseService<Enrollment> {
     userId: string,
     role: unknown,
   ): Promise<PlayerView> {
-    const enrollment = await this.findByIdOrFail(id);
-    this.assertOwner(enrollment, userId, role);
-    this.assertActive(enrollment);
+    const enrollment = await this.resolveOwned(id, userId, role);
+    id = enrollment.id;
 
     // The lesson must exist and belong to the enrolled course.
     const lesson = await this.lessons.findWithSection(lessonId);

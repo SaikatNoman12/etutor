@@ -116,7 +116,7 @@ export default function AdminEnrollmentListPage() {
         <Link
           to="/"
           data-testid="adm-08-enrollments-home-link"
-          className="mb-[16px] inline-flex items-center gap-[4px] text-[14px] font-[600] text-[var(--c-body)] hover:text-[var(--c-primary)]"
+          className="mb-[16px] inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-[600] text-[var(--c-body)] hover:text-[var(--c-primary)]"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           {t('adm08.dashboard', 'Dashboard')}
@@ -181,8 +181,8 @@ export default function AdminEnrollmentListPage() {
               </div>
             )}
 
-            <div className="overflow-x-auto">
-              <table data-testid="adm-08-enrollments-ac-3" className="w-full border-collapse">
+            <div className="w-full min-w-0 overflow-x-auto">
+              <table data-testid="adm-08-enrollments-ac-3" className="w-full min-w-[640px] border-collapse">
                 <thead>
                   <tr>
                     {COLUMNS.map((col) => {

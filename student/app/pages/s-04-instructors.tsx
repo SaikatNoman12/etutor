@@ -142,7 +142,7 @@ export default function InstructorListPage() {
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="h-[196px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface-soft)]"
+                className="h-[196px] et-shimmer rounded-[var(--radius-lg)] border border-[var(--c-hairline)] "
               />
             ))}
           </div>

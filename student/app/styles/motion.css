@@ -1,0 +1,159 @@
+/* motion.css — the app's movement, in one place.
+ *
+ * Motion here is functional, not decorative: it tells you something arrived
+ * (reveal), that a thing is pressable (lift), that work is happening (shimmer,
+ * pulse), or where you just went (nav underline). Anything that would only be
+ * "nice" is left out — on a page of twenty course cards, twenty decorative
+ * animations is noise, not polish.
+ *
+ * EVERY rule below is switched off under `prefers-reduced-motion: reduce`, at
+ * the bottom of this file. That is not politeness; vestibular-disorder triggers
+ * are a real accessibility failure, and a site that animates through the OS
+ * setting is broken for the people who set it.
+ */
+
+:root {
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
+  --dur-reveal: 620ms;
+  /* A decelerating curve — things arrive quickly and settle, which reads as
+     responsive. Linear reads as mechanical; ease-in reads as sluggish. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── arrival ─────────────────────────────────────────────────────────────── */
+@keyframes et-fade-up {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes et-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes et-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Applied by the Reveal component once an element has scrolled into view, so a
+   long page animates as you read it rather than all at once behind the fold. */
+.et-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.et-reveal[data-shown='true'] {
+  animation: et-fade-up var(--dur-reveal) var(--ease-out) both;
+  animation-delay: var(--et-delay, 0ms);
+}
+
+/* Above-the-fold content should not wait for an observer. */
+.et-enter { animation: et-fade-up var(--dur-slow) var(--ease-out) both; }
+.et-enter-1 { animation-delay: 60ms; }
+.et-enter-2 { animation-delay: 130ms; }
+.et-enter-3 { animation-delay: 200ms; }
+.et-enter-4 { animation-delay: 270ms; }
+
+/* ── surfaces that respond ───────────────────────────────────────────────── */
+.et-lift {
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+.et-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--c-hairline-strong);
+}
+/* The image inside a lifting card creeps in slightly — a parallax hint that
+   costs one transform and makes the card feel like an object, not a rectangle. */
+.et-lift img { transition: transform var(--dur-slow) var(--ease-out); }
+.et-lift:hover img { transform: scale(1.045); }
+
+.et-press { transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out); }
+.et-press:active { transform: translateY(1px) scale(0.985); }
+
+/* ── the brand's signature ───────────────────────────────────────────────── */
+/* A slow aurora behind hero sections. 18s and a tiny translation: present when
+   you look for it, invisible when you are reading. */
+@keyframes et-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(-2%, 2%, 0) scale(1.06); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+.et-aurora { position: relative; isolation: isolate; overflow: hidden; }
+.et-aurora::before {
+  content: '';
+  position: absolute;
+  inset: -22%;
+  z-index: -1;
+  background: var(--grad-aurora);
+  animation: et-drift 18s var(--ease-out) infinite;
+  pointer-events: none;
+}
+
+/* A sheen that crosses a primary button on hover. */
+.et-sheen { position: relative; overflow: hidden; }
+.et-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad-sheen);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+.et-sheen:hover::after { transition: transform 620ms var(--ease-out); transform: translateX(120%); }
+
+/* ── waiting ─────────────────────────────────────────────────────────────── */
+@keyframes et-shimmer { to { background-position-x: -200%; } }
+.et-shimmer {
+  background: linear-gradient(90deg, var(--c-surface-soft) 38%, var(--c-hairline) 50%, var(--c-surface-soft) 62%);
+  background-size: 200% 100%;
+  animation: et-shimmer 1.4s linear infinite;
+}
+
+/* A bar that grows to its value instead of appearing at it. */
+.et-grow { transition: width var(--dur-slow) var(--ease-out); }
+
+/* ── navigation ──────────────────────────────────────────────────────────── */
+/* An underline that grows from the left on hover and stays for the active link. */
+.et-underline { position: relative; }
+.et-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 2px;
+  width: 100%;
+  background: var(--c-primary);
+  border-radius: var(--radius-pill);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.et-underline:hover::after,
+.et-underline[aria-current='page']::after { transform: scaleX(1); }
+
+/* A drawer that slides rather than appears. */
+@keyframes et-slide-in-right { from { transform: translateX(100%); } to { transform: none; } }
+.et-drawer { animation: et-slide-in-right var(--dur-base) var(--ease-out) both; }
+.et-scrim { animation: et-fade-in var(--dur-base) var(--ease-out) both; }
+
+/* A count badge that pops when it changes. */
+@keyframes et-pop { 0% { transform: scale(1); } 45% { transform: scale(1.28); } 100% { transform: scale(1); } }
+.et-pop { animation: et-pop var(--dur-slow) var(--ease-spring); }
+
+/* ── the switch ──────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .et-reveal { opacity: 1; }
+  .et-lift:hover { transform: none; }
+  .et-lift:hover img { transform: none; }
+}

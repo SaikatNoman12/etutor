@@ -20,6 +20,7 @@
  *     rowAction={(row) => <Link to={row.id}>Edit</Link>}
  *   />
  */
+import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 
@@ -96,7 +97,15 @@ export function DataTable<T extends Record<string, unknown>>({
   }
 
   if (loading && data.length === 0) {
-    return <div className="p-6" data-testid={testId + '-loading'}>{t('actions.loading')}</div>;
+    // Rows the shape of the rows that are coming, not the word "Loading...".
+    return (
+      <div className="space-y-2 p-4" data-testid={testId + '-loading'} aria-busy="true">
+        <span className="sr-only">{t('actions.loading')}</span>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="et-shimmer h-[44px] rounded-[var(--radius-md)]" />
+        ))}
+      </div>
+    );
   }
   if (error) {
     return <div className="p-6 text-destructive" data-testid={testId + '-error'}>{error}</div>;
@@ -112,8 +121,14 @@ export function DataTable<T extends Record<string, unknown>>({
 
   return (
     <div data-testid={testId}>
-      <table className="w-full border-collapse" data-testid={testId + '-table'}>
-        <thead>
+      {/* A table cannot be made to fit 390px without either hiding columns or
+          squeezing them to nothing. Below `md` each row becomes a card of
+          label/value pairs — every column still readable, nothing truncated —
+          and the table returns at tablet width. Six admin screens scrolled
+          sideways to ~690px in a 390px viewport before this. */}
+      <div className="hidden overflow-x-auto md:block">
+        <table className="w-full border-collapse" data-testid={testId + '-table'}>
+          <thead>
           <tr className="border-b text-left text-sm text-muted-foreground">
             {columns.map((col) => (
               <th
@@ -133,8 +148,8 @@ export function DataTable<T extends Record<string, unknown>>({
             ))}
             {rowAction && <th className="py-2 pr-4" data-testid={testId + '-th-actions'}>{t('actions.actions') ?? 'Actions'}</th>}
           </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
           {data.map((row, idx) => {
             const k = rowKey ? rowKey(row) : String((row as Record<string, unknown>).id ?? idx);
             return (
@@ -148,18 +163,50 @@ export function DataTable<T extends Record<string, unknown>>({
               </tr>
             );
           })}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
+
+      <ul className="m-0 flex list-none flex-col gap-[10px] p-0 md:hidden" data-testid={testId + '-cards'}>
+        {data.map((row, idx) => {
+          const k = rowKey ? rowKey(row) : String((row as Record<string, unknown>).id ?? idx);
+          return (
+            <li
+              key={k}
+              className="et-lift rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[14px] shadow-[var(--shadow-0)]"
+              data-testid={testId + '-card-' + k}
+            >
+              <dl className="m-0 grid grid-cols-[minmax(0,9rem)_1fr] gap-x-[12px] gap-y-[6px]">
+                {columns.map((col) => (
+                  <Fragment key={col.key}>
+                    <dt className="m-0 text-[12px] font-medium uppercase tracking-[0.4px] text-[var(--c-muted)]">
+                      {col.label}
+                    </dt>
+                    <dd className="m-0 min-w-0 break-words text-[14px] text-[var(--c-ink)]">
+                      {col.render ? col.render(row) : defaultFormat(row[col.key], col.format)}
+                    </dd>
+                  </Fragment>
+                ))}
+              </dl>
+              {rowAction && (
+                <div className="mt-[12px] flex flex-wrap gap-[8px] border-t border-[var(--c-hairline)] pt-[12px]">
+                  {rowAction(row)}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
 
       {pagination && (
-        <nav className="mt-4 flex items-center justify-between" data-testid={testId + '-pagination'} aria-label="pagination">
+        <nav className="mt-4 flex flex-wrap items-center justify-between gap-3" data-testid={testId + '-pagination'} aria-label="pagination">
           <span className="text-sm text-muted-foreground" data-testid={testId + '-pagination-info'}>
             {t('pagination.page')} {pagination.page} / {pagination.totalPages || 1}
           </span>
           <div className="flex gap-2">
             <button
               type="button"
-              className="border rounded px-3 py-1 disabled:opacity-50"
+              className="et-press min-h-[40px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] px-4 text-sm font-medium transition-colors hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
               onClick={() => changePage(-1)}
               disabled={pagination.page <= 1}
               data-testid={testId + '-prev'}
@@ -168,7 +215,7 @@ export function DataTable<T extends Record<string, unknown>>({
             </button>
             <button
               type="button"
-              className="border rounded px-3 py-1 disabled:opacity-50"
+              className="et-press min-h-[40px] rounded-[var(--radius-md)] border border-[var(--c-hairline-strong)] px-4 text-sm font-medium transition-colors hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
               onClick={() => changePage(1)}
               disabled={pagination.page >= pagination.totalPages}
               data-testid={testId + '-next'}

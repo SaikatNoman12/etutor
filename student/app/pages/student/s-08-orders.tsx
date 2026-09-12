@@ -195,8 +195,8 @@ export default function OrderListPage() {
         </span>
 
         {/* table */}
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+        <div className="w-full min-w-0 overflow-x-auto">
+          <table className="w-full min-w-[640px] border-collapse">
             <thead>
               <tr>
                 {sortableTh('orderNumber', t('orders.colOrder', 'Order'))}
@@ -213,7 +213,7 @@ export default function OrderListPage() {
                   <td colSpan={6} className="px-[16px] py-[12px]">
                     <div className="space-y-[8px]">
                       {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="h-[20px] animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
+                        <div key={i} className="h-[20px] et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
                       ))}
                     </div>
                   </td>

@@ -167,8 +167,8 @@ export default function AdminDashboardPage() {
             >
               {[0, 1, 2, 3].map((i) => (
                 <div key={i} className={cn(CARD, 'flex flex-col gap-2')}>
-                  <span className="h-[34px] w-20 animate-pulse rounded bg-muted" />
-                  <span className="h-[18px] w-28 animate-pulse rounded bg-muted" />
+                  <span className="h-[34px] w-20 et-shimmer rounded bg-muted" />
+                  <span className="h-[18px] w-28 et-shimmer rounded bg-muted" />
                 </div>
               ))}
             </div>
@@ -229,7 +229,7 @@ export default function AdminDashboardPage() {
               </p>
             )}
             {!ordersLoading && !ordersError && recentOrders.length > 0 && (
-              <div className="overflow-x-auto">
+              <div className="w-full min-w-0 overflow-x-auto">
                 <table className="w-full text-left text-[14px]" data-testid="adm-01-dashboard-ac-2-kpis">
                   <thead>
                     <tr className="border-b border-border text-muted-foreground">

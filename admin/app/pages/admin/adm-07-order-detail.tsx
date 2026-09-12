@@ -127,7 +127,7 @@ export default function AdminOrderDetailPage() {
         <Link
           to="/admin/orders"
           data-testid="adm-07-order-detail-home-link"
-          className="mb-[16px] inline-flex items-center gap-[4px] text-[14px] font-[600] text-[var(--c-body)] hover:text-[var(--c-primary)]"
+          className="mb-[16px] inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-[600] text-[var(--c-body)] hover:text-[var(--c-primary)]"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           {t('adm07.backOrders', 'Orders')}
@@ -169,7 +169,7 @@ export default function AdminOrderDetailPage() {
             {!loading1 && !error1 && (
               <>
                 <div data-testid="adm-07-order-detail-ac-1-kpis" className="overflow-x-auto">
-                  <table className="w-full border-collapse">
+                  <table className="w-full min-w-[640px] border-collapse">
                     <thead>
                       <tr>
                         <th className={TH}>{t('adm07.course', 'Course')}</th>

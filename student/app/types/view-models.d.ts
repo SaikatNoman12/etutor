@@ -137,7 +137,24 @@ export type EnrollmentRow = Enrollment & {
 export type PlayerLesson = Lesson & { isCompleted?: boolean; progress?: LessonProgress };
 
 /** GET /api/enrollments/:slug — the enrollment plus the course's lesson list. */
-export type PlayerDetail = Enrollment & {
-  course?: (Partial<Course> & { lessons?: PlayerLesson[] }) | null;
+export type PlayerSection = {
+  id?: string;
+  title?: string;
   lessons?: PlayerLesson[];
+};
+
+/**
+ * GET /api/enrollments/:id — the course player payload.
+ *
+ * Lessons arrive grouped into SECTIONS. This type used to offer `lessons` and
+ * `course.lessons`, neither of which the endpoint sends, so the player found
+ * zero lessons and every enrolled course rendered "There are no lessons
+ * available for this course yet." over a syllabus of eight.
+ */
+export type PlayerDetail = {
+  course?: (Partial<Course> & { lessons?: PlayerLesson[] }) | null;
+  sections?: PlayerSection[];
+  lessons?: PlayerLesson[];
+  progressPercent?: number;
+  lastLessonId?: string;
 };

@@ -137,7 +137,7 @@ export default function OrderDetailPage() {
       {/* back-link (page content — the top nav is shared chrome) */}
       <Link
         to="/orders"
-        className="mb-[16px] inline-flex items-center gap-[4px] text-[14px] font-semibold leading-[1] text-[var(--c-body)] no-underline hover:text-[var(--c-primary)]"
+        className="mb-[16px] inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-semibold leading-[1] text-[var(--c-body)] no-underline hover:text-[var(--c-primary)]"
         data-testid="s-09-order-detail-back"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> {t('orderDetail.backToOrders', 'Orders')}
@@ -175,8 +175,8 @@ export default function OrderDetailPage() {
             <div data-testid="s-09-order-detail-ac-1-loading" className="space-y-[12px]">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="flex items-center justify-between border-b border-[var(--c-hairline)] pb-[12px]">
-                  <div className="h-[16px] w-2/3 animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
-                  <div className="h-[16px] w-[48px] animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
+                  <div className="h-[16px] w-2/3 et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+                  <div className="h-[16px] w-[48px] et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
                 </div>
               ))}
             </div>
@@ -269,7 +269,7 @@ export default function OrderDetailPage() {
           {loading2 && (
             <div data-testid="s-09-order-detail-ac-2-loading" className="space-y-[8px]">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-[16px] w-full animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
+                <div key={i} className="h-[16px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
               ))}
             </div>
           )}

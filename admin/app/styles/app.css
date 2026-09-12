@@ -4,7 +4,25 @@
 @import "./theme.css";
 @import "./components.css";
 @import "./typography.css";
+@import "./motion.css";
 @source "../**/*.{ts,tsx,js,jsx,html}";
+
+/* The display face has to actually reach the headings. Every page sets its
+   headings with Tailwind size/weight utilities and inherits the family from
+   <body>, so without this rule the whole site renders in the body font and the
+   display font is a stylesheet nobody sees. */
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  /* Headline numerals should line up in a column of prices and counts. */
+  h1, h2, h3, .tabular { font-variant-numeric: tabular-nums; }
+  /* Long course titles and instructor names must not blow a card open. */
+  body { text-wrap: pretty; }
+  h1, h2, h3 { text-wrap: balance; }
+}
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -47,38 +65,49 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* shadcn's slots, BOUND to the brand tokens.
+   *
+   * There were two palettes answering the same question. The shadcn scale
+   * (oklch neutrals, shipped with the component kit) painted <body>, the cards
+   * and every ui/ primitive; the brand scale (--c-*) painted the 24 screens.
+   * The page therefore had a pure-white ground under warm-white sections — the
+   * warm ground being the one change that stops this reading as a template, and
+   * the one place it did not apply. Bound here rather than restated, so the next
+   * palette change is still one file. */
+  --radius: var(--radius-lg);
+  --background: var(--c-canvas);
+  --foreground: var(--c-ink);
+  --card: var(--c-surface);
+  --card-foreground: var(--c-ink);
+  --popover: var(--c-surface);
+  --popover-foreground: var(--c-ink);
+  --primary: var(--c-primary);
+  --primary-foreground: var(--c-on-primary);
+  --secondary: var(--c-surface-soft);
+  --secondary-foreground: var(--c-ink);
+  --muted: var(--c-surface-soft);
+  --muted-foreground: var(--c-muted);
+  --accent: var(--c-accent-soft);
+  --accent-foreground: var(--c-accent-text);
+  --destructive: var(--c-error);
+  --border: var(--c-hairline);
+  --input: var(--c-hairline-strong);
+  --ring: var(--c-focus-ring);
+  /* Charts: the brand's two voices plus three tints between them, so a series
+     of five reads as one palette instead of five unrelated hues. */
+  --chart-1: var(--c-primary);
+  --chart-2: var(--c-accent);
+  --chart-3: #f59e0b;
+  --chart-4: #2a7f96;
+  --chart-5: #b45309;
+  --sidebar: var(--c-surface);
+  --sidebar-foreground: var(--c-ink);
+  --sidebar-primary: var(--c-primary);
+  --sidebar-primary-foreground: var(--c-on-primary);
+  --sidebar-accent: var(--c-surface-soft);
+  --sidebar-accent-foreground: var(--c-ink);
+  --sidebar-border: var(--c-hairline);
+  --sidebar-ring: var(--c-focus-ring);
 }
 
 .dark {

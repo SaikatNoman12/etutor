@@ -959,3 +959,26 @@ a:focus-visible, .chip:focus-visible, .chip-remove:focus-visible,
 }
 .site-footer__bottom { padding-bottom: max(var(--space-md), env(safe-area-inset-bottom)); }
 .app-body { padding-bottom: max(var(--space-xl), env(safe-area-inset-bottom)); }
+
+/* ── touch targets ───────────────────────────────────────────────────────── */
+/* A 20px checkbox and a 22px ⋯ trigger are fine under a mouse and a coin-toss
+   under a thumb. Coarse pointers only — the desktop table keeps its density.
+   `min-width`/`min-height`, not padding: this project's CSS reaches the browser
+   through Tailwind's layers, and a `padding` on a fixed-size input is reset by
+   preflight's universal rule (verified: the declaration computed to 0px while
+   the sibling `margin` applied). Minimums survive that, and they grow the drawn
+   control as well as its hit area — on a touch screen that is the right
+   trade. */
+@media (pointer: coarse) {
+  .row-check {
+    min-width: 32px;
+    min-height: 32px;
+  }
+  .row-actions > button {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

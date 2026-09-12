@@ -30,7 +30,7 @@ import { getApiErrorMessage } from '~/utils/apiError';
 import type { Course } from '~/types/course';
 import type { Lesson } from '~/types/lesson';
 import type { CourseDetail, SyllabusSection } from '~/types/view-models';
-import { ChevronDown, ChevronRight, FileText, HelpCircle as PlayCircle  /* scaffold-lucide-icon-doctor: hallucinated → HelpCircle */, Star } from 'lucide-react';
+import { ChevronDown, ChevronRight, FileText, PlayCircle, Star } from 'lucide-react';
 
 /** The detail endpoint embeds relations the flat Course type does not
  *  guarantee; widen locally rather than reaching for `any`. */
@@ -138,11 +138,11 @@ export default function CourseDetailPage() {
         {loading1 && (
           <div className="grid grid-cols-1 gap-[24px] [@media(min-width:900px)]:grid-cols-[2fr_1fr]" data-testid="s-03-course-detail-ac-1-loading">
             <div className="space-y-[24px]">
-              <div className="h-[40px] w-2/3 animate-pulse rounded-[8px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[280px] w-full animate-pulse rounded-[8px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[160px] w-full animate-pulse rounded-[8px] bg-[var(--c-surface-soft)]" />
+              <div className="h-[40px] w-2/3 et-shimmer rounded-[var(--radius-lg)] " />
+              <div className="h-[280px] w-full et-shimmer rounded-[var(--radius-lg)] " />
+              <div className="h-[160px] w-full et-shimmer rounded-[var(--radius-lg)] " />
             </div>
-            <div className="h-[320px] w-full animate-pulse rounded-[8px] bg-[var(--c-surface-soft)]" />
+            <div className="h-[320px] w-full et-shimmer rounded-[var(--radius-lg)] " />
           </div>
         )}
 
@@ -195,7 +195,7 @@ export default function CourseDetailPage() {
                     {course.title ?? ''}
                   </h1>
                   <div className="flex flex-wrap items-center gap-[16px]">
-                    <span className="inline-flex items-center gap-[4px] text-[14px] font-medium text-[var(--c-ink)]">
+                    <span className="inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-medium text-[var(--c-ink)]">
                       <Star className="h-4 w-4 text-[var(--c-primary-text)]" aria-hidden="true" />
                       {(course.ratingAvg ?? 0).toFixed(1)}
                     </span>
@@ -347,7 +347,7 @@ export default function CourseDetailPage() {
 
                   <Link
                     to="/checkout"
-                    className="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[6px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-ink)] hover:bg-[var(--c-surface-soft)]"
+                    className="flex min-h-[44px] w-full cursor-pointer items-center justify-center et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[12px] text-[15px] font-semibold text-[var(--c-ink)] hover:bg-[var(--c-surface-soft)]"
                     data-testid="s-03-course-detail-buy-now"
                   >
                     {t('courseDetail.buyNow', 'Buy now')}

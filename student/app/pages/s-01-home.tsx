@@ -22,6 +22,7 @@ import { useAppSelector } from '~/hooks/useAppSelector';
 import { listCourses, listCategories, listInstructors } from '~/services/httpServices/catalogueService';
 import type { CourseRow, CategoryCard, InstructorRow } from '~/types/view-models';
 import { Star } from 'lucide-react';
+import { Reveal } from '~/components/shared/Reveal';
 
 /** Type-safe extraction of a list from an unknown API payload (bare array, {items}, or {data}). */
 function toArray<T>(value: unknown): T[] {
@@ -124,7 +125,7 @@ export default function HomePage() {
       key={course.id}
       to={`/courses/${course.slug}`}
       data-testid={testId}
-      className="group flex flex-col overflow-hidden rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)] transition hover:-translate-y-[2px] hover:shadow-[var(--shadow-hover)]"
+      className="et-lift group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)]"
     >
       <div className="h-[180px] w-full overflow-hidden bg-[var(--c-canvas)]">
         <Media src={course.thumbnailUrl ?? undefined} alt={course.title ?? ""} />
@@ -143,7 +144,7 @@ export default function HomePage() {
         </div>
         <p className="text-[16px] font-semibold leading-[1.35] text-[var(--c-ink)]">{course.title}</p>
         <div className="mt-[12px] flex items-center justify-between border-t border-[var(--c-hairline)] pt-[12px]">
-          <span className="inline-flex items-center gap-[4px] text-[14px] text-[var(--c-ink)]">
+          <span className="inline-flex min-h-[36px] items-center gap-[4px] text-[14px] text-[var(--c-ink)]">
             <Star className="h-[14px] w-[14px] text-[var(--c-primary-text)]" aria-hidden="true" />
             {course.ratingAvg != null ? (course.ratingAvg ?? 0).toFixed(1) : '0.0'}
           </span>
@@ -163,34 +164,34 @@ export default function HomePage() {
         {/* Hero — carries AC-4 (Browse courses CTA) */}
         <section
           data-testid="s-01-home-ac-4"
-          className="border-b border-[var(--c-hairline)] bg-[var(--c-canvas)]"
+          className="et-aurora rounded-[var(--radius-xl)] border border-[var(--c-hairline)] bg-[var(--c-canvas)]"
         >
-          <div className="grid grid-cols-1 items-center gap-[32px] py-[64px] lg:grid-cols-2">
+          <div className="grid grid-cols-1 items-center gap-[32px] px-[20px] py-[48px] sm:px-[32px] lg:grid-cols-2 lg:py-[72px]">
             <div className="flex flex-col gap-[16px]">
-              <h1 data-testid="s-01-home-heading" className="text-[48px] font-bold leading-[1.15] tracking-[-0.5px] text-[var(--c-ink)]">
+              <h1 data-testid="s-01-home-heading" className="et-enter text-[34px] font-extrabold leading-[1.08] tracking-[-0.03em] text-[var(--c-ink)] sm:text-[44px] lg:text-[56px]">
                 {t('app.tagline', 'Learn with experts, anytime, anywhere')}
               </h1>
-              <p className="text-[18px] leading-[1.55] text-[var(--c-muted)]">
+              <p className="et-enter et-enter-1 max-w-[46ch] text-[16px] leading-[1.6] text-[var(--c-muted)] sm:text-[18px]">
                 {t('home.heroSubtitle', 'Browse expert-led courses, enrol in one click and pick up exactly where you left off.')}
               </p>
-              <div className="flex flex-wrap items-center gap-[12px]">
+              <div className="et-enter et-enter-2 flex flex-wrap items-center gap-[12px]">
                 <Link
                   to="/signup"
                   data-testid="s-01-home-hero-signup"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-[6px] bg-[var(--c-primary)] px-[32px] text-[18px] font-semibold text-[var(--c-on-primary)] transition hover:bg-[var(--c-primary-active)]"
+                  className="et-press et-sheen inline-flex min-h-[52px] items-center justify-center rounded-[var(--radius-pill)] bg-[var(--c-primary)] px-[30px] text-[16px] font-semibold text-[var(--c-on-primary)] shadow-[var(--shadow-2)] transition-colors hover:bg-[var(--c-primary-active)] sm:text-[18px]"
                 >
                   {t('auth.createAccount', 'Create account')}
                 </Link>
                 <Link
                   to="/courses"
                   data-testid="s-01-home-hero-browse"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-[6px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[32px] text-[18px] font-semibold text-[var(--c-primary-text)] transition hover:bg-[var(--c-surface-soft)]"
+                  className="et-press inline-flex min-h-[52px] items-center justify-center rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[30px] text-[16px] font-semibold text-[var(--c-primary-text)] transition-colors hover:border-[var(--c-primary)] hover:bg-[var(--c-surface-soft)] sm:text-[18px]"
                 >
                   {t('auth.browseCourses', 'Browse courses')}
                 </Link>
               </div>
             </div>
-            <div className="aspect-[4/3] w-full overflow-hidden rounded-[12px] bg-[var(--c-canvas)]">
+            <div className="et-enter et-enter-3 aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-xl)] bg-[var(--c-canvas)] shadow-[var(--shadow-3)] ring-1 ring-[var(--c-hairline)]">
               <Media src="/images/hero-learning.jpg" alt={t('app.tagline', 'Learn with experts, anytime, anywhere')} />
             </div>
           </div>
@@ -198,18 +199,18 @@ export default function HomePage() {
 
         {/* Browse top categories — AC-2 (category strip) */}
         <section data-testid="s-01-home-ac-2" className="py-[32px]">
-          <div className="mb-[24px]">
+          <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.categoriesTitle', 'Browse top categories')}
             </h2>
             <p className="text-[14px] text-[var(--c-muted)]">{t('home.categoriesSubtitle', 'Pick a subject and start today')}</p>
             <div className="mt-[8px] h-[3px] w-[48px] rounded-full bg-[var(--c-primary)]" />
-          </div>
+          </Reveal>
 
           {loading2 && (
             <div data-testid="s-01-home-ac-2-loading" className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-[80px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-canvas)]" />
+                <div key={i} className="et-shimmer h-[88px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)]" />
               ))}
             </div>
           )}
@@ -226,7 +227,7 @@ export default function HomePage() {
                       key={cat.id}
                       to={`/courses?category=${encodeURIComponent(cat.slug)}`}
                       data-testid={`s-01-home-ac-2-kpi-${cat.id}`}
-                      className="flex items-center gap-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[12px] transition hover:border-[var(--c-primary)] hover:shadow-[var(--shadow-1)]"
+                      className="et-lift flex items-center gap-[12px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[14px] shadow-[var(--shadow-0)]"
                     >
                       <span className="inline-flex h-[56px] w-[56px] flex-shrink-0 items-center justify-center overflow-hidden rounded-[6px] bg-[var(--c-primary-soft)]">
                         <Media src={cat.iconUrl} alt="" className="h-[32px] w-[32px] object-contain" />
@@ -247,18 +248,18 @@ export default function HomePage() {
 
         {/* Best selling courses — AC-1 (opens home, sees the live catalogue) */}
         <section data-testid="s-01-home-ac-1" className="py-[32px]">
-          <div className="mb-[24px]">
+          <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.bestSellingTitle', 'Best selling courses')}
             </h2>
             <p className="text-[14px] text-[var(--c-muted)]">{t('home.bestSellingSubtitle', 'What learners are buying this month')}</p>
             <div className="mt-[8px] h-[3px] w-[48px] rounded-full bg-[var(--c-primary)]" />
-          </div>
+          </Reveal>
 
           {loading1 && (
             <div data-testid="s-01-home-ac-1-loading" className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-[300px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-canvas)]" />
+                <div key={i} className="et-shimmer h-[300px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)]" />
               ))}
             </div>
           )}
@@ -276,18 +277,18 @@ export default function HomePage() {
 
         {/* Recently added — AC-3 (click a course card → /courses/:slug) */}
         <section data-testid="s-01-home-ac-3" className="py-[32px]">
-          <div className="mb-[24px]">
+          <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.recentTitle', 'Recently added')}
             </h2>
             <p className="text-[14px] text-[var(--c-muted)]">{t('home.recentSubtitle', 'Fresh from our instructors')}</p>
             <div className="mt-[8px] h-[3px] w-[48px] rounded-full bg-[var(--c-primary)]" />
-          </div>
+          </Reveal>
 
           {loading4 && (
             <div data-testid="s-01-home-ac-3-loading" className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-[300px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-canvas)]" />
+                <div key={i} className="et-shimmer h-[300px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)]" />
               ))}
             </div>
           )}
@@ -310,7 +311,7 @@ export default function HomePage() {
             lead; the section is the same shape, addressed to the person the site
             is for. */}
         <section data-testid="s-01-home-learn" className="py-[32px]">
-          <div className="mb-[24px]">
+          <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.learnTitle', 'Learn on E-Tutor')}
             </h2>
@@ -318,7 +319,7 @@ export default function HomePage() {
               {t('home.learnSubtitle', 'Four steps from browsing to your first finished lesson')}
             </p>
             <div className="mt-[8px] h-[3px] w-[48px] rounded-full bg-[var(--c-primary)]" />
-          </div>
+          </Reveal>
           <div className="grid grid-cols-1 items-start gap-[24px] lg:grid-cols-[2fr_1fr]">
             <div className="flex flex-col gap-[16px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
               {[
@@ -341,7 +342,7 @@ export default function HomePage() {
               <Link
                 to={user ? '/my-learning' : '/courses'}
                 data-testid="s-01-home-learn-cta"
-                className="mt-[8px] inline-flex min-h-[44px] w-fit items-center justify-center rounded-[6px] bg-[var(--c-primary)] px-[24px] text-[15px] font-semibold text-[var(--c-on-primary)] transition hover:bg-[var(--c-primary-active)]"
+                className="mt-[8px] inline-flex min-h-[44px] w-fit items-center justify-center et-press et-sheen rounded-[var(--radius-pill)] bg-[var(--c-primary)] px-[24px] text-[15px] font-semibold text-[var(--c-on-primary)] transition hover:bg-[var(--c-primary-active)]"
               >
                 {user
                   ? t('home.learnCtaMember', 'Go to my learning')
@@ -356,18 +357,18 @@ export default function HomePage() {
 
         {/* Top instructors */}
         <section className="py-[32px]">
-          <div className="mb-[24px]">
+          <Reveal className="mb-[24px]">
             <h2 className="text-[24px] font-semibold leading-[1.25] tracking-[-0.2px] text-[var(--c-ink)]">
               {t('home.instructorsTitle', 'Top instructors')}
             </h2>
             <p className="text-[14px] text-[var(--c-muted)]">{t('home.instructorsSubtitle', 'Learn from people who do the work')}</p>
             <div className="mt-[8px] h-[3px] w-[48px] rounded-full bg-[var(--c-primary)]" />
-          </div>
+          </Reveal>
 
           {loading3 && (
             <div data-testid="s-01-home-instructors-loading" className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-[180px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-canvas)]" />
+                <div key={i} className="et-shimmer h-[180px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)]" />
               ))}
             </div>
           )}
@@ -382,7 +383,7 @@ export default function HomePage() {
                     key={inst.id}
                     to={`/instructors/${inst.id}`}
                     data-testid={`s-01-home-instructor-${inst.id}`}
-                    className="flex flex-col items-start gap-[8px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)] transition hover:-translate-y-[2px] hover:shadow-[var(--shadow-hover)]"
+                    className="et-lift flex flex-col items-start gap-[8px] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]"
                   >
                     <span className="inline-flex h-[64px] w-[64px] items-center justify-center overflow-hidden rounded-full bg-[var(--c-canvas)]">
                       <Media src={inst.avatarUrl} alt={inst.name ?? ''} />

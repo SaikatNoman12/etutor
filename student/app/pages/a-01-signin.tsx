@@ -78,7 +78,7 @@ export default function SignInPage() {
           <Link
             to="/"
             data-testid="a-01-signin-home-link"
-            className="inline-flex items-center gap-[4px] text-[14px] text-[var(--c-muted)] hover:text-[var(--c-primary)]"
+            className="inline-flex min-h-[36px] items-center gap-[4px] text-[14px] text-[var(--c-muted)] hover:text-[var(--c-primary)]"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             {t('nav.home', 'Home')}

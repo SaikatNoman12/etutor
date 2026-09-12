@@ -63,7 +63,7 @@ export default function SignUpPage() {
         <Link
           to="/"
           data-testid="a-02-signup-home-link"
-          className="mb-[16px] inline-flex items-center text-[14px] font-medium text-[var(--c-body)] hover:text-[var(--c-primary)]"
+          className="mb-[16px] inline-flex min-h-[36px] items-center text-[14px] font-medium text-[var(--c-body)] hover:text-[var(--c-primary)]"
         >
           {t('auth.signup.backToHome', { defaultValue: 'Back to home' })}
         </Link>

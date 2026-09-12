@@ -33,7 +33,7 @@ import { listCourses, createCourse, deleteCourse, updateCourse } from '~/service
 import { toast } from '~/lib/toast';
 
 import type { DataTableColumn, PaginationState } from '~/components/data-table/DataTable';
-import { Plus, HelpCircle as X  /* scaffold-lucide-icon-doctor: hallucinated → HelpCircle */ } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import type { AdminCourseRow } from '~/types/view-models';
 
 /** A course row as rendered by the listing. The index signature keeps it

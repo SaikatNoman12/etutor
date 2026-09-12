@@ -273,11 +273,11 @@ export default function CourseListPage() {
       {/* results */}
       <main data-testid="s-02-courses-main">
         {loading1 && (
-          <div className="grid grid-cols-4 gap-[16px]" data-testid="s-02-courses-ac-1-loading">
+          <div className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-testid="s-02-courses-ac-1-loading">
             {Array.from({ length: PAGE_SIZE }).map((_, i) => (
               <div
                 key={i}
-                className="h-[300px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface-soft)]"
+                className="h-[300px] et-shimmer rounded-[var(--radius-lg)] border border-[var(--c-hairline)] "
               />
             ))}
           </div>
@@ -314,12 +314,12 @@ export default function CourseListPage() {
         )}
 
         {!loading1 && !error1 && paged.length > 0 && (
-          <div className="grid grid-cols-4 gap-[16px]" data-testid="s-02-courses-ac-2-list">
+          <div className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-testid="s-02-courses-ac-2-list">
             {paged.map((course, i) => (
               <Link
                 key={course.id ?? i}
                 to={`/courses/${course.slug ?? ''}`}
-                className="block cursor-pointer overflow-hidden rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)] transition-all duration-150 hover:-translate-y-[2px] hover:border-[var(--c-hairline-strong)] hover:shadow-[var(--shadow-hover)]"
+                className="block cursor-pointer overflow-hidden et-lift rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)] transition-all duration-150 hover:-translate-y-[2px] hover:border-[var(--c-hairline-strong)] hover:shadow-[var(--shadow-hover)]"
                 data-testid={`s-02-courses-ac-2-item-${i}`}
               >
                 <div className="relative h-[180px] overflow-hidden [background:var(--media-fallback)]">
@@ -343,7 +343,7 @@ export default function CourseListPage() {
                     {course.title ?? ''}
                   </p>
                   <div className="flex items-center justify-between border-t border-[var(--c-hairline)] mt-[12px] pt-[12px]">
-                    <span className="inline-flex items-center gap-[4px] text-[14px] text-[var(--c-ink)]">
+                    <span className="inline-flex min-h-[36px] items-center gap-[4px] text-[14px] text-[var(--c-ink)]">
                       <Star className="h-4 w-4 text-[var(--c-primary)]" aria-hidden="true" />
                       {(course.ratingAvg ?? 0).toFixed(1)}
                     </span>

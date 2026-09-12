@@ -234,20 +234,20 @@ export default function CartPage() {
             <div className="rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="flex gap-[16px] border-b border-[var(--c-hairline)] py-[16px]">
-                  <div className="aspect-video w-[112px] shrink-0 animate-pulse rounded-[8px] bg-[var(--c-surface-soft)]" />
+                  <div className="aspect-video w-[112px] shrink-0 et-shimmer rounded-[var(--radius-lg)] " />
                   <div className="flex-1 space-y-[8px]">
-                    <div className="h-[16px] w-3/4 animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
-                    <div className="h-[20px] w-[90px] animate-pulse rounded-[9999px] bg-[var(--c-surface-soft)]" />
-                    <div className="h-[28px] w-[180px] animate-pulse rounded-[9999px] bg-[var(--c-surface-soft)]" />
+                    <div className="h-[16px] w-3/4 et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+                    <div className="h-[20px] w-[90px] et-shimmer rounded-[9999px] bg-[var(--c-surface-soft)]" />
+                    <div className="h-[28px] w-[180px] et-shimmer rounded-[9999px] bg-[var(--c-surface-soft)]" />
                   </div>
                 </div>
               ))}
             </div>
             <div className="space-y-[12px] rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[24px] shadow-[var(--shadow-1)]">
-              <div className="h-[24px] w-1/2 animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[16px] w-full animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[44px] w-full animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[48px] w-full animate-pulse rounded-[6px] bg-[var(--c-surface-soft)]" />
+              <div className="h-[24px] w-1/2 et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+              <div className="h-[16px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+              <div className="h-[44px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
+              <div className="h-[48px] w-full et-shimmer rounded-[6px] bg-[var(--c-surface-soft)]" />
             </div>
           </div>
         )}
@@ -282,7 +282,7 @@ export default function CartPage() {
             <p className="m-0 text-[16px] text-[var(--c-body)]">{t('cart.empty', 'Your cart is empty.')}</p>
             <Link
               to="/courses"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-[6px] bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
+              className="inline-flex min-h-[44px] items-center justify-center et-press et-sheen rounded-[var(--radius-pill)] bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-on-primary)] no-underline hover:bg-[var(--c-primary-active)]"
               data-testid="s-06-cart-browse"
             >
               {t('cart.browse', 'Browse courses')}
@@ -400,7 +400,7 @@ export default function CartPage() {
                   type="button"
                   onClick={applyCode}
                   disabled={busy || !coupon.trim()}
-                  className="inline-flex min-h-[44px] shrink-0 cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex min-h-[44px] shrink-0 cursor-pointer items-center justify-center gap-[8px] et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[8px] text-[15px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50"
                   data-testid="s-06-cart-coupon-apply"
                 >
                   {t('cart.apply', 'Apply')}

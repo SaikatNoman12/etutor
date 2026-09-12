@@ -4,7 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseUUIDPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -81,7 +80,10 @@ export class EnrollmentController {
   async completeLesson(
     @CurrentUser('id') userId: string,
     @CurrentUser('role') role: string,
-    @Param('id', ParseUUIDPipe) id: string,
+    // NOT ParseUUIDPipe. The player's URL carries the course slug, which the
+    // GET on this same `:id` accepts; demanding a uuid here made the complete
+    // action 400 on exactly the ids the page had been handed.
+    @Param('id') id: string,
     @Param('lessonId') lessonId: string,
   ): Promise<PlayerView> {
     return this.service.completeLesson(id, lessonId, userId, role);

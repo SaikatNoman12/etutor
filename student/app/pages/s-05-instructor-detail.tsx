@@ -131,7 +131,7 @@ export default function InstructorDetailPage() {
       </Link>
 
       <div data-testid="s-05-instructor-detail-main">
-        <div className="grid grid-cols-[2fr_1fr] items-start gap-[var(--space-xl)] max-[900px]:grid-cols-1">
+        <div className="grid grid-cols-1 items-start lg:grid-cols-[2fr_1fr] gap-[var(--space-xl)] max-[900px]:grid-cols-1">
           {/* LEFT — profile header + course grid */}
           <div className="space-y-[var(--space-xl)]">
             {/* AC-1: visitor opens a profile */}
@@ -141,10 +141,10 @@ export default function InstructorDetailPage() {
                   className="flex items-center gap-[var(--space-md)] rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] p-[var(--space-xl)] shadow-[var(--shadow-1)]"
                   data-testid="s-05-instructor-detail-ac-1-loading"
                 >
-                  <span className="h-[64px] w-[64px] flex-shrink-0 animate-pulse rounded-full bg-[var(--c-surface-soft)]" />
+                  <span className="h-[64px] w-[64px] flex-shrink-0 et-shimmer rounded-full bg-[var(--c-surface-soft)]" />
                   <span className="flex flex-1 flex-col gap-[var(--space-sm)]">
-                    <span className="h-[20px] w-[180px] animate-pulse rounded-[var(--radius-sm)] bg-[var(--c-surface-soft)]" />
-                    <span className="h-[14px] w-[120px] animate-pulse rounded-[var(--radius-sm)] bg-[var(--c-surface-soft)]" />
+                    <span className="h-[20px] w-[180px] et-shimmer rounded-[var(--radius-sm)] bg-[var(--c-surface-soft)]" />
+                    <span className="h-[14px] w-[120px] et-shimmer rounded-[var(--radius-sm)] bg-[var(--c-surface-soft)]" />
                   </span>
                 </div>
               )}
@@ -188,13 +188,13 @@ export default function InstructorDetailPage() {
 
               {loading2 && (
                 <div
-                  className="grid grid-cols-4 gap-[var(--space-lg)] max-[900px]:grid-cols-2 max-[600px]:grid-cols-1"
+                  className="grid grid-cols-2 gap-[var(--space-lg)] max-[900px]:grid-cols-2 max-[600px]:grid-cols-1"
                   data-testid="s-05-instructor-detail-ac-2-loading"
                 >
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div
                       key={i}
-                      className="h-[300px] animate-pulse rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface-soft)]"
+                      className="h-[300px] et-shimmer rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface-soft)]"
                     />
                   ))}
                 </div>
@@ -232,7 +232,7 @@ export default function InstructorDetailPage() {
 
               {!loading2 && !error2 && courses.length > 0 && (
                 <div
-                  className="grid grid-cols-4 gap-[var(--space-lg)] max-[900px]:grid-cols-2 max-[600px]:grid-cols-1"
+                  className="grid grid-cols-2 gap-[var(--space-lg)] max-[900px]:grid-cols-2 max-[600px]:grid-cols-1"
                   data-testid="s-05-instructor-detail-ac-2-list"
                 >
                   {courses.map((course, i) => (

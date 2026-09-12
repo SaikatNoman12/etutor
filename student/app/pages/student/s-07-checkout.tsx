@@ -214,7 +214,7 @@ export default function CheckoutPage() {
     >
       <Link
         to="/cart"
-        className="mb-[16px] inline-flex items-center gap-[4px] text-[14px] font-semibold text-[var(--c-body)] no-underline hover:text-[var(--c-primary)]"
+        className="mb-[16px] inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-semibold text-[var(--c-body)] no-underline hover:text-[var(--c-primary)]"
         data-testid="s-07-checkout-back"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> {t('checkout.cart', 'Cart')}
@@ -305,9 +305,9 @@ export default function CheckoutPage() {
           {loading1 && (
             <div className="space-y-[12px]" data-testid="s-07-checkout-ac-1-loading">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-[16px] w-full animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
+                <div key={i} className="h-[16px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
               ))}
-              <div className="h-[24px] w-1/2 animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
+              <div className="h-[24px] w-1/2 et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
             </div>
           )}
 
@@ -319,7 +319,7 @@ export default function CheckoutPage() {
               <button
                 type="button"
                 onClick={reload}
-                className="inline-flex min-h-[40px] cursor-pointer items-center justify-center rounded-[6px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)]"
+                className="inline-flex min-h-[40px] cursor-pointer items-center justify-center et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)]"
                 data-testid="s-07-checkout-retry"
               >
                 {t('checkout.retry', 'Try again')}

@@ -132,11 +132,11 @@ export default function MyLearningPage() {
       <main data-testid="s-10-my-learning-main">
         <div data-testid="s-10-my-learning-ac-1">
           {loading1 && (
-            <div className="grid grid-cols-3 gap-[24px]" data-testid="s-10-my-learning-ac-1-loading">
+            <div className="grid grid-cols-1 gap-[24px] sm:grid-cols-2 lg:grid-cols-3" data-testid="s-10-my-learning-ac-1-loading">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-[320px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface-soft)]"
+                  className="h-[320px] et-shimmer rounded-[var(--radius-lg)] border border-[var(--c-hairline)] "
                 />
               ))}
             </div>
@@ -180,14 +180,14 @@ export default function MyLearningPage() {
           )}
 
           {!loading1 && !error1 && canView && filtered.length > 0 && (
-            <div className="grid grid-cols-3 gap-[24px]" data-testid="s-10-my-learning-ac-1-detail">
+            <div className="grid grid-cols-1 gap-[24px] sm:grid-cols-2 lg:grid-cols-3" data-testid="s-10-my-learning-ac-1-detail">
               {filtered.map((e, i) => {
                 const pct = Math.max(0, Math.min(100, e.progressPercent ?? 0));
                 const done = pct >= 100;
                 return (
                   <div
                     key={e.id ?? i}
-                    className="overflow-hidden rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)]"
+                    className="overflow-hidden et-lift rounded-[var(--radius-lg)] border border-[var(--c-hairline)] bg-[var(--c-surface)] shadow-[var(--shadow-1)]"
                     data-testid={`s-10-my-learning-card-${i + 1}`}
                   >
                     <div className="relative h-[180px] overflow-hidden [background:var(--media-fallback)]">
@@ -198,7 +198,7 @@ export default function MyLearningPage() {
                         {e.course?.title ?? ''}
                       </p>
                       <div className="h-[8px] overflow-hidden rounded-full bg-[var(--c-hairline)]">
-                        <div className="h-full rounded-full bg-[var(--c-primary)]" style={{ width: `${pct}%` }} />
+                        <div className="et-grow h-full rounded-full bg-[var(--c-primary)]" style={{ width: `${pct}%` }} />
                       </div>
                       <p className="m-0 text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
                         {pct}% {t('learning.complete', 'complete')}

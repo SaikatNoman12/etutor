@@ -312,7 +312,7 @@ export default function AdminCategoryListPage() {
 
           {/* summary stats derived from the loaded categories */}
           {!loading1 && !error1 && (
-            <div className="grid grid-cols-3 gap-4 border-b border-border p-4" data-testid="adm-04-categories-ac-1-kpis">
+            <div className="grid grid-cols-1 gap-4 border-b sm:grid-cols-3 border-border p-4" data-testid="adm-04-categories-ac-1-kpis">
               {stats.map((s) => (
                 <div key={s.key} data-testid={`adm-04-categories-ac-1-kpi-${s.key}`} className="rounded-lg bg-muted/40 p-3">
                   <p className="text-xs text-muted-foreground">{s.label}</p>

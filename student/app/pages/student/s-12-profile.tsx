@@ -177,7 +177,7 @@ export default function ProfilePage() {
             <button
               type="button"
               onClick={() => toast.info(t('profile.photoSoon', 'Photo upload is not available yet'))}
-              className="inline-flex min-h-[40px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)]"
+              className="inline-flex min-h-[40px] cursor-pointer items-center justify-center gap-[8px] et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)]"
               data-testid="s-12-profile-change-photo"
             >
               {t('profile.changePhoto', 'Change photo')}
@@ -267,7 +267,7 @@ export default function ProfilePage() {
           {loading1 && (
             <div className="space-y-[12px]" data-testid="s-12-profile-ac-1-loading">
               {Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="h-[40px] w-full animate-pulse rounded-[4px] bg-[var(--c-surface-soft)]" />
+                <div key={i} className="h-[40px] w-full et-shimmer rounded-[4px] bg-[var(--c-surface-soft)]" />
               ))}
             </div>
           )}
@@ -280,7 +280,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="inline-flex min-h-[40px] cursor-pointer items-center justify-center rounded-[6px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)]"
+                className="inline-flex min-h-[40px] cursor-pointer items-center justify-center et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[16px] py-[8px] text-[14px] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)]"
                 data-testid="s-12-profile-retry"
               >
                 {t('profile.retry', 'Try again')}

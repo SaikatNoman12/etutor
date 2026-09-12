@@ -1,31 +1,63 @@
-/* theme.css — E-Tutor brand theme.
- * Implements every slot in TOKEN_CONTRACT.md (schema: base-theme.css).
- * Palette + type lifted from the E-Tutor reference build:
- *   primary #FF6636 · ink #1D2026 · canvas #F5F7FA · hairline #EBEBFF · Roboto. */
+/* theme.css — E-Tutor, "warm editorial".
+ *
+ * Every slot in TOKEN_CONTRACT.md, filled with a deliberate identity rather than
+ * the starter's defaults. The screens are written against these variables
+ * (`bg-[var(--c-surface)]`, `text-[var(--c-ink)]`, `shadow-[var(--shadow-1)]`),
+ * so the whole product re-themes from this file — which is why the identity
+ * lives here and not sprinkled through 24 pages.
+ *
+ * The decisions, so the next person can keep them or overturn them on purpose:
+ *
+ *  - A WARM ground (#FBF8F5), not the cool grey every dashboard ships with. It
+ *    is the single change that stops the site reading as a template.
+ *  - Orange stays the brand — it is what the client recognizes — but deeper and
+ *    less plastic (#F2541B), paired with a deep teal so the palette has two
+ *    voices instead of one shouting.
+ *  - Bricolage Grotesque for display: a face with actual character, and legible
+ *    at a headline size. Plus Jakarta Sans carries the UI, where personality is
+ *    a liability.
+ *  - Radii open up (cards 14–20px) and shadows are tinted WARM. A neutral grey
+ *    shadow over a warm ground is the thing that reads as "unfinished".
+ */
 :root {
-  /* color */
-  --c-primary: #ff6636;
-  --c-primary-active: #d94d21;
-  --c-primary-soft: #ffeee8;
-  --c-on-primary: #1d2026;
-  --c-ink: #1d2026;
-  --c-body: #4e5566;
-  --c-muted: #666c7e;
-  --c-canvas: #f5f7fa;
-  --c-surface: #ffffff;
-  --c-surface-soft: #f5f7fa;
-  --c-hairline: #ebebff;
-  --c-hairline-strong: #c8cbd9;
-  --c-link: #c7502a;
-  --c-success: #15711f;
-  --c-warning: #8a5306;
-  --c-error: #882929;
-  --c-focus-ring: #c7502a;
-  --c-primary-text: #c7502a;   /* orange as TEXT — AA on canvas; --c-primary stays the brand fill */
+  /* ── color ───────────────────────────────────────────────────────────── */
+  --c-primary: #f2541b;
+  --c-primary-active: #c63c0c;
+  --c-primary-soft: #fff0e8;
+  --c-on-primary: #ffffff;
 
-  /* type families */
-  --font-display: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-body: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* The second voice. Orange alone has to carry brand, emphasis, success and
+     navigation at once; a deep teal takes the quiet half of that work. */
+  --c-accent: #0f5f56;
+  --c-accent-soft: #e4f2ef;
+  --c-accent-text: #0b4a43;
+
+  --c-ink: #16161d;
+  --c-body: #4a4a55;
+  --c-muted: #7a7a88;
+  --c-canvas: #fbf8f5;
+  --c-surface: #ffffff;
+  --c-surface-soft: #f6f1ec;
+  --c-hairline: #ece4dc;
+  --c-hairline-strong: #d6cabd;
+  --c-link: #c2410c;
+  --c-success: #0f6b34;
+  --c-warning: #8a5306;
+  --c-error: #a52a2a;
+  --c-focus-ring: #f2541b;
+  --c-primary-text: #c2410c;   /* orange as TEXT — AA on canvas; --c-primary stays the brand fill */
+
+  /* Signature gradients. The hero's soft aurora and the accent sheen on
+     primary surfaces both come from here so they cannot drift apart. */
+  --grad-brand: linear-gradient(135deg, #f2541b 0%, #f59e0b 100%);
+  --grad-aurora:
+    radial-gradient(58% 82% at 82% 8%, rgb(242 84 27 / 0.14) 0%, transparent 62%),
+    radial-gradient(48% 70% at 6% 96%, rgb(15 95 86 / 0.12) 0%, transparent 60%);
+  --grad-sheen: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
+
+  /* ── type families ───────────────────────────────────────────────────── */
+  --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 
   /* type roles */
@@ -100,12 +132,12 @@
   --t-code-lh: 1.5;
   --t-code-ls: 0px;
 
-  /* shape */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+  /* ── shape ───────────────────────────────────────────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
   --radius-pill: 9999px;
 
   /* spacing */
@@ -118,12 +150,14 @@
   --space-xxl: 32px;
   --space-section: 64px;
 
-  /* elevation & misc */
-  --shadow-0: 0 1px 2px rgb(29 32 38 / 0.05);
-  --shadow-1: 0 1px 3px rgb(29 32 38 / 0.08);
-  --shadow-2: 0 8px 24px rgb(29 32 38 / 0.10);
-  --shadow-3: 0 16px 48px rgb(29 32 38 / 0.16);
-  --shadow-hover: 0 12px 28px rgb(29 32 38 / 0.14);
+  /* ── elevation & misc ────────────────────────────────────────────────── */
+  /* Warm-tinted, not neutral grey: a grey shadow over a warm ground is the
+     single tell that a palette was swapped without looking at it. */
+  --shadow-0: 0 1px 2px rgb(70 42 24 / 0.05);
+  --shadow-1: 0 2px 8px rgb(70 42 24 / 0.07);
+  --shadow-2: 0 10px 28px rgb(70 42 24 / 0.10);
+  --shadow-3: 0 20px 52px rgb(70 42 24 / 0.16);
+  --shadow-hover: 0 16px 36px rgb(70 42 24 / 0.16);
   --border-w: 1px;
   --container-max: 1240px;
   --control-h: 44px;
@@ -140,6 +174,7 @@
 
   /* signature */
   --hero-bg: var(--c-canvas);
+  --hero-aurora: var(--grad-aurora);
   --btn-case: none;
 }
 

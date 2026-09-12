@@ -34,7 +34,7 @@ import { listUsers, createUser, updateUser } from '~/services/httpServices/admin
 import { toast } from '~/lib/toast';
 
 import type { DataTableColumn, PaginationState } from '~/components/data-table/DataTable';
-import { Plus, HelpCircle as X  /* scaffold-lucide-icon-doctor: hallucinated → HelpCircle */ } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import type { AdminUserRow } from '~/types/view-models';
 
 /** A user row as rendered by the listing. The index signature keeps it

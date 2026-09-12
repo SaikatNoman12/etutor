@@ -31,8 +31,8 @@ import { getApiErrorMessage } from '~/utils/apiError';
 import type { Enrollment } from '~/types/enrollment';
 import type { Course } from '~/types/course';
 import type { Lesson } from '~/types/lesson';
-import type { PlayerDetail, PlayerLesson } from '~/types/view-models';
-import { ArrowLeft, HelpCircle as PlayCircle  /* scaffold-lucide-icon-doctor: hallucinated → HelpCircle */ } from 'lucide-react';
+import type { PlayerDetail, PlayerLesson, PlayerSection } from '~/types/view-models';
+import { ArrowLeft, CheckCircle2, PlayCircle } from 'lucide-react';
 
 /** A lesson row as it arrives embedded in the enrollment detail: the generated
  *  Lesson plus its per-student completion state (nested progress or a flat flag). */
@@ -111,7 +111,16 @@ export default function CoursePlayerPage() {
     }
     try {
       const enrollmentId = String(__routeParams.id ?? __routeParams.slug ?? '');
-      const lessonId = String(__routeParams.lessonId ?? selectedId ?? '');
+      // The lesson ON SCREEN, not `selectedId`. Nothing sets `selectedId` until
+      // the visitor picks a lesson from the list, so opening the player and
+      // pressing "Mark as complete" straight away posted
+      // /lessons//complete — an empty id, a 404, and a toast saying progress
+      // could not be saved, on the default lesson of every course.
+      const lessonId = String(currentLesson?.id ?? '');
+      if (!lessonId) {
+        toast.error(t('player.completeError', 'Could not save your progress'));
+        return;
+      }
       await completeLesson(enrollmentId, lessonId, __body);
       toast.success(t('player.completeSuccess', 'Lesson marked complete'));
     } catch (err) {
@@ -124,12 +133,23 @@ export default function CoursePlayerPage() {
   // ---- derive the visible player from the enrollment detail (data1) ----
   const detail = useMemo<PlayerDetail | null>(() => extractDetail(data1), [data1]);
 
-  const lessons = useMemo<PlayerLesson[]>(() => {
+  // Sections are how the payload is shaped and how the syllabus reads, so keep
+  // them — and derive the flat list the prev/next walk needs from the same
+  // source rather than fetching or assuming a second one.
+  const sections = useMemo<PlayerSection[]>(() => {
     if (!detail) return [];
-    if (Array.isArray(detail.lessons)) return detail.lessons;
-    if (Array.isArray(detail.course?.lessons)) return detail.course!.lessons!;
-    return [];
+    if (Array.isArray(detail.sections) && detail.sections.length) return detail.sections;
+    // Tolerate the flat shapes too — an older payload, or a course with no sections.
+    const flat = (Array.isArray(detail.lessons) && detail.lessons)
+      || (Array.isArray(detail.course?.lessons) && detail.course!.lessons!)
+      || [];
+    return flat.length ? [{ id: 'all', title: '', lessons: flat }] : [];
   }, [detail]);
+
+  const lessons = useMemo<PlayerLesson[]>(
+    () => sections.flatMap((s) => s.lessons ?? []),
+    [sections],
+  );
 
   const pct = Math.max(0, Math.min(100, detail?.progressPercent ?? 0));
 
@@ -151,13 +171,13 @@ export default function CoursePlayerPage() {
   const btnPrimary =
     'inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-transparent bg-[var(--c-primary)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-on-primary)] hover:bg-[var(--c-primary-active)] disabled:cursor-not-allowed disabled:opacity-50';
   const btnSecondary =
-    'inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-[6px] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50';
+    'inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] et-press rounded-[var(--radius-pill)] border border-[var(--c-hairline-strong)] bg-[var(--c-surface)] px-[24px] py-[8px] text-[15px] font-semibold leading-none text-[var(--c-primary)] hover:bg-[var(--c-surface-soft)] disabled:cursor-not-allowed disabled:opacity-50';
 
   return (
     <div className="mx-auto max-w-[1240px] py-[32px]" data-testid="s-11-course-player-page">
       <Link
         to="/my-learning"
-        className="mb-[16px] inline-flex items-center gap-[4px] text-[14px] font-semibold text-[var(--c-body)] no-underline hover:text-[var(--c-primary-text)]"
+        className="mb-[16px] inline-flex min-h-[36px] items-center gap-[4px] text-[14px] font-semibold text-[var(--c-body)] no-underline hover:text-[var(--c-primary-text)]"
         data-testid="s-11-course-player-home-link"
       >
         <ArrowLeft className="h-[16px] w-[16px]" aria-hidden="true" />
@@ -168,8 +188,8 @@ export default function CoursePlayerPage() {
         <section data-testid="s-11-course-player-ac-1">
           {loading1 && (
             <div className="grid grid-cols-1 items-start gap-[24px] lg:grid-cols-[3fr_1fr]" data-testid="s-11-course-player-ac-1-loading">
-              <div className="aspect-video animate-pulse rounded-[8px] bg-[var(--c-surface-soft)]" />
-              <div className="h-[320px] animate-pulse rounded-[8px] border border-[var(--c-hairline)] bg-[var(--c-surface-soft)]" />
+              <div className="aspect-video et-shimmer rounded-[var(--radius-lg)] " />
+              <div className="h-[320px] et-shimmer rounded-[var(--radius-lg)] border border-[var(--c-hairline)] " />
             </div>
           )}
 
@@ -249,42 +269,58 @@ export default function CoursePlayerPage() {
                   {t('player.courseContent', 'Course content')}
                 </h2>
                 <div className="h-[8px] overflow-hidden rounded-full bg-[var(--c-hairline)]">
-                  <div className="h-full rounded-full bg-[var(--c-primary)]" style={{ width: `${pct}%` }} />
+                  <div className="et-grow h-full rounded-full bg-[var(--c-primary)]" style={{ width: `${pct}%` }} />
                 </div>
                 <p className="m-0 text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
                   {pct}% {t('player.complete', 'complete')}
                 </p>
-                <ul className="m-0 list-none p-0" data-testid="s-11-course-player-ac-1-list">
-                  {lessons.map((lesson, i) => {
-                    const done = lesson.isCompleted ?? lesson.progress?.isCompleted ?? false;
-                    const active = currentLesson?.id === lesson.id;
-                    return (
-                      <li
-                        key={lesson.id ?? i}
-                        className="border-b border-[var(--c-hairline)] last:border-b-0"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => lesson.id && setSelectedId(lesson.id)}
-                          className={`flex w-full items-center gap-[12px] px-0 py-[16px] text-left hover:bg-[var(--c-surface-soft)] ${active ? 'font-semibold' : ''}`}
-                          data-testid={`s-11-course-player-ac-1-item-${i}`}
-                        >
-                          <i
-                            data-lucide={done ? 'check-circle' : 'play-circle'}
-                            className="h-[16px] w-[16px] shrink-0 text-[var(--c-primary-text)]"
-                            aria-hidden="true"
-                          />
-                          <span className="min-w-0 flex-1 text-[14px] leading-[1.5] text-[var(--c-ink)]">
-                            {lesson.title ?? ''}
-                          </span>
-                          <span className="text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
-                            {lesson.durationMinutes != null ? `${lesson.durationMinutes} ${t('player.min', 'min')}` : ''}
-                          </span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {/* Grouped by section, because that is how a syllabus reads and how
+                    the payload arrives. `n` is a running index across sections so the
+                    story-spec item testids stay unique and stable. */}
+                <div className="m-0 list-none p-0" data-testid="s-11-course-player-ac-1-list">
+                  {(() => {
+                    let n = -1;
+                    return sections.map((section, si) => (
+                      <div key={section.id ?? si} className="mb-[8px] last:mb-0">
+                        {section.title ? (
+                          <p className="m-0 mt-[12px] px-0 pb-[4px] text-[12px] font-semibold uppercase tracking-[0.6px] text-[var(--c-muted)]">
+                            {section.title}
+                          </p>
+                        ) : null}
+                        <ul className="m-0 list-none p-0">
+                          {(section.lessons ?? []).map((lesson) => {
+                            n += 1;
+                            const i = n;
+                            const done = lesson.isCompleted ?? lesson.progress?.isCompleted ?? false;
+                            const active = currentLesson?.id === lesson.id;
+                            return (
+                              <li key={lesson.id ?? i} className="border-b border-[var(--c-hairline)] last:border-b-0">
+                                <button
+                                  type="button"
+                                  onClick={() => lesson.id && setSelectedId(lesson.id)}
+                                  className={`flex w-full items-center gap-[12px] px-0 py-[16px] text-left transition-colors hover:bg-[var(--c-surface-soft)] ${active ? 'font-semibold' : ''}`}
+                                  data-testid={`s-11-course-player-ac-1-item-${i}`}
+                                >
+                                  {done ? (
+                                    <CheckCircle2 className="h-[16px] w-[16px] shrink-0 text-[var(--c-success,#16a34a)]" aria-hidden="true" />
+                                  ) : (
+                                    <PlayCircle className="h-[16px] w-[16px] shrink-0 text-[var(--c-primary-text)]" aria-hidden="true" />
+                                  )}
+                                  <span className="min-w-0 flex-1 text-[14px] leading-[1.5] text-[var(--c-ink)]">
+                                    {lesson.title ?? ''}
+                                  </span>
+                                  <span className="shrink-0 text-[12px] font-medium leading-[1.4] tracking-[0.2px] text-[var(--c-muted)]">
+                                    {lesson.durationMinutes != null ? `${lesson.durationMinutes} ${t('player.min', 'min')}` : ''}
+                                  </span>
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ));
+                  })()}
+                </div>
               </aside>
             </div>
           )}

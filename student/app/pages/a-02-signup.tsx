@@ -83,7 +83,7 @@ export default function SignUpPage() {
         homeHref="/"
         title={t('auth.panel.signupTitle', 'Start learning something new today.')}
         points={[
-          t('auth.panel.point4', 'Seventeen expert-led courses, one account'),
+          t('auth.panel.point4', 'Every course on the site, one account'),
           t('auth.panel.point5', 'Pay once, keep access for six months'),
           t('auth.panel.point6', 'Downloadable notes with every lesson'),
         ]}
